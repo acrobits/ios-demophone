@@ -1,0 +1,43 @@
+# iOS SDKs
+/Heartbeat
+/libsoftphone-saas
+
+ali_build/*
+
+*.o
+ali/libali.a
+/DemoLib/
+*.DS_Store
+libsoftphone_*.zip
+/.test
+/export
+
+# Anroid Studio
+*.iml
+/local.properties
+.gradle
+.build
+.idea/
+
+**/Android/.cxx
+
+# Visual code
+.vscode/
+
+# python compiled file
+*.pyc
+
+# Build #
+softphone/iPhone/build_number.cpp
+ali/xcode/*.xcodeproj/xcuserdata
+/build/Acrobits.*
+
+# User Settings
+xcuserdata/
+
+# A3
+jni_bindings.db
+
+# CLion build
+*/cmake-build-debug/
+cmake-build-debug/

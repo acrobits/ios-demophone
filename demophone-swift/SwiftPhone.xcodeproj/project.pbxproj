@@ -1,0 +1,552 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 52;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		5757E69C2508D57F00DD3ED0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5757E69B2508D57F00DD3ED0 /* AppDelegate.swift */; };
+		5757E6A52508D58200DD3ED0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5757E6A42508D58200DD3ED0 /* Assets.xcassets */; };
+		5757E6A82508D58200DD3ED0 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5757E6A62508D58200DD3ED0 /* LaunchScreen.storyboard */; };
+		C234E3262535956600EFA519 /* RegViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C234E3252535956600EFA519 /* RegViewController.swift */; };
+		C234E3282535957E00EFA519 /* CallViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C234E3272535957E00EFA519 /* CallViewController.swift */; };
+		C23B19F3251E213F00984B08 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C23B19F2251E213F00984B08 /* Main.storyboard */; };
+		C24BF2672538485300692D0C /* CallsDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24BF2662538485300692D0C /* CallsDataSource.swift */; };
+		C24BF269253853F700692D0C /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24BF268253853F700692D0C /* Extensions.swift */; };
+		C2A2B2D22542C79E0056B21C /* PushKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2A2B2D12542C79E0056B21C /* PushKit.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		C2BDC5FE2A13AC7200F77E4A /* SoftphoneSwiftPackage-saas in Frameworks */ = {isa = PBXBuildFile; productRef = C2BDC5FD2A13AC7200F77E4A /* SoftphoneSwiftPackage-saas */; };
+		C2EB572D2A14E797000DDC13 /* provisioning.xml in Resources */ = {isa = PBXBuildFile; fileRef = C2EB572C2A14E797000DDC13 /* provisioning.xml */; };
+		C2ED35DF25640C3E00891CA1 /* rp.wav in Resources */ = {isa = PBXBuildFile; fileRef = C2ED35DC25640C3E00891CA1 /* rp.wav */; };
+		C2ED35E025640C3E00891CA1 /* dm.wav in Resources */ = {isa = PBXBuildFile; fileRef = C2ED35DD25640C3E00891CA1 /* dm.wav */; };
+		C2ED35E125640C3E00891CA1 /* dd.wav in Resources */ = {isa = PBXBuildFile; fileRef = C2ED35DE25640C3E00891CA1 /* dd.wav */; };
+		C2F352F82A5D59FE00467190 /* CallActionHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F352F72A5D59FE00467190 /* CallActionHelpers.swift */; };
+		C2FE6A1825449697009FB20D /* CallKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2FE6A1725449697009FB20D /* CallKit.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		C2FE6A1A2544969C009FB20D /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2FE6A192544969C009FB20D /* CoreTelephony.framework */; };
+		C2FE6A1C254496AC009FB20D /* VideoToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2FE6A1B254496AC009FB20D /* VideoToolbox.framework */; };
+		C2FE6A1E254496B1009FB20D /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2FE6A1D254496B1009FB20D /* CoreText.framework */; };
+		C2FE6A20254496B9009FB20D /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2FE6A1F254496B9009FB20D /* CoreVideo.framework */; };
+		C2FE6A22254496BF009FB20D /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2FE6A21254496BF009FB20D /* CoreMedia.framework */; };
+		C2FE6A24254496C8009FB20D /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2FE6A23254496C8009FB20D /* QuartzCore.framework */; };
+		C2FE6A26254496CD009FB20D /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2FE6A25254496CD009FB20D /* SystemConfiguration.framework */; };
+		C2FE6A28254496D7009FB20D /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2FE6A27254496D7009FB20D /* Security.framework */; };
+		C2FE6A2A254496DD009FB20D /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2FE6A29254496DC009FB20D /* Accelerate.framework */; };
+		C2FE6A2C254496E6009FB20D /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2FE6A2B254496E5009FB20D /* AVFoundation.framework */; };
+		C2FE6A2E254496EB009FB20D /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2FE6A2D254496EB009FB20D /* Foundation.framework */; };
+		C2FE6A30254496F4009FB20D /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2FE6A2F254496F4009FB20D /* UIKit.framework */; };
+		C2FE6A32254496F9009FB20D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2FE6A31254496F9009FB20D /* CoreGraphics.framework */; };
+		C2FE6A3425449701009FB20D /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2FE6A3325449701009FB20D /* AudioToolbox.framework */; };
+		C2FE6A3A2544972B009FB20D /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2FE6A392544972A009FB20D /* CFNetwork.framework */; };
+		C2FE6A3C25449730009FB20D /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2FE6A3B25449730009FB20D /* MediaPlayer.framework */; };
+		C2FE6A3E2544975B009FB20D /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = C2FE6A3D2544975B009FB20D /* libz.tbd */; };
+		C2FE6A4025449797009FB20D /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2FE6A3F25449797009FB20D /* UserNotifications.framework */; };
+		C2FE6A42254497BD009FB20D /* libicucore.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = C2FE6A41254497BD009FB20D /* libicucore.tbd */; };
+		C2FE6A60254499D3009FB20D /* Contacts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2FE6A5F254499D3009FB20D /* Contacts.framework */; };
+		C2FE6A62254499D8009FB20D /* ContactsUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2FE6A61254499D8009FB20D /* ContactsUI.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		C219020C258B63890062DB22 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		5757E6982508D57F00DD3ED0 /* SwiftPhone.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SwiftPhone.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		5757E69B2508D57F00DD3ED0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		5757E6A42508D58200DD3ED0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		5757E6A72508D58200DD3ED0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		5757E6A92508D58200DD3ED0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		579F6A452510BC430060336A /* SwiftPhone-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SwiftPhone-Bridging-Header.h"; sourceTree = "<group>"; };
+		C234E3252535956600EFA519 /* RegViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegViewController.swift; sourceTree = "<group>"; };
+		C234E3272535957E00EFA519 /* CallViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallViewController.swift; sourceTree = "<group>"; };
+		C23B19F2251E213F00984B08 /* Main.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
+		C24BF2662538485300692D0C /* CallsDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallsDataSource.swift; sourceTree = "<group>"; };
+		C24BF268253853F700692D0C /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
+		C2A2B2D02542C6C50056B21C /* SwiftPhone.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SwiftPhone.entitlements; sourceTree = "<group>"; };
+		C2A2B2D12542C79E0056B21C /* PushKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PushKit.framework; path = System/Library/Frameworks/PushKit.framework; sourceTree = SDKROOT; };
+		C2EB572C2A14E797000DDC13 /* provisioning.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = provisioning.xml; sourceTree = "<group>"; };
+		C2ED35DC25640C3E00891CA1 /* rp.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = rp.wav; sourceTree = "<group>"; };
+		C2ED35DD25640C3E00891CA1 /* dm.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = dm.wav; sourceTree = "<group>"; };
+		C2ED35DE25640C3E00891CA1 /* dd.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = dd.wav; sourceTree = "<group>"; };
+		C2F352F72A5D59FE00467190 /* CallActionHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallActionHelpers.swift; sourceTree = "<group>"; };
+		C2FE6A1725449697009FB20D /* CallKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CallKit.framework; path = System/Library/Frameworks/CallKit.framework; sourceTree = SDKROOT; };
+		C2FE6A192544969C009FB20D /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
+		C2FE6A1B254496AC009FB20D /* VideoToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VideoToolbox.framework; path = System/Library/Frameworks/VideoToolbox.framework; sourceTree = SDKROOT; };
+		C2FE6A1D254496B1009FB20D /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
+		C2FE6A1F254496B9009FB20D /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
+		C2FE6A21254496BF009FB20D /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
+		C2FE6A23254496C8009FB20D /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		C2FE6A25254496CD009FB20D /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		C2FE6A27254496D7009FB20D /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		C2FE6A29254496DC009FB20D /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
+		C2FE6A2B254496E5009FB20D /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		C2FE6A2D254496EB009FB20D /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		C2FE6A2F254496F4009FB20D /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		C2FE6A31254496F9009FB20D /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		C2FE6A3325449701009FB20D /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
+		C2FE6A3525449706009FB20D /* AddressBook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBook.framework; path = System/Library/Frameworks/AddressBook.framework; sourceTree = SDKROOT; };
+		C2FE6A372544970E009FB20D /* AddressBookUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBookUI.framework; path = System/Library/Frameworks/AddressBookUI.framework; sourceTree = SDKROOT; };
+		C2FE6A392544972A009FB20D /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
+		C2FE6A3B25449730009FB20D /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
+		C2FE6A3D2544975B009FB20D /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
+		C2FE6A3F25449797009FB20D /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = System/Library/Frameworks/UserNotifications.framework; sourceTree = SDKROOT; };
+		C2FE6A41254497BD009FB20D /* libicucore.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libicucore.tbd; path = usr/lib/libicucore.tbd; sourceTree = SDKROOT; };
+		C2FE6A5F254499D3009FB20D /* Contacts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Contacts.framework; path = System/Library/Frameworks/Contacts.framework; sourceTree = SDKROOT; };
+		C2FE6A61254499D8009FB20D /* ContactsUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ContactsUI.framework; path = System/Library/Frameworks/ContactsUI.framework; sourceTree = SDKROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		5757E6952508D57F00DD3ED0 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C2FE6A62254499D8009FB20D /* ContactsUI.framework in Frameworks */,
+				C2FE6A60254499D3009FB20D /* Contacts.framework in Frameworks */,
+				C2FE6A42254497BD009FB20D /* libicucore.tbd in Frameworks */,
+				C2FE6A4025449797009FB20D /* UserNotifications.framework in Frameworks */,
+				C2FE6A3E2544975B009FB20D /* libz.tbd in Frameworks */,
+				C2FE6A3C25449730009FB20D /* MediaPlayer.framework in Frameworks */,
+				C2BDC5FE2A13AC7200F77E4A /* SoftphoneSwiftPackage-saas in Frameworks */,
+				C2FE6A3A2544972B009FB20D /* CFNetwork.framework in Frameworks */,
+				C2FE6A3425449701009FB20D /* AudioToolbox.framework in Frameworks */,
+				C2FE6A32254496F9009FB20D /* CoreGraphics.framework in Frameworks */,
+				C2FE6A30254496F4009FB20D /* UIKit.framework in Frameworks */,
+				C2FE6A2E254496EB009FB20D /* Foundation.framework in Frameworks */,
+				C2FE6A2C254496E6009FB20D /* AVFoundation.framework in Frameworks */,
+				C2FE6A2A254496DD009FB20D /* Accelerate.framework in Frameworks */,
+				C2FE6A28254496D7009FB20D /* Security.framework in Frameworks */,
+				C2FE6A26254496CD009FB20D /* SystemConfiguration.framework in Frameworks */,
+				C2FE6A24254496C8009FB20D /* QuartzCore.framework in Frameworks */,
+				C2FE6A22254496BF009FB20D /* CoreMedia.framework in Frameworks */,
+				C2FE6A20254496B9009FB20D /* CoreVideo.framework in Frameworks */,
+				C2FE6A1E254496B1009FB20D /* CoreText.framework in Frameworks */,
+				C2FE6A1C254496AC009FB20D /* VideoToolbox.framework in Frameworks */,
+				C2FE6A1A2544969C009FB20D /* CoreTelephony.framework in Frameworks */,
+				C2FE6A1825449697009FB20D /* CallKit.framework in Frameworks */,
+				C2A2B2D22542C79E0056B21C /* PushKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		5757E68F2508D57F00DD3ED0 = {
+			isa = PBXGroup;
+			children = (
+				5757E69A2508D57F00DD3ED0 /* SwiftPhone */,
+				5757E6992508D57F00DD3ED0 /* Products */,
+				5757E6BB2508D62400DD3ED0 /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		5757E6992508D57F00DD3ED0 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				5757E6982508D57F00DD3ED0 /* SwiftPhone.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		5757E69A2508D57F00DD3ED0 /* SwiftPhone */ = {
+			isa = PBXGroup;
+			children = (
+				C2EB572C2A14E797000DDC13 /* provisioning.xml */,
+				C2ED35DB25640C3E00891CA1 /* snd */,
+				C2A2B2D02542C6C50056B21C /* SwiftPhone.entitlements */,
+				579F6A412510BC430060336A /* Bridge */,
+				5757E69B2508D57F00DD3ED0 /* AppDelegate.swift */,
+				5757E6A42508D58200DD3ED0 /* Assets.xcassets */,
+				5757E6A62508D58200DD3ED0 /* LaunchScreen.storyboard */,
+				5757E6A92508D58200DD3ED0 /* Info.plist */,
+				C23B19F2251E213F00984B08 /* Main.storyboard */,
+				C234E3252535956600EFA519 /* RegViewController.swift */,
+				C234E3272535957E00EFA519 /* CallViewController.swift */,
+				C24BF2662538485300692D0C /* CallsDataSource.swift */,
+				C24BF268253853F700692D0C /* Extensions.swift */,
+				C2F352F72A5D59FE00467190 /* CallActionHelpers.swift */,
+			);
+			path = SwiftPhone;
+			sourceTree = "<group>";
+		};
+		5757E6BB2508D62400DD3ED0 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				C2FE6A61254499D8009FB20D /* ContactsUI.framework */,
+				C2FE6A5F254499D3009FB20D /* Contacts.framework */,
+				C2FE6A41254497BD009FB20D /* libicucore.tbd */,
+				C2FE6A3F25449797009FB20D /* UserNotifications.framework */,
+				C2FE6A3D2544975B009FB20D /* libz.tbd */,
+				C2FE6A3B25449730009FB20D /* MediaPlayer.framework */,
+				C2FE6A392544972A009FB20D /* CFNetwork.framework */,
+				C2FE6A372544970E009FB20D /* AddressBookUI.framework */,
+				C2FE6A3525449706009FB20D /* AddressBook.framework */,
+				C2FE6A3325449701009FB20D /* AudioToolbox.framework */,
+				C2FE6A31254496F9009FB20D /* CoreGraphics.framework */,
+				C2FE6A2F254496F4009FB20D /* UIKit.framework */,
+				C2FE6A2D254496EB009FB20D /* Foundation.framework */,
+				C2FE6A2B254496E5009FB20D /* AVFoundation.framework */,
+				C2FE6A29254496DC009FB20D /* Accelerate.framework */,
+				C2FE6A27254496D7009FB20D /* Security.framework */,
+				C2FE6A25254496CD009FB20D /* SystemConfiguration.framework */,
+				C2FE6A23254496C8009FB20D /* QuartzCore.framework */,
+				C2FE6A21254496BF009FB20D /* CoreMedia.framework */,
+				C2FE6A1F254496B9009FB20D /* CoreVideo.framework */,
+				C2FE6A1D254496B1009FB20D /* CoreText.framework */,
+				C2FE6A1B254496AC009FB20D /* VideoToolbox.framework */,
+				C2FE6A192544969C009FB20D /* CoreTelephony.framework */,
+				C2FE6A1725449697009FB20D /* CallKit.framework */,
+				C2A2B2D12542C79E0056B21C /* PushKit.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		579F6A412510BC430060336A /* Bridge */ = {
+			isa = PBXGroup;
+			children = (
+				579F6A452510BC430060336A /* SwiftPhone-Bridging-Header.h */,
+			);
+			path = Bridge;
+			sourceTree = "<group>";
+		};
+		C2ED35DB25640C3E00891CA1 /* snd */ = {
+			isa = PBXGroup;
+			children = (
+				C2ED35DC25640C3E00891CA1 /* rp.wav */,
+				C2ED35DD25640C3E00891CA1 /* dm.wav */,
+				C2ED35DE25640C3E00891CA1 /* dd.wav */,
+			);
+			path = snd;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		5757E6972508D57F00DD3ED0 /* SwiftPhone */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 5757E6AC2508D58200DD3ED0 /* Build configuration list for PBXNativeTarget "SwiftPhone" */;
+			buildPhases = (
+				5757E6942508D57F00DD3ED0 /* Sources */,
+				5757E6952508D57F00DD3ED0 /* Frameworks */,
+				5757E6962508D57F00DD3ED0 /* Resources */,
+				C219020C258B63890062DB22 /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = SwiftPhone;
+			packageProductDependencies = (
+				C2BDC5FD2A13AC7200F77E4A /* SoftphoneSwiftPackage-saas */,
+			);
+			productName = SwiftPhone;
+			productReference = 5757E6982508D57F00DD3ED0 /* SwiftPhone.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		5757E6902508D57F00DD3ED0 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 1130;
+				LastUpgradeCheck = 1200;
+				ORGANIZATIONNAME = Acrobits;
+				TargetAttributes = {
+					5757E6972508D57F00DD3ED0 = {
+						CreatedOnToolsVersion = 11.3.1;
+					};
+				};
+			};
+			buildConfigurationList = 5757E6932508D57F00DD3ED0 /* Build configuration list for PBXProject "SwiftPhone" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 5757E68F2508D57F00DD3ED0;
+			packageReferences = (
+				C2BDC5FC2A13AC7200F77E4A /* XCRemoteSwiftPackageReference "SoftphoneSwiftPackage-saas" */,
+			);
+			productRefGroup = 5757E6992508D57F00DD3ED0 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				5757E6972508D57F00DD3ED0 /* SwiftPhone */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		5757E6962508D57F00DD3ED0 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C2ED35E025640C3E00891CA1 /* dm.wav in Resources */,
+				C2ED35DF25640C3E00891CA1 /* rp.wav in Resources */,
+				C2EB572D2A14E797000DDC13 /* provisioning.xml in Resources */,
+				C2ED35E125640C3E00891CA1 /* dd.wav in Resources */,
+				C23B19F3251E213F00984B08 /* Main.storyboard in Resources */,
+				5757E6A82508D58200DD3ED0 /* LaunchScreen.storyboard in Resources */,
+				5757E6A52508D58200DD3ED0 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		5757E6942508D57F00DD3ED0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C234E3262535956600EFA519 /* RegViewController.swift in Sources */,
+				C234E3282535957E00EFA519 /* CallViewController.swift in Sources */,
+				C24BF2672538485300692D0C /* CallsDataSource.swift in Sources */,
+				C2F352F82A5D59FE00467190 /* CallActionHelpers.swift in Sources */,
+				5757E69C2508D57F00DD3ED0 /* AppDelegate.swift in Sources */,
+				C24BF269253853F700692D0C /* Extensions.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		5757E6A62508D58200DD3ED0 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				5757E6A72508D58200DD3ED0 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		5757E6AA2508D58200DD3ED0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.2;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		5757E6AB2508D58200DD3ED0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.2;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		5757E6AD2508D58200DD3ED0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = SwiftPhone/SwiftPhone.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = NH3365YY44;
+				ENABLE_BITCODE = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/../Frameworks",
+				);
+				GCC_ENABLE_CPP_RTTI = NO;
+				INFOPLIST_FILE = SwiftPhone/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = cz.acrobits.softphone.demophone;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "Demophone devel";
+				SWIFT_OBJC_BRIDGING_HEADER = "SwiftPhone/Bridge/SwiftPhone-Bridging-Header.h";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		5757E6AE2508D58200DD3ED0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = SwiftPhone/SwiftPhone.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = NH3365YY44;
+				ENABLE_BITCODE = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/../Frameworks",
+				);
+				GCC_ENABLE_CPP_RTTI = NO;
+				INFOPLIST_FILE = SwiftPhone/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = cz.acrobits.softphone.demophone;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "Demophone devel";
+				SWIFT_OBJC_BRIDGING_HEADER = "SwiftPhone/Bridge/SwiftPhone-Bridging-Header.h";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		5757E6932508D57F00DD3ED0 /* Build configuration list for PBXProject "SwiftPhone" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5757E6AA2508D58200DD3ED0 /* Debug */,
+				5757E6AB2508D58200DD3ED0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		5757E6AC2508D58200DD3ED0 /* Build configuration list for PBXNativeTarget "SwiftPhone" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5757E6AD2508D58200DD3ED0 /* Debug */,
+				5757E6AE2508D58200DD3ED0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		C2BDC5FC2A13AC7200F77E4A /* XCRemoteSwiftPackageReference "SoftphoneSwiftPackage-saas" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/acrobits/SoftphoneSwiftPackage-saas.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		C2BDC5FD2A13AC7200F77E4A /* SoftphoneSwiftPackage-saas */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C2BDC5FC2A13AC7200F77E4A /* XCRemoteSwiftPackageReference "SoftphoneSwiftPackage-saas" */;
+			productName = "SoftphoneSwiftPackage-saas";
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = 5757E6902508D57F00DD3ED0 /* Project object */;
+}

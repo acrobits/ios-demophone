@@ -1,0 +1,11 @@
+<tones>
+  <tone handle="r1" usage="call" location="bundle:rp.wav">
+    <name>Shrill</name>
+  </tone>
+  <tone handle="r2" default="call" usage="call" location="bundle:dd.caf">
+    <name>Ding Dong</name>
+  </tone>
+  <tone handle="r3" usage="call" location="bundle:dm.caf">
+    <name>Drum</name>
+  </tone>
+</tones>
