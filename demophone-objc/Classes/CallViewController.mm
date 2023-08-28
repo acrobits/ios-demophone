@@ -11,8 +11,15 @@
 #import "CallViewController.h"
 #import "demophoneAppDelegate.h"
 #import "Ali/ali_mac_str_utils.h"
+#import <Softphone/Call/CallRedirectionManager.h>
+#import <Softphone/SdkServiceHolder.h>
+#import "TargetPickerViewController.h"
+#import "UIViewController+Alert.h"
 
-@interface CallViewController()
+@interface CallViewController() <TargetPickerDelegate, CallRedirectionTargetChangeDelegate>
+{
+    ali::array<Softphone::EventHistory::CallEvent::Pointer> _attendedTransferTargets;
+}
 
 @property(nonatomic,weak) IBOutlet UILabel * remoteHold;
 @property(nonatomic,weak) IBOutlet UILabel * stats;
@@ -28,11 +35,31 @@
 // ******************************************************************
 {
     [super viewDidLoad];
+    [[demophoneAppDelegate theApp] addTargetChangeDelegate:self];
 
     self.callDataSource = [[CallDataSource alloc] init];
     self.callTable.dataSource = self.callDataSource;
     
     [self refresh];
+}
+
+// ******************************************************************
+- (void)dealloc
+// ******************************************************************
+{
+    [[demophoneAppDelegate theApp] removeTargetChangeDelegate:self];
+}
+
+// ******************************************************************
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+// ******************************************************************
+{
+    if ([segue.identifier isEqualToString:@"TARGET_PICKER"])
+    {
+        TargetPickerViewController *picker = (TargetPickerViewController *)segue.destinationViewController;
+        picker.pickerDelgate = self;
+        [picker setAttendedTransferTargets:_attendedTransferTargets];
+    }
 }
 
 // ******************************************************************
@@ -133,11 +160,36 @@
 -(void) alertNoCallSelected
 // ******************************************************************
 {
-    UIAlertView * av = [[UIAlertView alloc] initWithTitle:@"Error"
-                                                  message:@"No call selected"
-                                                 delegate:nil
-                                        cancelButtonTitle:@"OK" otherButtonTitles:nil];
-	[av show];
+    [self showAlertWithTitle:@"Error"
+                  andMessage:@"No call selected"];
+}
+
+// ******************************************************************
+- (void)showCompleteAttTransferAlert
+// ******************************************************************
+{
+    auto callRedirectionManager = Softphone::SdkServiceHolder::get<Call::Redirection::Manager>();
+    
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Confirmation"
+                                                                   message:@"Do you want to complete the attended transfer?"
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction *completeAction = [UIAlertAction actionWithTitle:@"Complete"
+                                                             style:UIAlertActionStyleDefault
+                                                           handler:^(UIAlertAction * _Nonnull action) {
+        callRedirectionManager->performAttendedTransfer();
+    }];
+    
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel"
+                                                           style:UIAlertActionStyleCancel
+                                                         handler:^(UIAlertAction * _Nonnull action) {
+        callRedirectionManager->cancelRedirect();
+    }];
+    
+    [alert addAction:completeAction];
+    [alert addAction:cancelAction];
+    
+    [self presentViewController:alert animated:YES completion:nil];
 }
 
 // ******************************************************************
@@ -224,11 +276,8 @@
     
     if(e.isGroup)
     {
-        UIAlertView * av = [[UIAlertView alloc] initWithTitle:@"Error"
-                                                      message:@"select a single call"
-                                                     delegate:nil
-                                            cancelButtonTitle:@"OK" otherButtonTitles:nil];
-		[av show];
+        [self showAlertWithTitle:@"Error"
+                      andMessage:@"Select a single call"];
 		return;
     }
     
@@ -236,11 +285,8 @@
 	
 	if(otherGroup.is_empty())
 	{
-        UIAlertView * av = [[UIAlertView alloc] initWithTitle:@"Error"
-                                                      message:@"You need two separate calls to join them together"
-                                                     delegate:nil
-                                            cancelButtonTitle:@"OK" otherButtonTitles:nil];
-		[av show];
+        [self showAlertWithTitle:@"Error"
+                      andMessage:@"You need two separate calls to join them together"];
 		return;
 	}
 
@@ -271,13 +317,11 @@
         if([demophoneAppDelegate theApp].softphone->calls()->conferences()->getSize(groupId) > 1)
         {
             [[demophoneAppDelegate theApp] splitCall:e.call];
-        }else
+        }
+        else
         {
-            UIAlertView * av = [[UIAlertView alloc] initWithTitle:@"Error"
-                                                          message:@"The call is already alone in its group"
-                                                         delegate:nil
-                                                cancelButtonTitle:@"OK" otherButtonTitles:nil];
-            [av show];
+            [self showAlertWithTitle:@"Error"
+                          andMessage:@"The call is already alone in its group"];
         }
     }
 }
@@ -296,14 +340,17 @@
     
     if(e.isGroup)
     {
-        UIAlertView * av = [[UIAlertView alloc] initWithTitle:@"Error"
-                                                      message:@"select a single call"
-                                                     delegate:nil
-                                            cancelButtonTitle:@"OK" otherButtonTitles:nil];
-        [av show];
-    }else
+        [self showAlertWithTitle:@"Error"
+                      andMessage:@"Select a single call"];
+    }
+    else
     {
-        [[demophoneAppDelegate theApp] transferCall:e.call];
+        auto callRedirectionManager = Softphone::SdkServiceHolder::get<Call::Redirection::Manager>();
+        if (callRedirectionManager->canInitiateRedirect() && callRedirectionManager->getRedirectCapabilities(e.call).canBlindTransfer())
+        {
+            callRedirectionManager->setBlindTransferSource(e.call);
+            self.tabBarController.selectedIndex = 0;
+        }
     }
 }
 
@@ -323,27 +370,37 @@
     
     if(e.isGroup)
     {
-        UIAlertView * av = [[UIAlertView alloc] initWithTitle:@"Error"
-                                                      message:@"select a single call"
-                                                     delegate:nil
-                                            cancelButtonTitle:@"OK" otherButtonTitles:nil];
-		[av show];
+        [self showAlertWithTitle:@"Error"
+                      andMessage:@"Select a single call"];
 		return;
     }
+  
+    auto redirectManager = Softphone::SdkServiceHolder::get<Call::Redirection::Manager>();
+    Call::Redirection::RedirectCapabilities redirectCapabilities = redirectManager->getRedirectCapabilities(e.call);
     
-    Softphone::EventHistory::CallEvent::Pointer otherCall = [self otherCall:e.call];
-	
-	if(otherCall.is_null())
-	{
-        UIAlertView * av = [[UIAlertView alloc] initWithTitle:@"Error"
-                                                      message:@"You need two calls for attended transfer"
-                                                     delegate:nil
-                                            cancelButtonTitle:@"OK" otherButtonTitles:nil];
-		[av show];
-		return;
-	}
-
-	[[demophoneAppDelegate theApp] attendedTransferFromCall:e.call to:otherCall];
+    if (redirectCapabilities.attendedTransferCapability == Call::Redirection::AttendedTransferCapability::Direct())
+    {
+        //transfer to the suggested target immediately
+        redirectManager->performAttendedTransferBetween(e.call, redirectCapabilities.attendedTransferTargets[0]);
+    }
+    else if (redirectCapabilities.attendedTransferCapability == Call::Redirection::AttendedTransferCapability::NewCall())
+    {
+        // initiate the attended transfer flow
+        redirectManager->setAttendedTransferSource(e.call);
+        self.tabBarController.selectedIndex = 0;
+    }
+    else if (redirectCapabilities.attendedTransferCapability == Call::Redirection::AttendedTransferCapability::PickAnotherCall())
+    {
+        redirectManager->setAttendedTransferSource(e.call);
+        _attendedTransferTargets = redirectCapabilities.attendedTransferTargets;
+        
+        [self performSegueWithIdentifier:@"TARGET_PICKER" sender:nil];
+    }
+    else
+    {
+        [self showAlertWithTitle:@"Invalid Call"
+                      andMessage:@"You can only transfer a single established phone call"];
+    }
 }
 
 // ******************************************************************
@@ -387,11 +444,8 @@
     
     if(e.isGroup)
     {
-        UIAlertView * av = [[UIAlertView alloc] initWithTitle:@"Error"
-                                                      message:@"select a single call"
-                                                     delegate:nil
-                                            cancelButtonTitle:@"OK" otherButtonTitles:nil];
-		[av show];
+        [self showAlertWithTitle:@"Error"
+                      andMessage:@"Select a single call"];
 		return;
     }
     
@@ -420,11 +474,8 @@
     
     if(e.isGroup)
     {
-        UIAlertView * av = [[UIAlertView alloc] initWithTitle:@"Error"
-                                                      message:@"select a single call"
-                                                     delegate:nil
-                                            cancelButtonTitle:@"OK" otherButtonTitles:nil];
-		[av show];
+        [self showAlertWithTitle:@"Error"
+                      andMessage:@"Select a single call"];
 		return;
     }
     
@@ -435,6 +486,37 @@
        || state == Call::State::IncomingIgnored)
     {
         [[demophoneAppDelegate theApp] rejectIncomingCall:e.call];
+    }
+}
+
+// ******************************************************************
+- (void)pickerViewController:(TargetPickerViewController *)picker didSelectTarget:(Softphone::EventHistory::CallEvent::Pointer)target
+// ******************************************************************
+{
+    auto callRedirectionManager = Softphone::SdkServiceHolder::get<Call::Redirection::Manager>();
+    callRedirectionManager->setAttendedTransferTarget(target);
+    callRedirectionManager->performAttendedTransfer();
+    
+    [picker dismissViewControllerAnimated:YES completion:nil];
+}
+
+// ******************************************************************
+- (void)pickerViewControllerDidCancel:(TargetPickerViewController *)picker
+// ******************************************************************
+{
+    auto callRedirectionManager = Softphone::SdkServiceHolder::get<Call::Redirection::Manager>();
+    callRedirectionManager->cancelRedirect();
+    
+    [picker dismissViewControllerAnimated:YES completion:nil];
+}
+
+#pragma mark - CallRedirectionTargetChangeDelegate
+// ******************************************************************
+-(void)redirectTargetChanged:(Softphone::EventHistory::CallEvent::Pointer)callEvent type:(Call::Redirection::RedirectType)type
+// ******************************************************************
+{
+    if (!callEvent.is_null() && type == Call::Redirection::RedirectType::AttendedTransfer()) {
+        [self showCompleteAttTransferAlert];
     }
 }
 

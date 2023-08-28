@@ -10,9 +10,13 @@
 
 #import "RegViewController.h"
 #import "demophoneAppDelegate.h"
+#import <Softphone/Call/CallRedirectionManager.h>
+#import <Softphone/SdkServiceHolder.h>
+#import "UIViewController+Alert.h"
 
-@interface RegViewController()
+@interface RegViewController() <CallRedirectionStateChangeDelegate>
 
+@property(nonatomic,weak) IBOutlet UIButton * callButton;
 @property(nonatomic,weak) IBOutlet UILabel * regState;
 @property(nonatomic,weak) IBOutlet UITextField * number;
 
@@ -20,6 +24,21 @@
 
 @implementation RegViewController
 
+// ******************************************************************
+- (void)viewDidLoad
+// ******************************************************************
+{
+    [super viewDidLoad];
+    
+    [[demophoneAppDelegate theApp] addStateChangeDelegate:self];
+}
+
+// ******************************************************************
+- (void)dealloc
+// ******************************************************************
+{
+    [[demophoneAppDelegate theApp] removeStateChangeDelegate:self];
+}
 
 // ******************************************************************
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
@@ -30,11 +49,57 @@
 	return YES;
 }
 
+#pragma mark - CallRedirectionStateChangeDelegate
+// ******************************************************************
+- (void) redirectStateChanged:(Call::Redirection::RedirectState)state type:(Call::Redirection::RedirectType)type
+// ******************************************************************
+{
+    _callButton.selected = type == Call::Redirection::RedirectType::BlindTransfer() && state == Call::Redirection::RedirectState::SourceAssigned();
+    
+    bool isTransferType = type.isTransferType();
+    NSString *message = @"";
+    
+    if (state == Call::Redirection::RedirectState::Succeeded())
+    {
+        message = isTransferType ? @"Transfer Complete" : @"Forward Complete";
+        [self showAlertWithTitle:@"Success" andMessage:message];
+    }
+    else if (state == Call::Redirection::RedirectState::Failed())
+    {
+        message = isTransferType ? @"Transfer Failed" : @"Forward Failed";
+        [self showAlertWithTitle:@"Error" andMessage:message];
+    }
+    else if (state == Call::Redirection::RedirectState::Cancelled())
+    {
+        message = isTransferType ? @"Transfer Cancelled" : @"Forward Cancelled";
+        [self showAlertWithTitle:@"Error" andMessage:message];
+    }
+    else if(state == Call::Redirection::RedirectState::InProgress())
+    {
+        message = isTransferType ? @"Transfer in Progress" : @"Forward in Progress";
+    }
+}
+
+#pragma mark - IBActions
+
 // ******************************************************************
 - (IBAction) onCall
 // ******************************************************************
 {
-	[[demophoneAppDelegate theApp] callNumber:[self.number text]];
+    auto callRedirectionManager = Softphone::SdkServiceHolder::get<Call::Redirection::Manager>();
+    if (callRedirectionManager->getCurrentRedirectFlow() == Call::Redirection::RedirectType::BlindTransfer()) {
+        if (self.number.text.length == 0)
+            return;
+        
+        if (!callRedirectionManager->getRedirectSource().is_null()) {
+            [[demophoneAppDelegate theApp] transferCall:callRedirectionManager->getRedirectSource()];
+            return;
+        }
+    }
+    
+    if ([[demophoneAppDelegate theApp] callNumber:self.number.text]) {
+        self.tabBarController.selectedIndex = 1;
+    }
 }
 
 // ******************************************************************

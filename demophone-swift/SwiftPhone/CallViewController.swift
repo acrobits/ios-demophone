@@ -8,13 +8,49 @@ class CallViewController: UIViewController
     @IBOutlet weak var callsTableView: UITableView!
     
     var callDataSource = CallsDataSource()
+    private var attendedTransferTargets: [SoftphoneCallEvent] = []
     
     //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
     override func viewDidLoad()
     //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
     {
+        CallRedirectionManager.shared().addTargetChangeDelegate(self)
         self.callsTableView.dataSource = self.callDataSource
         refresh()
+    }
+    
+    //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+    deinit
+    //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+    {
+        CallRedirectionManager.shared().removeTargetChangeDelegate(self)
+    }
+    
+    //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?)
+    //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+    {
+        if segue.identifier == "TARGET_PICKER" {
+            let picker = segue.destination as! TargetPickerViewController
+            picker.delegate = self
+            picker.attendedTransferTargets = attendedTransferTargets
+        }
+    }
+    
+    //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+    func showCompleteAttTransferAlert()
+    //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+    {
+        let alert = UIAlertController(title: "Confirmation",
+                                      message: "Do you want to complete the attended transfer?",
+                                      preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Complete", style: .default, handler: { _ in
+            CallRedirectionManager.shared().performAttendedTransfer()
+        }))
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { _ in
+            CallRedirectionManager.shared().cancelRedirect()
+        }))
+        alert.show()
     }
     
     //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
@@ -48,20 +84,10 @@ class CallViewController: UIViewController
     }
     
     //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
-    private func showAlert(title: String?, message: String)
-    //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
-    {
-        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
-        self.present(alert, animated: true, completion: nil)
-    }
-    
-    //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
     private func selectedEntry() -> Entry?
     //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
     {
-        guard let indexPath = self.callsTableView.indexPathForSelectedRow else
-        {
+        guard let indexPath = self.callsTableView.indexPathForSelectedRow else {
             return nil;
         }
         
@@ -72,17 +98,14 @@ class CallViewController: UIViewController
     private func selectedGroupId() -> String
     //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
     {
-        guard let entry = selectedEntry() else
-        {
+        guard let entry = selectedEntry() else {
             return ""
         }
         
-        if entry.isGroup()
-        {
+        if entry.isGroup() {
             return entry.groupId!
         }
-        else
-        {
+        else {
             return (SoftphoneBridge.instance()?.calls()?.conferences()?.get(entry.call))!
         }
     }
@@ -96,14 +119,11 @@ class CallViewController: UIViewController
         
         let groups = SoftphoneBridge.instance()?.calls()?.conferences()?.list() as! [String]
         
-        for groupId in groups
-        {
+        for groupId in groups {
             let calls = SoftphoneBridge.instance()?.calls()?.conferences()?.getCalls(conference: groupId) as! [SoftphoneCallEvent]
             
-            for otherCall in calls
-            {
-                if !otherCall.isEqual(to: call)
-                {
+            for otherCall in calls {
+                if !otherCall.isEqual(to: call) {
                     return otherCall
                 }
             }
@@ -119,21 +139,23 @@ class CallViewController: UIViewController
         let groupId = SoftphoneBridge.instance()?.calls()?.conferences()?.get(call)
         let allGroups = SoftphoneBridge.instance()?.calls()?.conferences()?.list() as! [String]
         
-        for otherGroup in allGroups
-        {
+        for otherGroup in allGroups {
             let otherGroupSize = SoftphoneBridge.instance()?.calls()?.conferences()?.getSize(otherGroup)
             
-            if otherGroup == groupId || otherGroupSize == 0
-            {
+            if otherGroup == groupId || otherGroupSize == 0 {
                 continue
             }
             return otherGroup
         }
         return String()
     }
-    
-    // MARK: - IBActions -
-    
+}
+
+// MARK: - IBActions
+//-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+extension CallViewController
+//-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+{
     //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
     @IBAction func onDtmfOn(_ sender: Any)
     //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
@@ -162,18 +184,15 @@ class CallViewController: UIViewController
     @IBAction func onHold(_ sender: Any)
     //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
     {
-        guard let entry = selectedEntry() else
-        {
+        guard let entry = selectedEntry() else {
             alertNoCallSelected()
             return
         }
         
-        if entry.isGroup()
-        {
+        if entry.isGroup() {
             AppDelegate.theApp().toggleActiveGroup(groupId: entry.groupId!)
         }
-        else
-        {
+        else {
             AppDelegate.theApp().toggleHoldForCall(call: entry.call!)
         }
     }
@@ -182,18 +201,15 @@ class CallViewController: UIViewController
     @IBAction func onHangup(_ sender: Any)
     //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
     {
-        guard let entry = selectedEntry() else
-        {
+        guard let entry = selectedEntry() else {
             alertNoCallSelected()
             return
         }
         
-        if entry.isGroup()
-        {
+        if entry.isGroup() {
             AppDelegate.theApp().hangupGroup(groupId: entry.groupId!)
         }
-        else
-        {
+        else {
             AppDelegate.theApp().hangup(call: entry.call!)
         }
         
@@ -218,19 +234,20 @@ class CallViewController: UIViewController
     @IBAction func onTransfer(_ sender: Any)
     //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
     {
-        guard let entry = selectedEntry() else
-        {
+        guard let entry = selectedEntry() else {
             alertNoCallSelected()
             return
         }
         
-        if entry.isGroup()
-        {
+        if entry.isGroup() {
             showAlert(title: "Error", message: "Select a single call")
         }
         else
         {
-            AppDelegate.theApp().transferCall(call: entry.call!)
+            if CallRedirectionManager.shared().getRedirectCapabilities(entry.call).canBlindTransfer() {
+                CallRedirectionManager.shared().setBlindTransferSource(entry.call)
+                self.tabBarController?.selectedIndex = 0
+            }
         }
     }
     
@@ -238,22 +255,18 @@ class CallViewController: UIViewController
     @IBAction func onAnswer(_ sender: Any)
     //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
     {
-        guard let entry = selectedEntry() else
-        {
+        guard let entry = selectedEntry() else {
             alertNoCallSelected()
             return
         }
         
-        if entry.isGroup()
-        {
+        if entry.isGroup() {
             showAlert(title: "Error", message: "Select a single call")
         }
-        else
-        {
+        else {
             let callState = SoftphoneBridge.instance()?.calls()?.getState(entry.call)
             
-            if callState == CallState_IncomingRinging || callState == CallState_IncomingIgnored
-            {
+            if callState == CallState_IncomingRinging || callState == CallState_IncomingIgnored {
                 AppDelegate.theApp().answerIncomingCall(call: entry.call!)
             }
         }
@@ -263,8 +276,7 @@ class CallViewController: UIViewController
     @IBAction func onAttendedTransfer(_ sender: Any)
     //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
     {
-        guard let entry = selectedEntry() else
-        {
+        guard let entry = selectedEntry() else {
             alertNoCallSelected()
             return
         }
@@ -274,16 +286,32 @@ class CallViewController: UIViewController
             return
         }
         
-        let otherCall = otherCall(call: call)
-        AppDelegate.theApp().attendedTransfer(from: call, to: otherCall!)
+        if let capabilities = CallRedirectionManager.shared().getRedirectCapabilities(call) {
+            if capabilities.attendedTransferCapability.isDirect() {
+                CallRedirectionManager.shared().performAttendedTransferBetween(source: call, target: capabilities.attendedTransferTargets.first as? SoftphoneCallEvent)
+            }
+            else if capabilities.attendedTransferCapability.isNewCall() {
+                CallRedirectionManager.shared().setAttendedTransferSource(call)
+                tabBarController?.selectedIndex = 0
+            }
+            else if capabilities.attendedTransferCapability.isPickAnotherCall() {
+                CallRedirectionManager.shared().setAttendedTransferSource(call)
+                attendedTransferTargets = capabilities.attendedTransferTargets as! [SoftphoneCallEvent]
+                
+                performSegue(withIdentifier: "TARGET_PICKER", sender: nil)
+            }
+            else {
+                showAlert(title: "Invalid Call",
+                          message: "You can only transfer a single established phone call")
+            }
+        }
     }
     
     //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
     @IBAction func onJoin(_ sender: Any)
     //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
     {
-        guard let entry = selectedEntry() else
-        {
+        guard let entry = selectedEntry() else {
             alertNoCallSelected()
             return
         }
@@ -308,22 +336,18 @@ class CallViewController: UIViewController
     @IBAction func onReject(_ sender: Any)
     //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
     {
-        guard let entry = selectedEntry() else
-        {
+        guard let entry = selectedEntry() else {
             alertNoCallSelected()
             return
         }
         
-        if entry.isGroup()
-        {
+        if entry.isGroup() {
             showAlert(title: "Error", message: "Select a single call")
         }
-        else
-        {
+        else {
             let callState = SoftphoneBridge.instance()?.calls()?.getState(entry.call)
             
-            if callState == CallState_IncomingRinging || callState == CallState_IncomingIgnored
-            {
+            if callState == CallState_IncomingRinging || callState == CallState_IncomingIgnored {
                 AppDelegate.theApp().rejectIncomingCall(call: entry.call!)
             }
         }
@@ -333,31 +357,63 @@ class CallViewController: UIViewController
     @IBAction func onSplit(_ sender: Any)
     //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
     {
-        guard let entry = selectedEntry() else
-        {
+        guard let entry = selectedEntry() else {
             alertNoCallSelected()
             return
         }
         
-        if entry.isGroup()
-        {
+        if entry.isGroup() {
             AppDelegate.theApp().splitGroup(groupId: entry.groupId!)
         }
-        else
-        {
-            guard let groupId = SoftphoneBridge.instance()?.calls()?.conferences()?.get(entry.call) else
-            {
+        else {
+            guard let groupId = SoftphoneBridge.instance()?.calls()?.conferences()?.get(entry.call) else {
                 return
             }
             
-            if (SoftphoneBridge.instance()?.calls()?.conferences()?.getSize(groupId))! > 0
-            {
+            if (SoftphoneBridge.instance()?.calls()?.conferences()?.getSize(groupId))! > 0 {
                 AppDelegate.theApp().splitCall(call: entry.call!)
             }
-            else
-            {
+            else {
                 showAlert(title: "Error", message: "The call is aleardy alone in its group")
             }
+        }
+    }
+}
+
+// MARK: - TargetPickerDelegate
+extension CallViewController: TargetPickerDelegate
+{
+    //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+    func pickerViewController(_ picker: TargetPickerViewController, didSelectTarget target: SoftphoneCallEvent)
+    //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+    {
+        CallRedirectionManager.shared().setAttendedTransferTarget(target)
+        CallRedirectionManager.shared().performAttendedTransfer()
+        
+        picker.dismiss(animated: true)
+    }
+    
+    //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+    func pickerViewControllerDidCancel(_ picker: TargetPickerViewController)
+    //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+    {
+        CallRedirectionManager.shared().cancelRedirect()
+        picker.dismiss(animated: true)
+    }
+}
+
+//-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+extension CallViewController: CallRedirectionTargetChangeDelegate
+//-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+{
+    //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+    func redirectTargetChanged(call callEvent: SoftphoneCallEvent!, type: CallRedirectType!)
+    //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+    {
+        guard let _ = callEvent else { return }
+        
+        if type.isAttendedTransfer() {
+            showCompleteAttTransferAlert()
         }
     }
 }

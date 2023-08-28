@@ -65,7 +65,8 @@
 #import "Softphone/Softphone.h"
 #import "Softphone/Softphone_iOS.h"
 
-#include "SoftphoneObserverProxy.h"
+#import "SoftphoneObserverProxy.h"
+#import "CallRedirectionDelegate.h"
 
 @class RegViewController;
 @class CallViewController;
@@ -102,7 +103,7 @@
 
 /// @brief Starts a new call to the given number, with desiredMedia from @ref currentDesiredMedia and through the current
 /// default account
-- (void) callNumber:(NSString *) number;
+- (BOOL) callNumber:(NSString *) number;
 
 /// Hangs up the call with specified callEvent.
 - (void) hangupCall:(Softphone::EventHistory::CallEvent::Pointer) callEvent;
@@ -173,6 +174,18 @@
 -(Call::Statistics) getStatisticsForCall:(Softphone::EventHistory::CallEvent::Pointer) call;
 
 - (void)applicationDidFinishLaunching:(UIApplication *)application;
+
+-(void)addStateChangeDelegate:(id<CallRedirectionStateChangeDelegate>)delegate;
+
+-(void)addSourceChangeDelegate:(id<CallRedirectionSourceChangeDelegate>)delegate;
+
+-(void)addTargetChangeDelegate:(id<CallRedirectionTargetChangeDelegate>)delegate;
+
+-(void)removeStateChangeDelegate:(id<CallRedirectionStateChangeDelegate>)delegate;
+
+-(void)removeSourceChangeDelegate:(id<CallRedirectionSourceChangeDelegate>)delegate;
+
+-(void)removeTargetChangeDelegate:(id<CallRedirectionTargetChangeDelegate>)delegate;
 
 @property (nonatomic, retain) UIWindow *            window;
 @property (nonatomic, retain) UITabBarController *  tabcon;

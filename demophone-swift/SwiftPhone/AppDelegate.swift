@@ -133,12 +133,11 @@ class AppDelegate: UIResponder
     //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
     /// @brief Starts a new call to the given number, with desiredMedia from @ref currentDesiredMedia and through the current
     /// default account
-    func call(number: String)
+    func call(number: String) -> Bool
     //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
     {
-        if number.count == 0
-        {
-            return;
+        if number.isEmpty {
+            return false
         }
         
         let call = SoftphoneCallEvent.create(withAccountId: "sip", uri: number)
@@ -150,13 +149,12 @@ class AppDelegate: UIResponder
         let result = SoftphoneBridge.instance()?.events()?.post(call)
         debugPrint(result as Any)
         
-        if result != PostResult_Success
-        {
-            // report failure
-            return;
+        if result == PostResult_Success {
+            return true
         }
         
         refreshCallViews()
+        return false
     }
 
     //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
@@ -597,8 +595,18 @@ class AppDelegate: UIResponder
         
         UNUserNotificationCenter.current().add(request) { error in
             if let error = error {
-                print("Notification request error: \(error.localizedDescription)")
+                debugPrint("Notification request error: \(error.localizedDescription)")
             }
+        }
+    }
+    
+    private func loadXMLFileAsString(atPath path: String) -> String? {
+        do {
+            let xmlString = try String(contentsOfFile: path, encoding: .utf8)
+            return xmlString
+        } catch {
+            debugPrint("Error loading XML file: \(error)")
+            return nil
         }
     }
 }
@@ -615,50 +623,67 @@ extension AppDelegate: UIApplicationDelegate
             return
         }
         
-        if let filePath = Bundle.main.path(forResource: "provisioning", ofType: "xml") {
-            do {
-                let fileContent = try String(contentsOfFile: filePath, encoding: .utf8)
-
-                let sip_account = """
-                            <account id=\"sip\">
-                                <title>Sip Account</title>
-                                <username>1125</username>
-                                <password>misscom</password>
-                                <host>pbx.acrobits.cz</host>
-                                <icm>push</icm>
-                                <transport>udp</transport>
-                                <codecOrder>0,8,9,3,102</codecOrder>
-                                <codecOrder3G>102,3,9,0,8</codecOrder3G>
-                            </account>
-                """
-                
-                SoftphoneBridge.initialize(fileContent)
-                let softphoneInstance = SoftphoneBridge.instance()
-                
-                softphoneInstance?.log()?.setCustomSink(serializer)
-                softphoneInstance?.settings()?.getPreferences()?.trafficLogging = true
-                
-                softphoneObserverProxy = SoftphoneObserverProxyBridge()
-                softphoneObserverProxy.delegate = self;
-                softphoneInstance?.setObserver(softphoneObserverProxy)
-                
-                sipAccount = XmlTree.parse(sip_account)
-                
-                let s = sipAccount?.toString(true);
-                debugPrint("Account XML: \(s!)");
-                
-                softphoneInstance?.registration()?.saveAccount(sipAccount)
-                softphoneInstance?.registration()?.updateAll()
-                
-                Softphone_Cx.instance()?.delegate = self
-                
-                sdkState = .running
-                
-                let bg = UIApplication.shared.applicationState == .background
-                SoftphoneBridge.instance()?.state()?.update(bg ? InstanceState_Background : InstanceState_Active)
-                
-            } catch let error {
-                print("Error reading file: \(error.localizedDescription)")
+        guard let filePath = Bundle.main.path(forResource: "provisioning", ofType: "xml") else {
+            debugPrint("Provisioning file is missing")
+            return
+        }
+        
+        guard let xmlString = loadXMLFileAsString(atPath: filePath) else {
+            debugPrint("Error while loading provisioning profile")
+            return
+        }
+        
+        let sip_account = """
+                    <account id=\"sip\">
+                        <title>Sip Account</title>
+                        <username>1125</username>
+                        <password>misscom</password>
+                        <host>pbx.acrobits.cz</host>
+                        <icm>push</icm>
+                        <transport>udp</transport>
+                        <codecOrder>0,8,9,3,102</codecOrder>
+                        <codecOrder3G>102,3,9,0,8</codecOrder3G>
+                    </account>
+        """
+        
+        do {
+            try SoftphoneBridge.initialize(xmlString)
+            let softphoneInstance = SoftphoneBridge.instance()
+            
+            softphoneInstance?.log()?.setCustomSink(serializer)
+            softphoneInstance?.settings()?.getPreferences()?.trafficLogging = true
+            
+            softphoneObserverProxy = SoftphoneObserverProxyBridge()
+            softphoneObserverProxy.delegate = self;
+            softphoneInstance?.setObserver(softphoneObserverProxy)
+            
+            sipAccount = XmlTree.parse(sip_account)
+            
+            let s = sipAccount?.toString(true);
+            debugPrint("Account XML: \(s!)");
+            
+            softphoneInstance?.registration()?.saveAccount(sipAccount)
+            softphoneInstance?.registration()?.updateAll()
+            
+            Softphone_Cx.instance()?.delegate = self
+            
+            sdkState = .running
+            
+            let bg = UIApplication.shared.applicationState == .background
+            SoftphoneBridge.instance()?.state()?.update(bg ? InstanceState_Background : InstanceState_Active)
+        }
+        catch let error as NSError {
+            if error.domain == LicensingManagementErrorDomain {
+                if let errorCode = LicensingManagementErrorCode(rawValue: error.code) {
+                    switch errorCode {
+                    case .LicenseInvalid:
+                        debugPrint("Invalid license")
+                    case .LicenseMissing:
+                        debugPrint("Missing license")
+                    @unknown default:
+                        debugPrint(error);
+                    }
+                }
             }
         }
     }
@@ -721,9 +746,9 @@ extension AppDelegate: UIApplicationDelegate
         center.delegate = self
         center.requestAuthorization(options: [.badge, .sound, .alert]) { granted, error in
             if granted {
-                print("\n\nUser Notification authorization granted\n")
+                debugPrint("\n\nUser Notification authorization granted\n")
             } else {
-                print("\n\nUser Notification authorization denied\n")
+                debugPrint("\n\nUser Notification authorization denied\n")
             }
         }
 
@@ -1009,6 +1034,7 @@ extension AppDelegate: SoftphoneDelegateBridge
     //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
     {
         refreshCallViews()
+        closeTerminalCalls()
     }
     
     //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
@@ -1086,5 +1112,17 @@ extension AppDelegate: Softphone_Cx_Delegate
     //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
     {
         
+    }
+}
+
+//-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+extension UIAlertController
+//-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+{
+    //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+    func show()
+    //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+    {
+        UIApplication.shared.keyWindow?.rootViewController?.present(self, animated: true)
     }
 }

@@ -9,6 +9,7 @@ class RegViewController: UIViewController
     @IBOutlet weak var regState: UILabel!
     @IBOutlet weak var number: UITextField!
     @IBOutlet weak var toggleSdkStateButton: UIButton!
+    @IBOutlet weak var callButton: UIButton!
     
     //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
     override func viewDidLoad()
@@ -16,13 +17,32 @@ class RegViewController: UIViewController
     {
         super.viewDidLoad()
         updateToggleButtonState()
+        
+        CallRedirectionManager.shared().addStateChangeDelegate(self)
+    }
+    
+    deinit {
+        CallRedirectionManager.shared().removeStateChangeDelegate(self)
     }
     
     //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
     @IBAction func onCall(_ sender: Any)
     //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
     {
-        AppDelegate.theApp().call(number: number.text ?? "")
+        if CallRedirectionManager.shared().currentRedirectFlow.isBlindTransfer() {
+            if number.text?.count == 0 {
+                return
+            }
+
+            if let source =  CallRedirectionManager.shared().redirectSource {
+                AppDelegate.theApp().transferCall(call: source)
+                return
+            }
+        }
+        
+        if AppDelegate.theApp().call(number: number.text ?? "") {
+            tabBarController?.selectedIndex = 1
+        }
     }
     
     //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
@@ -93,6 +113,39 @@ extension RegViewController
 }
 
 //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+extension RegViewController: CallRedirectionStateChangeDelegate
+//-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+{
+    //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+    func redirectStateChanged(state: CallRedirectState!, type: CallRedirectType!)
+    //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+    {
+        callButton.isSelected = state.isSourceAssigned() && type.isBlindTransfer()
+        
+        let isTransferType = type.isTransferType()
+        var message: String = ""
+        
+        if state.isSucceeded() {
+            message = isTransferType ? "Transfer Complete" : "Forward Complete"
+            showAlert(title: "Success", message: message)
+        }
+        else if state.isFailed() {
+            message = isTransferType ? "Transfer Failed" : "Forward Failed"
+            showAlert(title: "Error", message: message)
+        }
+        else if state.isCancelled() {
+            message = isTransferType ? "Transfer Cancelled" : "Forward Cancelled"
+            showAlert(title: "Error", message: message)
+        }
+        else if state.isInProgress() {
+            message = isTransferType ? "Transfer in Progress" : "Forward in Progress"
+        }
+        
+        print("CallRedirection - \(message)")
+    }
+}
+
+//-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 extension RegViewController: UITextFieldDelegate
 //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 {
@@ -101,5 +154,19 @@ extension RegViewController: UITextFieldDelegate
     //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
     {
         return textField.resignFirstResponder()
+    }
+}
+
+//-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+extension UIViewController
+//-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+{
+    //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+    func showAlert(title: String?, message: String)
+    //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+    {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
+        self.present(alert, animated: true, completion: nil)
     }
 }

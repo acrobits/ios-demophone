@@ -60,7 +60,10 @@
 		92F6718B1A8ABBC4009E3732 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 92F671821A8A891E009E3732 /* CoreMedia.framework */; };
 		92F6718C1A8ABBCC009E3732 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 92F671801A8A8907009E3732 /* CoreVideo.framework */; };
 		92F671C31A8E0615009E3732 /* VideoToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 92F671C21A8E0615009E3732 /* VideoToolbox.framework */; };
+		C222BB9D2A84C423002CE5F3 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C222BB9C2A84C423002CE5F3 /* Launch Screen.storyboard */; };
 		C23F0B252A60082200A9D65A /* CallActionHelpers.mm in Sources */ = {isa = PBXBuildFile; fileRef = C2F352ED2A5D489900467190 /* CallActionHelpers.mm */; };
+		C2551FC62A8E4E030032E967 /* TargetPickerViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = C2551FC52A8E4E030032E967 /* TargetPickerViewController.mm */; };
+		C2551FC92A8E636B0032E967 /* UIViewController+Alert.mm in Sources */ = {isa = PBXBuildFile; fileRef = C2551FC82A8E636B0032E967 /* UIViewController+Alert.mm */; };
 		C2EB572F2A150C8D000DDC13 /* provisioning.xml in Resources */ = {isa = PBXBuildFile; fileRef = C2EB572E2A150C8D000DDC13 /* provisioning.xml */; };
 /* End PBXBuildFile section */
 
@@ -143,6 +146,12 @@
 		92F671821A8A891E009E3732 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		92F671841A8A8943009E3732 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		92F671C21A8E0615009E3732 /* VideoToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VideoToolbox.framework; path = System/Library/Frameworks/VideoToolbox.framework; sourceTree = SDKROOT; };
+		C222BB9C2A84C423002CE5F3 /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
+		C2551FC42A8E4E030032E967 /* TargetPickerViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TargetPickerViewController.h; sourceTree = "<group>"; };
+		C2551FC52A8E4E030032E967 /* TargetPickerViewController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = TargetPickerViewController.mm; sourceTree = "<group>"; };
+		C2551FC72A8E636B0032E967 /* UIViewController+Alert.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIViewController+Alert.h"; sourceTree = "<group>"; };
+		C2551FC82A8E636B0032E967 /* UIViewController+Alert.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = "UIViewController+Alert.mm"; sourceTree = "<group>"; };
+		C2B05B152A8BAA9F008D2EDF /* CallRedirectionDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CallRedirectionDelegate.h; sourceTree = "<group>"; };
 		C2EB572E2A150C8D000DDC13 /* provisioning.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = provisioning.xml; sourceTree = "<group>"; };
 		C2F352ED2A5D489900467190 /* CallActionHelpers.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = CallActionHelpers.mm; sourceTree = "<group>"; };
 		C2F352EE2A5D489900467190 /* CallActionHelpers.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CallActionHelpers.h; sourceTree = "<group>"; };
@@ -205,6 +214,11 @@
 				485117F911640B870051577E /* SoftphoneObserverProxy.mm */,
 				480DA2BB15489CB800CAF882 /* VideoViewController.h */,
 				480DA2BC15489CB900CAF882 /* VideoViewController.mm */,
+				C2B05B152A8BAA9F008D2EDF /* CallRedirectionDelegate.h */,
+				C2551FC42A8E4E030032E967 /* TargetPickerViewController.h */,
+				C2551FC52A8E4E030032E967 /* TargetPickerViewController.mm */,
+				C2551FC72A8E636B0032E967 /* UIViewController+Alert.h */,
+				C2551FC82A8E636B0032E967 /* UIViewController+Alert.mm */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -250,6 +264,7 @@
 				8D1107310486CEB800E47090 /* demophone-Info.plist */,
 				485E9CD7154702AB00A00C82 /* demophone.storyboard */,
 				2C0D1705233E87000079D195 /* tonesDefaults.xml */,
+				C222BB9C2A84C423002CE5F3 /* Launch Screen.storyboard */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -376,6 +391,7 @@
 			files = (
 				48138F7F116A9AC300D474F0 /* dm.wav in Resources */,
 				48138F80116A9AC300D474F0 /* dd.wav in Resources */,
+				C222BB9D2A84C423002CE5F3 /* Launch Screen.storyboard in Resources */,
 				C2EB572F2A150C8D000DDC13 /* provisioning.xml in Resources */,
 				481391E2116AA2F000D474F0 /* rp.wav in Resources */,
 				485E9CD8154702AB00A00C82 /* demophone.storyboard in Resources */,
@@ -410,10 +426,12 @@
 			files = (
 				1D60589B0D05DD56006BFB54 /* main.mm in Sources */,
 				1D3623260D0F684500981E51 /* demophoneAppDelegate.mm in Sources */,
+				C2551FC92A8E636B0032E967 /* UIViewController+Alert.mm in Sources */,
 				28D7ACF80DDB3853001CB0EB /* RegViewController.mm in Sources */,
 				485117FA11640B870051577E /* SoftphoneObserverProxy.mm in Sources */,
 				C23F0B252A60082200A9D65A /* CallActionHelpers.mm in Sources */,
 				48DF6E4F13C7015800113EEF /* CallDataSource.mm in Sources */,
+				C2551FC62A8E4E030032E967 /* TargetPickerViewController.mm in Sources */,
 				48DF6E5013C7015800113EEF /* NSString+CallState.mm in Sources */,
 				2CC20EAA1F025E9300868D99 /* NSDictionary+XML.mm in Sources */,
 				4839D2B21547483B00048DB1 /* CallViewController.mm in Sources */,

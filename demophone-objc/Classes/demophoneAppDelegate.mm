@@ -11,7 +11,11 @@
 #import "demophoneAppDelegate.h"
 #include "ali/ali_mac_str_utils.h"
 #include "ali/ali_xml_parser2_interface.h"
+#include "ali/ali_objc.h"
 #include "Softphone/PreferenceKeys/BasicKey.h"
+#include <Softphone/LicenseManagement/LicensingException.h>
+#include <Softphone/Call/CallRedirectionManager.h>
+#include <Softphone/SdkServiceHolder.h>
 
 #import "RegViewController.h"
 #import "CallViewController.h"
@@ -25,6 +29,12 @@
 #import <CallKit/CallKit.h>
 #import "CallActionHelpers.h"
 
+NSString * const LicensingManagementErrorDomain = @"cz.acrobits.LisensingManagementErrorDomain";
+
+typedef NS_ENUM(NSInteger, LicensingManagementErrorCode) {
+    LicenseMissing = 1,
+    LicenseInvalid,
+};
 
 //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 using ali::operator""_s;
@@ -48,6 +58,14 @@ enum ImagePurpose
 //************************************************************
 //************************************************************
 //************************************************************
+@interface demophoneAppDelegate ()
+
+@property (nonatomic, strong) NSHashTable<id<CallRedirectionStateChangeDelegate>> *stateChangeDelegates;
+@property (nonatomic, strong) NSHashTable<id<CallRedirectionSourceChangeDelegate>> *sourceChangeDelegates;
+@property (nonatomic, strong) NSHashTable<id<CallRedirectionTargetChangeDelegate>> *targetChangeDelegates;
+
+@end
+
 
 @implementation demophoneAppDelegate
 {
@@ -73,79 +91,133 @@ ali::string_literal sip_account{"<account id=\"sip\">"
 - (void)applicationDidFinishLaunching:(UIApplication *)application
 //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 {
-    NSString *path = [[NSBundle mainBundle] pathForResource:@"provisioning" ofType:@"xml"];
-    
-    bool success;
-    ali::xml::tree provisioningXml;
-    success = ali::xml::load(provisioningXml, ali::mac::str::from_nsstring(path));
-    ali_assert(success);
+    _stateChangeDelegates = [NSHashTable weakObjectsHashTable];
+    _sourceChangeDelegates = [NSHashTable weakObjectsHashTable];
+    _targetChangeDelegates = [NSHashTable weakObjectsHashTable];
     
     self.tabcon = (UITabBarController *)self.window.rootViewController;
     self.regViewController = [self.tabcon.viewControllers objectAtIndex:0];
     self.callViewController = [self.tabcon.viewControllers objectAtIndex:1];
-
-    // initialize the SDK with the SaaS license
-    success = Softphone::init(provisioningXml);
     
-    // obtain the SDK instance
-	_softphone = Softphone::instance();
+    NSString *filePath = [[NSBundle mainBundle] pathForResource:@"provisioning" ofType:@"xml"];
     
-    Softphone::Preferences & preferences = _softphone->settings()->getPreferences();
-    preferences.trafficLogging.set(true);
-    ali::string off = ali::mac::str::from_nsstring(@"off");
+    NSError *error = nil;
+    NSString *fileContents = [NSString stringWithContentsOfFile:filePath
+                                                         encoding:NSUTF8StringEncoding
+                                                            error:&error];
+    if (fileContents)
+    {
+        // initialize the SDK with the SaaS license
+        if ([self initialize:fileContents error:&error])
+        {
+            // obtain the SDK instance
+            _softphone = Softphone::instance();
+            
+            Softphone::Preferences & preferences = _softphone->settings()->getPreferences();
+            preferences.trafficLogging.set(true);
             preferences.echoSuppressionEnabled.set(true);
             preferences.volumeBoostPlayback.set(1);
             preferences.volumeBoostMicrophone.set(3);
             preferences.maxNumberOfConcurrentCalls.overrideDefault(3);
-    
-	_softphoneObserverProxy = new SoftphoneObserverProxy(self);
-	_softphone->setObserver(_softphoneObserverProxy);
+            
+            _softphoneObserverProxy = new SoftphoneObserverProxy(self);
+            _softphone->setObserver(_softphoneObserverProxy);
+            
+            [self setupCallRedirectionProxies];
 
-	bool const hasCT = NSClassFromString(@"CTCallCenter") != nil;
-	
-    if(hasCT && !([CXProvider class] && preferences.useCallKit.get()))
-	{
-		CTCallCenter *cc = [[CTCallCenter alloc] init];
-		cc.callEventHandler = ^(CTCall* call)
-        {
-			NSLog(@"%@",call.callState);	
-			if (cc.currentCalls.count != 0)
-			{
-				[self performSelectorOnMainThread:@selector(putActiveCallOnHold) withObject:nil waitUntilDone:NO];
-			}
-		};
-	}
+            bool const hasCT = NSClassFromString(@"CTCallCenter") != nil;
+            
+            if(hasCT && !([CXProvider class] && preferences.useCallKit.get()))
+            {
+                CTCallCenter *cc = [[CTCallCenter alloc] init];
+                cc.callEventHandler = ^(CTCall* call)
+                {
+                    NSLog(@"%@",call.callState);
+                    if (cc.currentCalls.count != 0)
+                    {
+                        [self performSelectorOnMainThread:@selector(putActiveCallOnHold) withObject:nil waitUntilDone:NO];
+                    }
+                };
+            }
 
-    [self refreshCallViews];
-    
-    UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
-    center.delegate = self;
-    [center requestAuthorizationWithOptions:(UNAuthorizationOptionBadge | UNAuthorizationOptionSound | UNAuthorizationOptionAlert)
-                          completionHandler:^(BOOL granted, NSError * _Nullable error) {
-                              if (granted)
-                                  NSLog(@"\n\nUser Notification authorization granted\n");
-                              else
-                                  NSLog(@"\n\nUser Notification authorization granted\n");
-                          }];
+            [self refreshCallViews];
+            
+            UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
+            center.delegate = self;
+            [center requestAuthorizationWithOptions:(UNAuthorizationOptionBadge | UNAuthorizationOptionSound | UNAuthorizationOptionAlert)
+                                  completionHandler:^(BOOL granted, NSError * _Nullable error) {
+                                      if (granted)
+                                          NSLog(@"\n\nUser Notification authorization granted\n");
+                                      else
+                                          NSLog(@"\n\nUser Notification authorization granted\n");
+                                  }];
 
+            int errorIndex = 0;
+            BOOL success = ali::xml::parse(_sipAccount, sip_account, &errorIndex);
+            ali_assert(success);
+            
+            // accounts are saved persistently, in this demo we always create them
+            // again. The account ID's are in the XML above
+            if(_softphone->registration()->getAccount("sip"_s) != nullptr)
+                _softphone->registration()->deleteAccount("sip"_s);
+            
+            _softphone->registration()->saveAccount(_sipAccount);
+            
+            // we use a single-account configuration in this example, make sure account
+            // with our id "sip" is set as default
+            
+            _softphone->registration()->updateAll();
+            
+            [Softphone_iOS sharedInstance].delegate = self;
+            [self registerForPushNotifications];
+        }
+        else {
+            switch (error.code) {
+                case LicensingManagementErrorCode::LicenseInvalid:
+                    NSLog(@"Invalid License");
+                    break;
+                    
+                case LicensingManagementErrorCode::LicenseMissing:
+                    NSLog(@"License Missing");
+                    break;
+                    
+                default:
+                    break;
+            }
+        }
+    }
+    else {
+        NSLog(@"Failed to load the content of file");
+        return;
+    }
+}
+
+//*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
+-(BOOL)initialize:(NSString *)license error:(NSError **) error
+//*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
+{
     int errorIndex = 0;
-    success = ali::xml::parse(_sipAccount, sip_account, &errorIndex);
+    bool success;
+    
+    ali::xml::tree licenceXml;
+    using namespace LicenseManagement;
+    
+    success = ali::xml::parse(licenceXml, ali::mac::str::from_nsstring(license) ,&errorIndex);
     ali_assert(success);
-    
-    // accounts are saved persistently, in this demo we always create them
-    // again. The account ID's are in the XML above
-    if(_softphone->registration()->getAccount("sip"_s) != nullptr)
-        _softphone->registration()->deleteAccount("sip"_s);
-    
-    _softphone->registration()->saveAccount(_sipAccount);
-    
-    // we use a single-account configuration in this example, make sure account
-    // with our id "sip" is set as default
-    
-    _softphone->registration()->updateAll();
-    
-    [Softphone_iOS sharedInstance].delegate = self;
-    [self registerForPushNotifications];
+    try {
+        return Softphone::init(licenceXml);
+    } catch (const InvalidLicenseException& e)
+    {
+        NSString *errorMsg = ali::mac::str::to_nsstring(e.what());
+        NSDictionary *userInfo = @{ NSLocalizedDescriptionKey: errorMsg };
+        *error = [NSError errorWithDomain: LicensingManagementErrorDomain code: LicensingManagementErrorCode::LicenseInvalid userInfo:userInfo];
+    } catch (const LicenseNotProvidedException& e)
+    {
+        NSString *errorMsg = ali::mac::str::to_nsstring(e.what());
+        NSDictionary *userInfo = @{ NSLocalizedDescriptionKey: errorMsg };
+        *error = [NSError errorWithDomain:LicensingManagementErrorDomain code: LicensingManagementErrorCode::LicenseMissing userInfo:userInfo];
+    }
+    return NO;
 }
 
 //*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
@@ -267,11 +339,11 @@ ali::string_literal sip_account{"<account id=\"sip\">"
 }
 
 //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
-- (void) callNumber:(NSString *) number
+- (BOOL) callNumber:(NSString *) number
 //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 {
     if([number length] == 0)
-        return;
+        return NO;
     
     Softphone::EventHistory::CallEvent::Pointer newCall = Softphone::EventHistory::CallEvent::create("sip"_s,ali::mac::str::from_nsstring(number));
     
@@ -283,12 +355,13 @@ ali::string_literal sip_account{"<account id=\"sip\">"
     
     Softphone::Instance::Events::PostResult::Type const result = _softphone->events()->post(newCall);
 
-    if(result !=  Softphone::Instance::Events::PostResult::Success)
-    {
-        // report failure
+    if(result ==  Softphone::Instance::Events::PostResult::Success) {
+        return YES;
     }
     
     [self refreshCallViews];
+    
+    return NO;
 }
 
 //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
@@ -557,8 +630,11 @@ ali::string_literal sip_account{"<account id=\"sip\">"
     Softphone::EventHistory::EventStream::Pointer stream = Softphone::EventHistory::EventStream::load(Softphone::EventHistory::StreamQuery::legacyCallHistoryStreamKey);
     newCall->setStream(stream);
 
-    [[CallActionHelpers sharedInstance] beginTransfer:callEvent];
-	_softphone->calls()->conferences()->transfer(callEvent,newCall);
+    auto callRedirectionManager = Softphone::SdkServiceHolder::get<Call::Redirection::Manager>();
+    callRedirectionManager->performBlindTransferToTarget(newCall);
+    
+//    [[CallActionHelpers sharedInstance] beginTransfer:callEvent];
+//	_softphone->calls()->conferences()->transfer(callEvent,newCall);
 }
 
 //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
@@ -919,12 +995,7 @@ ali::string_literal sip_account{"<account id=\"sip\">"
                                success:(bool)success
 //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 {
-    UIAlertView * av = [[UIAlertView alloc] initWithTitle:@"Transfer result"
-                                                  message:[NSString stringWithFormat:
-                                                           @"The transfer completed with result %@",success?@"success":@"failure"]
-                                                 delegate:nil
-                                        cancelButtonTitle:@"OK" otherButtonTitles:nil];
-    [av show];
+    
 }
 
 //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
@@ -1012,6 +1083,112 @@ ali::string_literal sip_account{"<account id=\"sip\">"
     // Here you can iterate through the calls and present notification for each call.
     for (auto call : calls) {
         [self showMissedCallNotification:call];
+    }
+}
+
+#pragma mark - Call Redirection Manager
+
+//-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+- (void)setupCallRedirectionProxies
+//-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+{
+    auto weakSelf = ali::mac::make_weak(self);
+    
+    auto callRedirectionManager = Softphone::SdkServiceHolder::get<Call::Redirection::Manager>();
+    callRedirectionManager->notifyStateChange((__bridge void*)self, [weakSelf](Call::Redirection::RedirectType type, Call::Redirection::RedirectState state) {
+        auto self = weakSelf.strong();
+        [self onRedirectStateChanged:state type:type];
+    });
+    
+    callRedirectionManager->notifySourceChange((__bridge void*)self, [weakSelf](Call::Redirection::RedirectType type, Softphone::EventHistory::CallEvent::Pointer callEvent) {
+        auto self = weakSelf.strong();
+        [self onRedirectSourceChanged:type call:callEvent];
+    });
+    
+    callRedirectionManager->notifyTargetChange((__bridge void*)self, [weakSelf](Call::Redirection::RedirectType type, Softphone::EventHistory::CallEvent::Pointer callEvent) {
+        auto self = weakSelf.strong();
+        [self onRedirectTargetChanged:type call:callEvent];
+    });
+}
+
+//-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+-(void)addStateChangeDelegate:(id<CallRedirectionStateChangeDelegate>)delegate
+//-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+{
+    [_stateChangeDelegates addObject:delegate];
+}
+
+//-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+-(void)addSourceChangeDelegate:(id<CallRedirectionSourceChangeDelegate>)delegate
+//-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+{
+    [_sourceChangeDelegates addObject:delegate];
+}
+
+//-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+-(void)addTargetChangeDelegate:(id<CallRedirectionTargetChangeDelegate>)delegate
+//-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+{
+    [_targetChangeDelegates addObject:delegate];
+}
+
+//-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+-(void)removeStateChangeDelegate:(id<CallRedirectionStateChangeDelegate>)delegate;
+//-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+{
+    [_stateChangeDelegates removeObject:delegate];
+}
+
+//*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
+-(void)removeSourceChangeDelegate:(id<CallRedirectionSourceChangeDelegate>)delegate
+//*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
+{
+    [_sourceChangeDelegates removeObject:delegate];
+}
+
+//*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
+-(void)removeTargetChangeDelegate:(id<CallRedirectionTargetChangeDelegate>)delegate
+//*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
+{
+    [_targetChangeDelegates removeObject:delegate];
+}
+
+//*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
+- (void)onRedirectStateChanged:(Call::Redirection::RedirectState)state type:(Call::Redirection::RedirectType)type
+//*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
+{
+    for (id<CallRedirectionStateChangeDelegate> delegate in _stateChangeDelegates.allObjects)
+    {
+        if ([delegate respondsToSelector:@selector(redirectStateChanged:type:)])
+        {
+            [delegate redirectStateChanged:state type:type];
+        }
+    }
+}
+
+//*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
+- (void)onRedirectSourceChanged:(Call::Redirection::RedirectType)type call:(Softphone::EventHistory::CallEvent::Pointer)callEvent
+//*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
+{
+    for (id<CallRedirectionSourceChangeDelegate> delegate in _sourceChangeDelegates.allObjects)
+    {
+        if ([delegate respondsToSelector:@selector(redirectSourceChanged:type:)])
+        {
+            [delegate redirectSourceChanged:callEvent type:type];
+        }
+    }
+}
+
+//*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
+- (void)onRedirectTargetChanged:(Call::Redirection::RedirectType)type call:(Softphone::EventHistory::CallEvent::Pointer)callEvent
+//*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
+{
+    for (id<CallRedirectionTargetChangeDelegate> delegate in _targetChangeDelegates.allObjects)
+    {
+        if ([delegate respondsToSelector:@selector(redirectTargetChanged:type:)])
+        {
+            [delegate redirectTargetChanged:callEvent type:type];
+        }
     }
 }
 

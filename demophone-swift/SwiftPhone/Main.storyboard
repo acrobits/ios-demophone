@@ -3,7 +3,7 @@
     <device id="retina5_9" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21678"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21679"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -220,11 +220,92 @@
                     <tabBarItem key="tabBarItem" title="Calls" id="nce-NR-ezk"/>
                     <connections>
                         <outlet property="callsTableView" destination="9bU-EZ-Qbh" id="p8V-RZ-IfG"/>
+                        <segue destination="StP-4S-BD9" kind="presentation" identifier="TARGET_PICKER" id="Bg0-UM-xJ0"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="sLi-hu-8FS" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-463.19999999999999" y="397.53694581280791"/>
+        </scene>
+        <!--Target Picker View Controller-->
+        <scene sceneID="E07-RH-nEc">
+            <objects>
+                <viewController id="StP-4S-BD9" customClass="TargetPickerViewController" customModule="SwiftPhone" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="OJm-4Q-t1b">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="802"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xQd-Ks-h39">
+                                <rect key="frame" x="278" y="20" width="77" height="35"/>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="plain" title="Cancel"/>
+                                <connections>
+                                    <action selector="onCancel:" destination="StP-4S-BD9" eventType="touchUpInside" id="klL-Cs-2LX"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Select a call to do Attended Transfer" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9iv-rG-UsM">
+                                <rect key="frame" x="43.666666666666657" y="75" width="288" height="21"/>
+                                <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="uW9-1K-Ddh">
+                                <rect key="frame" x="0.0" y="116" width="375" height="686"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <prototypes>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="EntryCell" textLabel="dEO-Jy-HeG" detailTextLabel="QlV-Wd-JPN" style="IBUITableViewCellStyleValue1" id="ngs-dD-msS">
+                                        <rect key="frame" x="0.0" y="50" width="375" height="43.666667938232422"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="ngs-dD-msS" id="R8k-xF-xZ0">
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="43.666667938232422"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="dEO-Jy-HeG">
+                                                    <rect key="frame" x="20" y="11.999999999999998" width="33" height="20.333333333333332"/>
+                                                    <autoresizingMask key="autoresizingMask"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Detail" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="QlV-Wd-JPN">
+                                                    <rect key="frame" x="311.33333333333331" y="11.999999999999998" width="43.666666666666664" height="20.333333333333332"/>
+                                                    <autoresizingMask key="autoresizingMask"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </prototypes>
+                                <connections>
+                                    <outlet property="dataSource" destination="StP-4S-BD9" id="BcX-QN-YZI"/>
+                                    <outlet property="delegate" destination="StP-4S-BD9" id="fD9-NQ-sHI"/>
+                                </connections>
+                            </tableView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="63T-JQ-S3t"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="9iv-rG-UsM" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="63T-JQ-S3t" secondAttribute="leading" constant="20" id="2Tn-D8-mC3"/>
+                            <constraint firstItem="uW9-1K-Ddh" firstAttribute="top" secondItem="9iv-rG-UsM" secondAttribute="bottom" constant="20" id="3Ov-4g-XXF"/>
+                            <constraint firstItem="63T-JQ-S3t" firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="9iv-rG-UsM" secondAttribute="trailing" constant="20" id="5iF-xM-T6T"/>
+                            <constraint firstItem="uW9-1K-Ddh" firstAttribute="bottom" secondItem="63T-JQ-S3t" secondAttribute="bottom" id="IxC-2v-mWg"/>
+                            <constraint firstItem="uW9-1K-Ddh" firstAttribute="trailing" secondItem="63T-JQ-S3t" secondAttribute="trailing" id="J5P-IQ-0SH"/>
+                            <constraint firstItem="uW9-1K-Ddh" firstAttribute="leading" secondItem="63T-JQ-S3t" secondAttribute="leading" id="Sg4-Qt-a4u"/>
+                            <constraint firstItem="xQd-Ks-h39" firstAttribute="top" secondItem="63T-JQ-S3t" secondAttribute="top" constant="20" id="WTT-1s-q89"/>
+                            <constraint firstItem="9iv-rG-UsM" firstAttribute="centerX" secondItem="OJm-4Q-t1b" secondAttribute="centerX" id="mOz-c0-Je9"/>
+                            <constraint firstItem="63T-JQ-S3t" firstAttribute="trailing" secondItem="xQd-Ks-h39" secondAttribute="trailing" constant="20" id="pMF-AT-mDx"/>
+                            <constraint firstItem="9iv-rG-UsM" firstAttribute="top" secondItem="xQd-Ks-h39" secondAttribute="bottom" constant="20" id="zSw-Ns-V9q"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="callsTableView" destination="uW9-1K-Ddh" id="r3O-pK-Oyr"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="WWW-er-Lnw" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="280.80000000000001" y="397.53694581280791"/>
         </scene>
         <!--Main-->
         <scene sceneID="9Sc-p7-mSN">
@@ -313,7 +394,7 @@
                                     </stackView>
                                 </subviews>
                             </stackView>
-                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="line" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="9on-lF-xO3">
+                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="line" textAlignment="center" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="9on-lF-xO3">
                                 <rect key="frame" x="20" y="239.33333333333337" width="335" height="34"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="34" id="nLa-Sv-t84"/>
@@ -327,12 +408,14 @@
                             <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="4o6-Wu-QHa">
                                 <rect key="frame" x="20" y="283.33333333333331" width="335" height="40"/>
                                 <subviews>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8yT-rS-oaA">
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8yT-rS-oaA">
                                         <rect key="frame" x="0.0" y="0.0" width="162.66666666666666" height="40"/>
                                         <color key="backgroundColor" red="0.82745098039215681" green="0.82745098039215681" blue="0.82745098039215681" alpha="1" colorSpace="calibratedRGB"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                         <state key="normal" title="Call">
                                             <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         </state>
+                                        <state key="selected" title="Transfer"/>
                                         <connections>
                                             <action selector="onCall:" destination="UsN-4l-NkI" eventType="touchUpInside" id="mFJ-VP-J4x"/>
                                         </connections>
@@ -427,6 +510,7 @@
                     </view>
                     <tabBarItem key="tabBarItem" title="Main" id="yhZ-3P-zdi"/>
                     <connections>
+                        <outlet property="callButton" destination="8yT-rS-oaA" id="iQH-95-40u"/>
                         <outlet property="number" destination="9on-lF-xO3" id="xah-Od-wbO"/>
                         <outlet property="regState" destination="TMb-IB-eTj" id="z1H-oS-6eY"/>
                         <outlet property="toggleSdkStateButton" destination="Sv5-dw-Vpi" id="8J2-uE-dzJ"/>

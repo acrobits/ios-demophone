@@ -110,7 +110,13 @@ extension CallsDataSource: UITableViewDelegate, UITableViewDataSource
         else
         {
             cell.textLabel?.text = "Call with \(entry.call?.getRemoteUser(index: 0)?.displayName! ?? "")"
-            cell.detailTextLabel?.text = CallState.toString((SoftphoneBridge.instance()?.calls()?.getState(entry.call))!)
+            
+            var isHeld = false
+            if let holdStates = SoftphoneBridge.instance().calls().isHeld(entry.call) {
+                isHeld = holdStates.local == CallHoldState_Held
+            }
+            
+            cell.detailTextLabel?.text = "\(CallState.toString((SoftphoneBridge.instance()?.calls()?.getState(entry.call))!) ?? ""), \(isHeld ? "on hold" : "active")"
             
             cell.contentView.backgroundColor = UIColor(white: 1.0, alpha: 1.0)
         }
