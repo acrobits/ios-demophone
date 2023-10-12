@@ -27,7 +27,6 @@
 #import <CoreTelephony/CTCallCenter.h>
 #import <CoreTelephony/CTCall.h>
 #import <CallKit/CallKit.h>
-#import "CallActionHelpers.h"
 
 NSString * const LicensingManagementErrorDomain = @"cz.acrobits.LisensingManagementErrorDomain";
 
@@ -632,9 +631,6 @@ ali::string_literal sip_account{"<account id=\"sip\">"
 
     auto callRedirectionManager = Softphone::SdkServiceHolder::get<Call::Redirection::Manager>();
     callRedirectionManager->performBlindTransferToTarget(newCall);
-    
-//    [[CallActionHelpers sharedInstance] beginTransfer:callEvent];
-//	_softphone->calls()->conferences()->transfer(callEvent,newCall);
 }
 
 //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*

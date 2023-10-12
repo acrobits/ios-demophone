@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 52;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -22,7 +22,6 @@
 		C2ED35DF25640C3E00891CA1 /* rp.wav in Resources */ = {isa = PBXBuildFile; fileRef = C2ED35DC25640C3E00891CA1 /* rp.wav */; };
 		C2ED35E025640C3E00891CA1 /* dm.wav in Resources */ = {isa = PBXBuildFile; fileRef = C2ED35DD25640C3E00891CA1 /* dm.wav */; };
 		C2ED35E125640C3E00891CA1 /* dd.wav in Resources */ = {isa = PBXBuildFile; fileRef = C2ED35DE25640C3E00891CA1 /* dd.wav */; };
-		C2F352F82A5D59FE00467190 /* CallActionHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F352F72A5D59FE00467190 /* CallActionHelpers.swift */; };
 		C2FE6A1825449697009FB20D /* CallKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2FE6A1725449697009FB20D /* CallKit.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		C2FE6A1A2544969C009FB20D /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2FE6A192544969C009FB20D /* CoreTelephony.framework */; };
 		C2FE6A1C254496AC009FB20D /* VideoToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2FE6A1B254496AC009FB20D /* VideoToolbox.framework */; };
@@ -79,7 +78,6 @@
 		C2ED35DC25640C3E00891CA1 /* rp.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = rp.wav; sourceTree = "<group>"; };
 		C2ED35DD25640C3E00891CA1 /* dm.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = dm.wav; sourceTree = "<group>"; };
 		C2ED35DE25640C3E00891CA1 /* dd.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = dd.wav; sourceTree = "<group>"; };
-		C2F352F72A5D59FE00467190 /* CallActionHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallActionHelpers.swift; sourceTree = "<group>"; };
 		C2FE6A1725449697009FB20D /* CallKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CallKit.framework; path = System/Library/Frameworks/CallKit.framework; sourceTree = SDKROOT; };
 		C2FE6A192544969C009FB20D /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
 		C2FE6A1B254496AC009FB20D /* VideoToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VideoToolbox.framework; path = System/Library/Frameworks/VideoToolbox.framework; sourceTree = SDKROOT; };
@@ -174,7 +172,6 @@
 				C234E3272535957E00EFA519 /* CallViewController.swift */,
 				C24BF2662538485300692D0C /* CallsDataSource.swift */,
 				C24BF268253853F700692D0C /* Extensions.swift */,
-				C2F352F72A5D59FE00467190 /* CallActionHelpers.swift */,
 				C28857152A8E787F00E048F2 /* TargetPickerViewController.swift */,
 			);
 			path = SwiftPhone;
@@ -315,7 +312,6 @@
 				C234E3262535956600EFA519 /* RegViewController.swift in Sources */,
 				C234E3282535957E00EFA519 /* CallViewController.swift in Sources */,
 				C24BF2672538485300692D0C /* CallsDataSource.swift in Sources */,
-				C2F352F82A5D59FE00467190 /* CallActionHelpers.swift in Sources */,
 				5757E69C2508D57F00DD3ED0 /* AppDelegate.swift in Sources */,
 				C28857162A8E787F00E048F2 /* TargetPickerViewController.swift in Sources */,
 				C24BF269253853F700692D0C /* Extensions.swift in Sources */,

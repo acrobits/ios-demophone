@@ -424,7 +424,6 @@ class AppDelegate: UIResponder
         
         newCall?.setStream(stream)
         
-        CallActionHelpers.shared.beginTransfer(call)
         SoftphoneBridge.instance()?.calls()?.conferences()?.transfer(call: call, target: newCall)
     }
     

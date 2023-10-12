@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 52;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXAggregateTarget section */
@@ -61,7 +61,6 @@
 		92F6718C1A8ABBCC009E3732 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 92F671801A8A8907009E3732 /* CoreVideo.framework */; };
 		92F671C31A8E0615009E3732 /* VideoToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 92F671C21A8E0615009E3732 /* VideoToolbox.framework */; };
 		C222BB9D2A84C423002CE5F3 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C222BB9C2A84C423002CE5F3 /* Launch Screen.storyboard */; };
-		C23F0B252A60082200A9D65A /* CallActionHelpers.mm in Sources */ = {isa = PBXBuildFile; fileRef = C2F352ED2A5D489900467190 /* CallActionHelpers.mm */; };
 		C2551FC62A8E4E030032E967 /* TargetPickerViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = C2551FC52A8E4E030032E967 /* TargetPickerViewController.mm */; };
 		C2551FC92A8E636B0032E967 /* UIViewController+Alert.mm in Sources */ = {isa = PBXBuildFile; fileRef = C2551FC82A8E636B0032E967 /* UIViewController+Alert.mm */; };
 		C2EB572F2A150C8D000DDC13 /* provisioning.xml in Resources */ = {isa = PBXBuildFile; fileRef = C2EB572E2A150C8D000DDC13 /* provisioning.xml */; };
@@ -153,8 +152,6 @@
 		C2551FC82A8E636B0032E967 /* UIViewController+Alert.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = "UIViewController+Alert.mm"; sourceTree = "<group>"; };
 		C2B05B152A8BAA9F008D2EDF /* CallRedirectionDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CallRedirectionDelegate.h; sourceTree = "<group>"; };
 		C2EB572E2A150C8D000DDC13 /* provisioning.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = provisioning.xml; sourceTree = "<group>"; };
-		C2F352ED2A5D489900467190 /* CallActionHelpers.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = CallActionHelpers.mm; sourceTree = "<group>"; };
-		C2F352EE2A5D489900467190 /* CallActionHelpers.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CallActionHelpers.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -193,8 +190,6 @@
 		080E96DDFE201D6D7F000001 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
-				C2F352EE2A5D489900467190 /* CallActionHelpers.h */,
-				C2F352ED2A5D489900467190 /* CallActionHelpers.mm */,
 				48DF6E4E13C7015800113EEF /* CallDataSource.h */,
 				48DF6E4B13C7015800113EEF /* CallDataSource.mm */,
 				485E9CD61546F3A500A00C82 /* CallViewController.h */,
@@ -429,7 +424,6 @@
 				C2551FC92A8E636B0032E967 /* UIViewController+Alert.mm in Sources */,
 				28D7ACF80DDB3853001CB0EB /* RegViewController.mm in Sources */,
 				485117FA11640B870051577E /* SoftphoneObserverProxy.mm in Sources */,
-				C23F0B252A60082200A9D65A /* CallActionHelpers.mm in Sources */,
 				48DF6E4F13C7015800113EEF /* CallDataSource.mm in Sources */,
 				C2551FC62A8E4E030032E967 /* TargetPickerViewController.mm in Sources */,
 				48DF6E5013C7015800113EEF /* NSString+CallState.mm in Sources */,
