@@ -801,19 +801,18 @@ extension AppDelegate: UIApplicationDelegate
     func applicationWillTerminate(_ application: UIApplication)
     //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
     {
-        SoftphoneBridge.instance()?.state()?.terminate()
+        SoftphoneBridge.instance()?.state()?.terminate(within: 4000)
         
         let rl = RunLoop.current
-        let loopStart = CFAbsoluteTimeGetCurrent()
         
         // delay quitting, run the runloop to give the SIP user agent some extra time
-        // to unregister itself. If it takes longer than cca 5 seconds, give up
-        // if we spend here more than cca 7 seconds, the iPhoneOS watchdog will kill
+        // to unregister itself. If it takes longer than cca 4 seconds, give up
+        // if we spend here more than cca 5 seconds, the iPhoneOS watchdog will kill
         // the app anyway and will generate a crash log
         
-        while !(SoftphoneBridge.instance()?.state()?.isTerminated())! && CFAbsoluteTimeGetCurrent() - loopStart < 4
+        while !(SoftphoneBridge.instance()?.state()?.isTerminated() ?? false)
         {
-            if !(rl.run(mode: RunLoop.Mode.default, before: Date(timeIntervalSinceNow: 1)))
+            if !(rl.run(mode: RunLoop.Mode.default, before: Date(timeIntervalSinceNow: 0.2)))
             {
                 break
             }

@@ -240,20 +240,18 @@ ali::string_literal sip_account{"<account id=\"sip\">"
 - (void) applicationWillTerminate:(UIApplication *)application
 //*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
 {
-    _softphone->state()->terminate();
+    _softphone->state()->terminate(4000);
 
 	NSRunLoop *theRL = [NSRunLoop currentRunLoop];
 
-	CFAbsoluteTime loopStart = CFAbsoluteTimeGetCurrent();
-
-	// delay quitting, run the runloop to give the SIP user agent some extra time
-	// to unregister itself. If it takes longer than cca 5 seconds, give up
-	// if we spend here more than cca 7 seconds, the iPhoneOS watchdog will kill
-	// the app anyway and will generate a crash log
+    // delay quitting, run the runloop to give the SIP user agent some extra time
+    // to unregister itself. If it takes longer than cca 4 seconds, give up
+    // if we spend here more than cca 5 seconds, the iPhoneOS watchdog will kill
+    // the app anyway and will generate a crash log
 	
-	while (!_softphone->state()->isTerminated() && CFAbsoluteTimeGetCurrent() - loopStart < 4)
+	while (!_softphone->state()->isTerminated())
 	{
-		if(![theRL runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow: 1]])
+		if(![theRL runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow: 0.2]])
 		{
 			break;
 		}
