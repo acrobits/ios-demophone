@@ -667,9 +667,6 @@ extension AppDelegate: UIApplicationDelegate
             Softphone_Cx.instance()?.delegate = self
             
             sdkState = .running
-            
-            let bg = UIApplication.shared.applicationState == .background
-            SoftphoneBridge.instance()?.state()?.update(bg ? InstanceState_Background : InstanceState_Active)
         }
         catch let error as NSError {
             if error.domain == LicensingManagementErrorDomain {
@@ -772,29 +769,28 @@ extension AppDelegate: UIApplicationDelegate
     func applicationDidBecomeActive(_ application: UIApplication)
     //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
     {
-        let bg = UIApplication.shared.applicationState == .background
-        SoftphoneBridge.instance()?.state()?.update(bg ? InstanceState_Background : InstanceState_Active)
+        
     }
     
     //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
     func applicationWillResignActive(_ application: UIApplication)
     //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
     {
-        SoftphoneBridge.instance()?.state()?.update(InstanceState_Inactive)
+        
     }
     
     //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
     func applicationDidEnterBackground(_ application: UIApplication)
     //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
     {
-        SoftphoneBridge.instance()?.state()?.update(InstanceState_Background)
+        
     }
     
     //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
     func applicationWillEnterForeground(_ application: UIApplication)
     //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
     {
-        SoftphoneBridge.instance()?.state()?.update(InstanceState_Active)
+        
     }
     
     //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
@@ -897,19 +893,10 @@ extension AppDelegate: SoftphoneDelegateBridge
 //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 {
     //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
-    func onBadgeCountChanged()
+    func onMissedCalls(_ callEvents: [SoftphoneCallEvent]!)
     //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
     {
-        let missedCallCount = SoftphoneBridge.instance().notifications().getMissedCallCount()
-        print("Missed Call Count = \(missedCallCount)")
-    }
-    
-    //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
-    func onMissedCalls(_ callEvents: [Any]!)
-    //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
-    {
-        let calls = callEvents as! [SoftphoneCallEvent]
-        for call in calls {
+        for call in callEvents {
             showMissedCallNotification(call: call)
         }
     }

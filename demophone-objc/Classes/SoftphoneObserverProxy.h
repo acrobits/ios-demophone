@@ -60,8 +60,6 @@ public:
     virtual void onSimulatedMicrophoneStopped() override;
     virtual void onMuteChanged(Softphone::Microphone::Type microphone, bool muted) override;
     
-    virtual void onBadgeCountChanged() override;
-    
 #if defined(SOFTPHONE_MULTIPLE_ACCOUNTS)
     virtual void onVoicemail(ali::string const& accountId, Voicemail::Record const& voicemail) override;
 #else

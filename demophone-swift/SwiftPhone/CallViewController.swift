@@ -14,7 +14,7 @@ class CallViewController: UIViewController
     override func viewDidLoad()
     //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
     {
-        CallRedirectionManager.shared().addTargetChangeDelegate(self)
+        CallRedirectionManager.instance().addTargetChangeDelegate(self)
         self.callsTableView.dataSource = self.callDataSource
         refresh()
     }
@@ -23,7 +23,7 @@ class CallViewController: UIViewController
     deinit
     //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
     {
-        CallRedirectionManager.shared().removeTargetChangeDelegate(self)
+        CallRedirectionManager.instance().removeTargetChangeDelegate(self)
     }
     
     //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
@@ -45,10 +45,10 @@ class CallViewController: UIViewController
                                       message: "Do you want to complete the attended transfer?",
                                       preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Complete", style: .default, handler: { _ in
-            CallRedirectionManager.shared().performAttendedTransfer()
+            CallRedirectionManager.instance().performAttendedTransfer()
         }))
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { _ in
-            CallRedirectionManager.shared().cancelRedirect()
+            CallRedirectionManager.instance().cancelRedirect()
         }))
         alert.show()
     }
@@ -244,8 +244,8 @@ extension CallViewController
         }
         else
         {
-            if CallRedirectionManager.shared().getRedirectCapabilities(entry.call).canBlindTransfer() {
-                CallRedirectionManager.shared().setBlindTransferSource(entry.call)
+            if CallRedirectionManager.instance().getRedirectCapabilities(entry.call).canBlindTransfer() {
+                CallRedirectionManager.instance().setBlindTransferSource(entry.call)
                 self.tabBarController?.selectedIndex = 0
             }
         }
@@ -286,16 +286,16 @@ extension CallViewController
             return
         }
         
-        if let capabilities = CallRedirectionManager.shared().getRedirectCapabilities(call) {
+        if let capabilities = CallRedirectionManager.instance().getRedirectCapabilities(call) {
             if capabilities.attendedTransferCapability.isDirect() {
-                CallRedirectionManager.shared().performAttendedTransferBetween(source: call, target: capabilities.attendedTransferTargets.first as? SoftphoneCallEvent)
+                CallRedirectionManager.instance().performAttendedTransferBetween(source: call, target: capabilities.attendedTransferTargets.first as? SoftphoneCallEvent)
             }
             else if capabilities.attendedTransferCapability.isNewCall() {
-                CallRedirectionManager.shared().setAttendedTransferSource(call)
+                CallRedirectionManager.instance().setAttendedTransferSource(call)
                 tabBarController?.selectedIndex = 0
             }
             else if capabilities.attendedTransferCapability.isPickAnotherCall() {
-                CallRedirectionManager.shared().setAttendedTransferSource(call)
+                CallRedirectionManager.instance().setAttendedTransferSource(call)
                 attendedTransferTargets = capabilities.attendedTransferTargets as! [SoftphoneCallEvent]
                 
                 performSegue(withIdentifier: "TARGET_PICKER", sender: nil)
@@ -387,8 +387,8 @@ extension CallViewController: TargetPickerDelegate
     func pickerViewController(_ picker: TargetPickerViewController, didSelectTarget target: SoftphoneCallEvent)
     //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
     {
-        CallRedirectionManager.shared().setAttendedTransferTarget(target)
-        CallRedirectionManager.shared().performAttendedTransfer()
+        CallRedirectionManager.instance().setAttendedTransferTarget(target)
+        CallRedirectionManager.instance().performAttendedTransfer()
         
         picker.dismiss(animated: true)
     }
@@ -397,7 +397,7 @@ extension CallViewController: TargetPickerDelegate
     func pickerViewControllerDidCancel(_ picker: TargetPickerViewController)
     //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
     {
-        CallRedirectionManager.shared().cancelRedirect()
+        CallRedirectionManager.instance().cancelRedirect()
         picker.dismiss(animated: true)
     }
 }

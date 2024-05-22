@@ -177,13 +177,6 @@ void SoftphoneObserverProxy::onMuteChanged(Softphone::Microphone::Type microphon
     [_delegate microphone:microphone muted:muted];
 }
 
-// ******************************************************************
-void SoftphoneObserverProxy::onBadgeCountChanged()
-// ******************************************************************
-{
-    [_delegate onBadgeCountChanged];
-}
-
 #if defined(SOFTPHONE_PUSH)
 // ******************************************************************
 void SoftphoneObserverProxy::onMissedCalls(ali::array<Softphone::EventHistory::CallEvent::Pointer> const& calls)

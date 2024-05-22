@@ -18,23 +18,23 @@ class RegViewController: UIViewController
         super.viewDidLoad()
         updateToggleButtonState()
         
-        CallRedirectionManager.shared().addStateChangeDelegate(self)
+        CallRedirectionManager.instance().addStateChangeDelegate(self)
     }
     
     deinit {
-        CallRedirectionManager.shared().removeStateChangeDelegate(self)
+        CallRedirectionManager.instance().removeStateChangeDelegate(self)
     }
     
     //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
     @IBAction func onCall(_ sender: Any)
     //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
     {
-        if CallRedirectionManager.shared().currentRedirectFlow.isBlindTransfer() {
+        if CallRedirectionManager.instance().currentRedirectFlow.isBlindTransfer() {
             if number.text?.count == 0 {
                 return
             }
 
-            if let source =  CallRedirectionManager.shared().redirectSource {
+            if let source =  CallRedirectionManager.instance().redirectSource {
                 AppDelegate.theApp().transferCall(call: source)
                 return
             }

@@ -280,30 +280,28 @@ ali::string_literal sip_account{"<account id=\"sip\">"
 - (void) applicationWillResignActive:(UIApplication *)application
 //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 {
-    _softphone->state()->update(Softphone::Instance::State::Inactive);
+    
 }
 
 //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 - (void) applicationDidBecomeActive:(UIApplication *)application
 //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 {
-    const bool bg = [UIApplication sharedApplication].applicationState == UIApplicationStateBackground;
     
-     _softphone->state()->update(bg ? Softphone::Instance::State::Background : Softphone::Instance::State::Active);
 }
 
 //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 - (void) applicationDidEnterBackground:(UIApplication *)application
 //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 {
-    _softphone->state()->update(Softphone::Instance::State::Background);
+    
 }
 
 //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 - (void)applicationWillEnterForeground:(UIApplication *)application
 //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 {
-    _softphone->state()->update(Softphone::Instance::State::Active);
+    
 }
 
 //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
@@ -627,7 +625,7 @@ ali::string_literal sip_account{"<account id=\"sip\">"
     Softphone::EventHistory::EventStream::Pointer stream = Softphone::EventHistory::EventStream::load(Softphone::EventHistory::StreamQuery::legacyCallHistoryStreamKey);
     newCall->setStream(stream);
 
-    auto callRedirectionManager = Softphone::SdkServiceHolder::get<Call::Redirection::Manager>();
+    auto callRedirectionManager = Softphone::SdkServiceHolder::get<Call::Redirection::Manager>().lock();
     callRedirectionManager->performBlindTransferToTarget(newCall);
 }
 
@@ -1063,14 +1061,6 @@ ali::string_literal sip_account{"<account id=\"sip\">"
 }
 
 //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
-- (void) onBadgeCountChanged
-//-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
-{
-    int missedCallCount = Softphone::instance()->notifications()->getMissedCallCount();
-    NSLog(@"Missed call count = %d", missedCallCount);
-}
-
-//-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 -(void) onMissedCalls:(const ali::array<Softphone::EventHistory::CallEvent::Pointer>) calls
 //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 {
@@ -1088,7 +1078,7 @@ ali::string_literal sip_account{"<account id=\"sip\">"
 {
     auto weakSelf = ali::mac::make_weak(self);
     
-    auto callRedirectionManager = Softphone::SdkServiceHolder::get<Call::Redirection::Manager>();
+    auto callRedirectionManager = Softphone::SdkServiceHolder::get<Call::Redirection::Manager>().lock();
     callRedirectionManager->notifyStateChange((__bridge void*)self, [weakSelf](Call::Redirection::RedirectType type, Call::Redirection::RedirectState state) {
         auto self = weakSelf.strong();
         [self onRedirectStateChanged:state type:type];

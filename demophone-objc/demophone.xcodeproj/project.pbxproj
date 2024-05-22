@@ -28,8 +28,6 @@
 		288765A50DF7441C002DB57D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 288765A40DF7441C002DB57D /* CoreGraphics.framework */; };
 		28D7ACF80DDB3853001CB0EB /* RegViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 28D7ACF70DDB3853001CB0EB /* RegViewController.mm */; };
 		2C0D1706233E87000079D195 /* tonesDefaults.xml in Resources */ = {isa = PBXBuildFile; fileRef = 2C0D1705233E87000079D195 /* tonesDefaults.xml */; };
-		2CBCD82F2770C617001D4630 /* Softphone.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 2C8B2CD71EE1847A00FE189C /* Softphone.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		2CBCD8302770C66E001D4630 /* Softphone.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C8B2CD71EE1847A00FE189C /* Softphone.xcframework */; };
 		2CBCD84D2773A0A3001D4630 /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CBCD84C2773A0A3001D4630 /* UserNotifications.framework */; };
 		2CC20EAA1F025E9300868D99 /* NSDictionary+XML.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2CC20EA91F025E9300868D99 /* NSDictionary+XML.mm */; };
 		480DA2BA154857B800CAF882 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 48FEC76A11E7883B00D125F4 /* AVFoundation.framework */; };
@@ -63,6 +61,10 @@
 		C222BB9D2A84C423002CE5F3 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C222BB9C2A84C423002CE5F3 /* Launch Screen.storyboard */; };
 		C2551FC62A8E4E030032E967 /* TargetPickerViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = C2551FC52A8E4E030032E967 /* TargetPickerViewController.mm */; };
 		C2551FC92A8E636B0032E967 /* UIViewController+Alert.mm in Sources */ = {isa = PBXBuildFile; fileRef = C2551FC82A8E636B0032E967 /* UIViewController+Alert.mm */; };
+		C2BE37312BFE08E1000A27D7 /* LibsoftphoneIntents.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2BE372F2BFE08E0000A27D7 /* LibsoftphoneIntents.xcframework */; };
+		C2BE37322BFE08E1000A27D7 /* LibsoftphoneIntents.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C2BE372F2BFE08E0000A27D7 /* LibsoftphoneIntents.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		C2BE37332BFE08E1000A27D7 /* Softphone.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2BE37302BFE08E1000A27D7 /* Softphone.xcframework */; };
+		C2BE37342BFE08E1000A27D7 /* Softphone.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C2BE37302BFE08E1000A27D7 /* Softphone.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		C2EB572F2A150C8D000DDC13 /* provisioning.xml in Resources */ = {isa = PBXBuildFile; fileRef = C2EB572E2A150C8D000DDC13 /* provisioning.xml */; };
 /* End PBXBuildFile section */
 
@@ -77,13 +79,14 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		C2190216258B65240062DB22 /* Embed Frameworks */ = {
+		C2BE37352BFE08E1000A27D7 /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				2CBCD82F2770C617001D4630 /* Softphone.xcframework in Embed Frameworks */,
+				C2BE37342BFE08E1000A27D7 /* Softphone.xcframework in Embed Frameworks */,
+				C2BE37322BFE08E1000A27D7 /* LibsoftphoneIntents.xcframework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -100,7 +103,6 @@
 		28D7ACF70DDB3853001CB0EB /* RegViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = RegViewController.mm; sourceTree = "<group>"; };
 		29B97316FDCFA39411CA2CEA /* main.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = main.mm; sourceTree = "<group>"; };
 		2C0D1705233E87000079D195 /* tonesDefaults.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = tonesDefaults.xml; sourceTree = "<group>"; };
-		2C8B2CD71EE1847A00FE189C /* Softphone.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = Softphone.xcframework; path = ../Frameworks/Debug/Softphone.xcframework; sourceTree = "<group>"; };
 		2CBCD84C2773A0A3001D4630 /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = System/Library/Frameworks/UserNotifications.framework; sourceTree = SDKROOT; };
 		2CC20EA81F025E9300868D99 /* NSDictionary+XML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDictionary+XML.h"; sourceTree = "<group>"; };
 		2CC20EA91F025E9300868D99 /* NSDictionary+XML.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "NSDictionary+XML.mm"; sourceTree = "<group>"; };
@@ -151,6 +153,8 @@
 		C2551FC72A8E636B0032E967 /* UIViewController+Alert.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIViewController+Alert.h"; sourceTree = "<group>"; };
 		C2551FC82A8E636B0032E967 /* UIViewController+Alert.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = "UIViewController+Alert.mm"; sourceTree = "<group>"; };
 		C2B05B152A8BAA9F008D2EDF /* CallRedirectionDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CallRedirectionDelegate.h; sourceTree = "<group>"; };
+		C2BE372F2BFE08E0000A27D7 /* LibsoftphoneIntents.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = LibsoftphoneIntents.xcframework; sourceTree = "<group>"; };
+		C2BE37302BFE08E1000A27D7 /* Softphone.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = Softphone.xcframework; sourceTree = "<group>"; };
 		C2EB572E2A150C8D000DDC13 /* provisioning.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = provisioning.xml; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -160,7 +164,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				2CBCD84D2773A0A3001D4630 /* UserNotifications.framework in Frameworks */,
-				2CBCD8302770C66E001D4630 /* Softphone.xcframework in Frameworks */,
 				929EAAA41E0888230004F9E0 /* CallKit.framework in Frameworks */,
 				9290E8101D64985800195D12 /* CoreTelephony.framework in Frameworks */,
 				921B4E511BBC2100001F0A37 /* PushKit.framework in Frameworks */,
@@ -169,9 +172,11 @@
 				92F6718C1A8ABBCC009E3732 /* CoreVideo.framework in Frameworks */,
 				92F6718B1A8ABBC4009E3732 /* CoreMedia.framework in Frameworks */,
 				92F671851A8A8943009E3732 /* QuartzCore.framework in Frameworks */,
+				C2BE37332BFE08E1000A27D7 /* Softphone.xcframework in Frameworks */,
 				92F671721A8A51C8009E3732 /* SystemConfiguration.framework in Frameworks */,
 				92F6716E1A8A51A9009E3732 /* Security.framework in Frameworks */,
 				48D5EDE618CE7A3E000ABCAC /* Accelerate.framework in Frameworks */,
+				C2BE37312BFE08E1000A27D7 /* LibsoftphoneIntents.xcframework in Frameworks */,
 				480DA2BA154857B800CAF882 /* AVFoundation.framework in Frameworks */,
 				1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */,
 				1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */,
@@ -229,7 +234,6 @@
 		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
 			isa = PBXGroup;
 			children = (
-				2C8B2CD71EE1847A00FE189C /* Softphone.xcframework */,
 				924DC2E91D8705B1000F5409 /* demophone.entitlements */,
 				080E96DDFE201D6D7F000001 /* Classes */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
@@ -267,6 +271,8 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				C2BE372F2BFE08E0000A27D7 /* LibsoftphoneIntents.xcframework */,
+				C2BE37302BFE08E1000A27D7 /* Softphone.xcframework */,
 				2CBCD84C2773A0A3001D4630 /* UserNotifications.framework */,
 				929EAAA31E0888230004F9E0 /* CallKit.framework */,
 				924C0F801C051FA500F656B2 /* libz.tbd */,
@@ -322,7 +328,7 @@
 				1D60588D0D05DD3D006BFB54 /* Resources */,
 				1D60588E0D05DD3D006BFB54 /* Sources */,
 				1D60588F0D05DD3D006BFB54 /* Frameworks */,
-				C2190216258B65240062DB22 /* Embed Frameworks */,
+				C2BE37352BFE08E1000A27D7 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -410,7 +416,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# this assumes the app will have \"Debug\" and \"Release\" configurations. It creates a symlink\n# ACTIVE which leads to Debug or Release Softphone framework. The framework from ACTIVE directory\n# will then be embedded into the resulting .app\nrm -rf ../Frameworks/Softphone.xcframework\ncp -r ../Frameworks/${CONFIGURATION}/Softphone.xcframework ../Frameworks/Softphone.xcframework\n";
+			shellScript = "# this assumes the app will have \"Debug\" and \"Release\" configurations. It creates a symlink\n# ACTIVE which leads to Debug or Release Softphone framework. The framework from ACTIVE directory\n# will then be embedded into the resulting .app\n#rm -rf ../Frameworks/Softphone.xcframework\n#cp -r ../Frameworks/${CONFIGURATION}/Softphone.xcframework ../Frameworks/Softphone.xcframework\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -449,7 +455,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
+				CLANG_CXX_LANGUAGE_STANDARD = "c++20";
 				CODE_SIGN_ENTITLEMENTS = demophone.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -484,7 +490,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
+				CLANG_CXX_LANGUAGE_STANDARD = "c++20";
 				CODE_SIGN_ENTITLEMENTS = demophone.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
@@ -517,6 +523,8 @@
 		926D2EB31D64670200E69CD3 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "c++20";
+				GCC_ENABLE_CPP_RTTI = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -524,6 +532,8 @@
 		926D2EB41D64670200E69CD3 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "c++20";
+				GCC_ENABLE_CPP_RTTI = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
