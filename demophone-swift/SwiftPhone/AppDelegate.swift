@@ -797,22 +797,7 @@ extension AppDelegate: UIApplicationDelegate
     func applicationWillTerminate(_ application: UIApplication)
     //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
     {
-        SoftphoneBridge.instance()?.state()?.terminate(within: 4000)
         
-        let rl = RunLoop.current
-        
-        // delay quitting, run the runloop to give the SIP user agent some extra time
-        // to unregister itself. If it takes longer than cca 4 seconds, give up
-        // if we spend here more than cca 5 seconds, the iPhoneOS watchdog will kill
-        // the app anyway and will generate a crash log
-        
-        while !(SoftphoneBridge.instance()?.state()?.isTerminated() ?? false)
-        {
-            if !(rl.run(mode: RunLoop.Mode.default, before: Date(timeIntervalSinceNow: 0.2)))
-            {
-                break
-            }
-        }
     }
     
     //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
