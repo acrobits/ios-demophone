@@ -752,6 +752,8 @@ extension AppDelegate: UIApplicationDelegate
         regViewController.username.text = sipAccount.getValueForNode("username")
         
         registerForPushNotifications()
+        
+        SoftphoneBadgeManager.instance().registerBadgeCountDelegate(self)
                 
 //        let a1 = ["username" : "1080",
 //                  "password" : "misscom",
@@ -858,6 +860,19 @@ extension AppDelegate: UIApplicationDelegate
         })
         
         self.pushHandles[identifier] = handle
+    }
+}
+
+//-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+extension AppDelegate: SoftphoneBadgeCountChangeDelegate
+//-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+{
+    //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+    func onBadgeCountChanged()
+    //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+    {
+        let missedCallCount = SoftphoneBadgeManager.instance().getBadgeCount(channel: SoftphoneBadgeAddress.calls)
+        print("Missed call count = \(missedCallCount)");
     }
 }
 

@@ -168,7 +168,7 @@
 - (void)showCompleteAttTransferAlert
 // ******************************************************************
 {
-    auto callRedirectionManager = Softphone::SdkServiceHolder::get<Call::Redirection::Manager>();
+    auto callRedirectionManager = Softphone::service<Call::Redirection::Manager>().lock();
     
     UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Confirmation"
                                                                    message:@"Do you want to complete the attended transfer?"
@@ -345,7 +345,7 @@
     }
     else
     {
-        auto callRedirectionManager = Softphone::SdkServiceHolder::get<Call::Redirection::Manager>();
+        auto callRedirectionManager = Softphone::service<Call::Redirection::Manager>().lock();
         if (callRedirectionManager->canInitiateRedirect() && callRedirectionManager->getRedirectCapabilities(e.call).canBlindTransfer())
         {
             callRedirectionManager->setBlindTransferSource(e.call);
@@ -375,7 +375,7 @@
 		return;
     }
   
-    auto redirectManager = Softphone::SdkServiceHolder::get<Call::Redirection::Manager>();
+    auto redirectManager = Softphone::service<Call::Redirection::Manager>().lock();
     Call::Redirection::RedirectCapabilities redirectCapabilities = redirectManager->getRedirectCapabilities(e.call);
     
     if (redirectCapabilities.attendedTransferCapability == Call::Redirection::AttendedTransferCapability::Direct())
@@ -493,7 +493,7 @@
 - (void)pickerViewController:(TargetPickerViewController *)picker didSelectTarget:(Softphone::EventHistory::CallEvent::Pointer)target
 // ******************************************************************
 {
-    auto callRedirectionManager = Softphone::SdkServiceHolder::get<Call::Redirection::Manager>();
+    auto callRedirectionManager = Softphone::service<Call::Redirection::Manager>().lock();
     callRedirectionManager->setAttendedTransferTarget(target);
     callRedirectionManager->performAttendedTransfer();
     
@@ -504,7 +504,7 @@
 - (void)pickerViewControllerDidCancel:(TargetPickerViewController *)picker
 // ******************************************************************
 {
-    auto callRedirectionManager = Softphone::SdkServiceHolder::get<Call::Redirection::Manager>();
+    auto callRedirectionManager = Softphone::service<Call::Redirection::Manager>().lock();
     callRedirectionManager->cancelRedirect();
     
     [picker dismissViewControllerAnimated:YES completion:nil];

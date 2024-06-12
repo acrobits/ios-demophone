@@ -15,6 +15,7 @@
 #include "Softphone/PreferenceKeys/BasicKey.h"
 #include <Softphone/LicenseManagement/LicensingException.h>
 #include <Softphone/Call/CallRedirectionManager.h>
+#include <Softphone/Badges/BadgeManager.h>
 #include <Softphone/SdkServiceHolder.h>
 
 #import "RegViewController.h"
@@ -58,6 +59,9 @@ enum ImagePurpose
 //************************************************************
 //************************************************************
 @interface demophoneAppDelegate ()
+{
+    ali::handle2 badgeCountChangeHandle;
+}
 
 @property (nonatomic, strong) NSHashTable<id<CallRedirectionStateChangeDelegate>> *stateChangeDelegates;
 @property (nonatomic, strong) NSHashTable<id<CallRedirectionSourceChangeDelegate>> *sourceChangeDelegates;
@@ -123,6 +127,7 @@ ali::string_literal sip_account{"<account id=\"sip\">"
             _softphone->setObserver(_softphoneObserverProxy);
             
             [self setupCallRedirectionProxies];
+            [self setupBadgeCountChange];
 
             bool const hasCT = NSClassFromString(@"CTCallCenter") != nil;
             
@@ -189,6 +194,16 @@ ali::string_literal sip_account{"<account id=\"sip\">"
         NSLog(@"Failed to load the content of file");
         return;
     }
+}
+
+//*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
+-(void)updateBadge
+//*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
+{
+    auto badgeManager = Softphone::service<Softphone::BadgeManager>().lock();
+    auto count = badgeManager->countForChannelSafe(Softphone::BadgeAddress::Calls);
+    unsigned int missedCallCount = count.is_null() ? 0 : *count;
+    NSLog(@"Missed Call Count = %d", missedCallCount);
 }
 
 //*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
@@ -1053,6 +1068,21 @@ ali::string_literal sip_account{"<account id=\"sip\">"
     for (auto call : calls) {
         [self showMissedCallNotification:call];
     }
+}
+
+#pragma mark - Badge Manager
+
+//-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+-(void)setupBadgeCountChange
+//-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+{
+    auto weakSelf = ali::mac::make_weak(self);
+    
+    auto badgeManager = Softphone::service<Softphone::BadgeManager>().lock();
+    badgeCountChangeHandle =  badgeManager->registerBadgeCountChangeCallback([weakSelf]() {
+        auto self = weakSelf.strong();
+        [self updateBadge];
+    });
 }
 
 #pragma mark - Call Redirection Manager

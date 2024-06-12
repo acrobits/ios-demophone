@@ -86,7 +86,7 @@
 - (IBAction) onCall
 // ******************************************************************
 {
-    auto callRedirectionManager = Softphone::SdkServiceHolder::get<Call::Redirection::Manager>();
+    auto callRedirectionManager = Softphone::service<Call::Redirection::Manager>().lock();
     if (callRedirectionManager->getCurrentRedirectFlow() == Call::Redirection::RedirectType::BlindTransfer()) {
         if (self.number.text.length == 0)
             return;
