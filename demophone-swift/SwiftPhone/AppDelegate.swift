@@ -1,6 +1,7 @@
 import UIKit
 import PushKit
 import CallKit
+import Combine
 import Softphone_Swift
 
 //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
@@ -46,6 +47,8 @@ class AppDelegate: UIResponder
     var sdkState: SdkState = .stopped
     var terminatingTimer: Timer?
     var terminatingCallbacks: [TerminatingCallback] = []
+    
+    private var subscriptions: Set<AnyCancellable> = []
     
     //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
     class func theApp() -> AppDelegate
@@ -108,25 +111,27 @@ class AppDelegate: UIResponder
     {
         var terminalCalls = [SoftphoneCallEvent]()
         
-        let groups = SoftphoneBridge.instance()?.calls()?.conferences()?.list() as! [String]
-        
-        for groupId in groups
+        if let groups = SoftphoneBridge.instance()?.calls()?.conferences()?.list()
         {
-            let calls = SoftphoneBridge.instance()?.calls()?.conferences()?.getCalls(conference: groupId) as! [SoftphoneCallEvent]
-            
-            for call in calls
+            for groupId in groups
             {
-                let callState = SoftphoneBridge.instance()?.calls()?.getState(call)
-                if CallState.isTerminal(callState!)
+                if let calls = SoftphoneBridge.instance()?.calls()?.conferences()?.getCalls(conference: groupId)
                 {
-                    terminalCalls.append(call)
+                    for call in calls
+                    {
+                        let callState = SoftphoneBridge.instance()?.calls()?.getState(call)
+                        if CallState.isTerminal(callState!)
+                        {
+                            terminalCalls.append(call)
+                        }
+                    }
                 }
             }
-        }
-        
-        for call in terminalCalls
-        {
-            SoftphoneBridge.instance()?.calls()?.close(call)
+            
+            for call in terminalCalls
+            {
+                SoftphoneBridge.instance()?.calls()?.close(call)
+            }
         }
     }
     
@@ -242,11 +247,12 @@ class AppDelegate: UIResponder
             return
         }
         
-        let calls = SoftphoneBridge.instance()?.calls()?.conferences()?.getCalls(conference: activeGroupId) as! [SoftphoneCallEvent]
-        
-        for call in calls
+        if let calls = SoftphoneBridge.instance()?.calls()?.conferences()?.getCalls(conference: activeGroupId)
         {
-            SoftphoneBridge.instance()?.calls()?.setHeld(call, held: true)
+            for call in calls
+            {
+                SoftphoneBridge.instance()?.calls()?.setHeld(call, held: true)
+            }
         }
     }
     
@@ -336,11 +342,12 @@ class AppDelegate: UIResponder
     func hangupGroup(groupId: String)
     //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
     {
-        let calls = SoftphoneBridge.instance()?.calls()?.conferences()?.getCalls(conference: groupId) as! [SoftphoneCallEvent]
-        
-        for call in calls
+        if let calls = SoftphoneBridge.instance()?.calls()?.conferences()?.getCalls(conference: groupId)
         {
-            SoftphoneBridge.instance()?.calls()?.close(call)
+            for call in calls
+            {
+                SoftphoneBridge.instance()?.calls()?.close(call)
+            }
         }
     }
     
@@ -401,11 +408,12 @@ class AppDelegate: UIResponder
     func splitGroup(groupId: String)
     //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
     {
-        let calls = SoftphoneBridge.instance()?.calls()?.conferences()?.getCalls(conference: groupId) as! [SoftphoneCallEvent]
-        
-        for call in calls
+        if let calls = SoftphoneBridge.instance()?.calls()?.conferences()?.getCalls(conference: groupId)
         {
-            SoftphoneBridge.instance()?.calls()?.conferences()?.split(call: call, activate: false)
+            for call in calls
+            {
+                SoftphoneBridge.instance()?.calls()?.conferences()?.split(call: call, activate: false)
+            }
         }
     }
     
@@ -585,7 +593,10 @@ class AppDelegate: UIResponder
         }
     }
     
-    private func showMissedCallNotification(call: SoftphoneCallEvent) {
+    //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+    private func showMissedCallNotification(call: SoftphoneCallEvent)
+    //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+    {
         let content = UNMutableNotificationContent()
         content.title = call.getRemoteUser(index: 0).displayName
         content.body = "Missed Call"
@@ -599,7 +610,10 @@ class AppDelegate: UIResponder
         }
     }
     
-    private func loadXMLFileAsString(atPath path: String) -> String? {
+    //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+    private func loadXMLFileAsString(atPath path: String) -> String?
+    //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+    {
         do {
             let xmlString = try String(contentsOfFile: path, encoding: .utf8)
             return xmlString
@@ -607,6 +621,71 @@ class AppDelegate: UIResponder
             debugPrint("Error loading XML file: \(error)")
             return nil
         }
+    }
+
+    //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+    private func updateLocalPushSettingsIfNeeded()
+    //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+    {
+        if let enabledAccounts = SoftphoneBridge.instance().registration().getEnabledAccounts() {
+            var shouldConfigurePushManager = false
+            for accountId in enabledAccounts {
+                if let account = SoftphoneBridge.instance().registration().getAccount(accountId: accountId),
+                    account.getString("icm") == "localPush"
+                {
+                    shouldConfigurePushManager = true
+                }
+            }
+            
+            if shouldConfigurePushManager {
+                NEAppPushManagerHandler.instance.pushManagerIsActivePublisher.sink { active in
+                    print("[NEPushManagerHandler] Push Manager status, active = \(active)")
+                }.store(in: &subscriptions)
+                
+                NEAppPushManagerHandler.instance.initialize { error in
+                    if let error = error {
+                        print("[NEPushManagerHandler] Error while initializing push manager: \(error)")
+                        return
+                    }
+                    else {
+                        print("[NEPushManagerHandler] Push manager initialized successfully")
+                    }
+                    
+                    let config = NEAppPushManagerConfig()
+                    config.matchSSIDs = ["YOUR_WIFI_SSID"]  // You need to use your Wifi SSID over here
+                    config.listeningPort = 4998
+                    config.httpListeningPort = 5000
+                    config.keepAliveInterval = 60
+                    config.adminUsername = "admin"
+                    config.adminPassword = "admin"
+                    config.sendKeepAlives = true
+                    config.checksums = SoftphoneBridge.instance().registration().getLocalPushAccountChecksums()
+                    config.postData = SoftphoneBridge.instance().registration().getLocalPushData()
+                    
+                    NEAppPushManagerHandler.instance.update(config: config) { error in
+                        if let error = error {
+                            print("[NEPushManagerHandler] Error while updating config: \(error)")
+                            return
+                        }
+                        else {
+                            print("[NEPushManagerHandler] Push manager config updated successfully")
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+    private func handleIncomingCall(userInfo: [AnyHashable : Any])
+    //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+    {
+        startSoftphoneSdk()
+        
+        let xml = Dictionary<AnyHashable, Any>.xmlFromDictionary(userInfo)
+        print("XML: \(xml.toString(true) ?? "")" )
+        
+        SoftphoneBridge.instance()?.notifications()?.push()?.handle(xml, usage: PushTokenUsage_IncomingCall, completion: nil)
     }
 }
 
@@ -661,8 +740,15 @@ extension AppDelegate: UIApplicationDelegate
             let s = sipAccount?.toString(true);
             debugPrint("Account XML: \(s!)");
             
-            softphoneInstance?.registration()?.saveAccount(sipAccount)
-            softphoneInstance?.registration()?.updateAll()
+            if let _ = softphoneInstance?.registration().getAccount(accountId: "sip") {
+                DispatchQueue.main.async { [weak self] in
+                    self?.updateLocalPushSettingsIfNeeded()
+                }
+            }
+            else {
+                softphoneInstance?.registration()?.saveAccount(sipAccount)
+                softphoneInstance?.registration()?.updateAll()
+            }
             
             Softphone_Cx.instance()?.delegate = self
             
@@ -727,6 +813,11 @@ extension AppDelegate: UIApplicationDelegate
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool
     //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
     {
+        NEAppPushManagerHandler.instance.incomingCallPublisher.sink { [weak self] userInfo in
+            guard let self else { return }
+            handleIncomingCall(userInfo: userInfo)
+        }.store(in: &subscriptions)
+        
         startSoftphoneSdk()
         
         let tabController = self.window?.rootViewController as! UITabBarController
@@ -785,7 +876,7 @@ extension AppDelegate: UIApplicationDelegate
     func applicationDidEnterBackground(_ application: UIApplication)
     //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
     {
-        
+        NEAppPushManagerHandler.instance.initialize()
     }
     
     //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
@@ -871,7 +962,8 @@ extension AppDelegate: SoftphoneBadgeCountChangeDelegate
     func onBadgeCountChanged()
     //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
     {
-        let missedCallCount = SoftphoneBadgeManager.instance().getBadgeCount(channel: SoftphoneBadgeAddress.calls)
+        let badgeAddress = SoftphoneBadgeAddress(channel: SoftphoneBadgeAddress.calls)
+        let missedCallCount = SoftphoneBadgeManager.instance().getBadgeCount(address: badgeAddress)
         print("Missed call count = \(missedCallCount)");
     }
 }
@@ -1057,6 +1149,13 @@ extension AppDelegate: SoftphoneDelegateBridge
             self.window?.rootViewController?.present(alert, animated: true, completion: nil)
         }
     }
+
+    //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+    func onSettingsChanged()
+    //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+    {
+        updateLocalPushSettingsIfNeeded()
+    }
 }
 
 //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
@@ -1079,12 +1178,7 @@ extension AppDelegate: PKPushRegistryDelegate
     func pushRegistry(_ registry: PKPushRegistry, didReceiveIncomingPushWith payload: PKPushPayload, for type: PKPushType)
     //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
     {
-        startSoftphoneSdk()
-        
-        let xml = Dictionary<AnyHashable, Any>.xmlFromDictionary(payload.dictionaryPayload)
-        debugPrint("XML: \(String(describing: xml.toString(true)))")
-        
-        SoftphoneBridge.instance()?.notifications()?.push()?.handle(xml, usage: PushTokenUsage_IncomingCall, completion: nil)
+        handleIncomingCall(userInfo: payload.dictionaryPayload)
     }
 }
 

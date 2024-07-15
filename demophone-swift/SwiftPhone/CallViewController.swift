@@ -117,14 +117,15 @@ class CallViewController: UIViewController
         // find another call. Pick the first call found, the proper GUI should let the
         // user choose the call to transfer to
         
-        let groups = SoftphoneBridge.instance()?.calls()?.conferences()?.list() as! [String]
-        
-        for groupId in groups {
-            let calls = SoftphoneBridge.instance()?.calls()?.conferences()?.getCalls(conference: groupId) as! [SoftphoneCallEvent]
-            
-            for otherCall in calls {
-                if !otherCall.isEqual(to: call) {
-                    return otherCall
+        if let groups = SoftphoneBridge.instance()?.calls()?.conferences()?.list()
+        {
+            for groupId in groups {
+                if let calls = SoftphoneBridge.instance()?.calls()?.conferences()?.getCalls(conference: groupId) {
+                    for otherCall in calls {
+                        if !otherCall.isEqual(to: call) {
+                            return otherCall
+                        }
+                    }
                 }
             }
         }
@@ -137,16 +138,18 @@ class CallViewController: UIViewController
     //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
     {
         let groupId = SoftphoneBridge.instance()?.calls()?.conferences()?.get(call)
-        let allGroups = SoftphoneBridge.instance()?.calls()?.conferences()?.list() as! [String]
-        
-        for otherGroup in allGroups {
-            let otherGroupSize = SoftphoneBridge.instance()?.calls()?.conferences()?.getSize(otherGroup)
-            
-            if otherGroup == groupId || otherGroupSize == 0 {
-                continue
+        if let allGroups = SoftphoneBridge.instance()?.calls()?.conferences()?.list()
+        {
+            for otherGroup in allGroups {
+                let otherGroupSize = SoftphoneBridge.instance()?.calls()?.conferences()?.getSize(otherGroup)
+                
+                if otherGroup == groupId || otherGroupSize == 0 {
+                    continue
+                }
+                return otherGroup
             }
-            return otherGroup
         }
+        
         return String()
     }
 }

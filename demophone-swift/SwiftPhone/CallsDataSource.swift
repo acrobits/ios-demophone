@@ -47,16 +47,15 @@ class CallsDataSource: NSObject
     {
         entries.removeAll()
         
-        let groups = SoftphoneBridge.instance()?.calls()?.conferences()?.list() as! [String]
-        for groupId in groups
-        {
-            entries.append(Entry(groupId: groupId))
-            
-            let calls = SoftphoneBridge.instance()?.calls()?.conferences()?.getCalls(conference: groupId) as! [SoftphoneCallEvent]
-            
-            for call in calls
-            {
-                entries.append(Entry(call: call));
+        if let groups = SoftphoneBridge.instance()?.calls()?.conferences()?.list() {
+            for groupId in groups {
+                entries.append(Entry(groupId: groupId))
+                
+                if let calls = SoftphoneBridge.instance()?.calls()?.conferences()?.getCalls(conference: groupId) {
+                    for call in calls {
+                        entries.append(Entry(call: call));
+                    }
+                }
             }
         }
     }
