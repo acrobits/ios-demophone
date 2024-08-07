@@ -9,6 +9,7 @@ class CallViewController: UIViewController
     
     var callDataSource = CallsDataSource()
     private var attendedTransferTargets: [SoftphoneCallEvent] = []
+    private let audioRoutePickerProxy = AudioRoutePickerProxy()
     
     //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
     override func viewDidLoad()
@@ -230,7 +231,12 @@ extension CallViewController
     @IBAction func onSpeaker(_ sender: Any)
     //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
     {
-        AppDelegate.theApp().toggleSpeaker()
+        if audioRoutePickerProxy.wirelessRoutesAvailable {
+            audioRoutePickerProxy.show(in: self.view)
+        }
+        else {
+            AppDelegate.theApp().toggleSpeaker()
+        }
     }
     
     //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
