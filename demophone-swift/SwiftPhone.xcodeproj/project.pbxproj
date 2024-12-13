@@ -10,17 +10,17 @@
 		5757E69C2508D57F00DD3ED0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5757E69B2508D57F00DD3ED0 /* AppDelegate.swift */; };
 		5757E6A52508D58200DD3ED0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5757E6A42508D58200DD3ED0 /* Assets.xcassets */; };
 		5757E6A82508D58200DD3ED0 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5757E6A62508D58200DD3ED0 /* LaunchScreen.storyboard */; };
+		C218F4712D0C64C6000FCA01 /* SwiftPackage-sipisprovider in Frameworks */ = {isa = PBXBuildFile; productRef = C218F4702D0C64C6000FCA01 /* SwiftPackage-sipisprovider */; };
 		C2313D362C246B090053F635 /* DemoAppPushProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2313D352C246B090053F635 /* DemoAppPushProvider.swift */; };
 		C2313D3B2C246D820053F635 /* BundleExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2313D3A2C246D820053F635 /* BundleExtensions.swift */; };
+		C2332D232CEB0A72005B462D /* SoftphoneSwiftPackage-saas in Frameworks */ = {isa = PBXBuildFile; productRef = C2332D222CEB0A72005B462D /* SoftphoneSwiftPackage-saas */; };
 		C234E3262535956600EFA519 /* RegViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C234E3252535956600EFA519 /* RegViewController.swift */; };
 		C234E3282535957E00EFA519 /* CallViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C234E3272535957E00EFA519 /* CallViewController.swift */; };
 		C23B19F3251E213F00984B08 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C23B19F2251E213F00984B08 /* Main.storyboard */; };
-		C23B3D612C2598E200E79C7E /* SwiftPackage-sipisprovider in Frameworks */ = {isa = PBXBuildFile; productRef = C23B3D602C2598E200E79C7E /* SwiftPackage-sipisprovider */; };
 		C24BF2672538485300692D0C /* CallsDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24BF2662538485300692D0C /* CallsDataSource.swift */; };
 		C24BF269253853F700692D0C /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24BF268253853F700692D0C /* Extensions.swift */; };
 		C28857162A8E787F00E048F2 /* TargetPickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C28857152A8E787F00E048F2 /* TargetPickerViewController.swift */; };
 		C2A2B2D22542C79E0056B21C /* PushKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2A2B2D12542C79E0056B21C /* PushKit.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
-		C2C3BEC82C1ACBB50024838A /* SoftphoneSwiftPackage-saas in Frameworks */ = {isa = PBXBuildFile; productRef = C2C3BEC72C1ACBB50024838A /* SoftphoneSwiftPackage-saas */; };
 		C2C3BEE02C1ACDBD0024838A /* NetworkExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2C3BEDF2C1ACDBD0024838A /* NetworkExtension.framework */; };
 		C2C3BEE32C1ACDBD0024838A /* AppProxyProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2C3BEE22C1ACDBD0024838A /* AppProxyProvider.swift */; };
 		C2C3BEE82C1ACDBD0024838A /* NetworkExtensionSwiftPhone.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = C2C3BEDE2C1ACDBD0024838A /* NetworkExtensionSwiftPhone.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -155,7 +155,6 @@
 				C2FE6A4025449797009FB20D /* UserNotifications.framework in Frameworks */,
 				C2FE6A3E2544975B009FB20D /* libz.tbd in Frameworks */,
 				C2FE6A3C25449730009FB20D /* MediaPlayer.framework in Frameworks */,
-				C2C3BEC82C1ACBB50024838A /* SoftphoneSwiftPackage-saas in Frameworks */,
 				C2FE6A3A2544972B009FB20D /* CFNetwork.framework in Frameworks */,
 				C2FE6A3425449701009FB20D /* AudioToolbox.framework in Frameworks */,
 				C2FE6A32254496F9009FB20D /* CoreGraphics.framework in Frameworks */,
@@ -169,11 +168,11 @@
 				C2FE6A22254496BF009FB20D /* CoreMedia.framework in Frameworks */,
 				C2FE6A20254496B9009FB20D /* CoreVideo.framework in Frameworks */,
 				C2FE6A1E254496B1009FB20D /* CoreText.framework in Frameworks */,
-				C23B3D612C2598E200E79C7E /* SwiftPackage-sipisprovider in Frameworks */,
 				C2FE6A1C254496AC009FB20D /* VideoToolbox.framework in Frameworks */,
 				C2FE6A1A2544969C009FB20D /* CoreTelephony.framework in Frameworks */,
 				C2FE6A1825449697009FB20D /* CallKit.framework in Frameworks */,
 				C2A2B2D22542C79E0056B21C /* PushKit.framework in Frameworks */,
+				C2332D232CEB0A72005B462D /* SoftphoneSwiftPackage-saas in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -182,6 +181,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C2C3BEE02C1ACDBD0024838A /* NetworkExtension.framework in Frameworks */,
+				C218F4712D0C64C6000FCA01 /* SwiftPackage-sipisprovider in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -322,8 +322,7 @@
 			);
 			name = SwiftPhone;
 			packageProductDependencies = (
-				C2C3BEC72C1ACBB50024838A /* SoftphoneSwiftPackage-saas */,
-				C23B3D602C2598E200E79C7E /* SwiftPackage-sipisprovider */,
+				C2332D222CEB0A72005B462D /* SoftphoneSwiftPackage-saas */,
 			);
 			productName = SwiftPhone;
 			productReference = 5757E6982508D57F00DD3ED0 /* SwiftPhone.app */;
@@ -343,6 +342,7 @@
 			);
 			name = NetworkExtensionSwiftPhone;
 			packageProductDependencies = (
+				C218F4702D0C64C6000FCA01 /* SwiftPackage-sipisprovider */,
 			);
 			productName = NetworkExtensionSwiftPhone;
 			productReference = C2C3BEDE2C1ACDBD0024838A /* NetworkExtensionSwiftPhone.appex */;
@@ -376,8 +376,8 @@
 			);
 			mainGroup = 5757E68F2508D57F00DD3ED0;
 			packageReferences = (
-				C2C3BEC62C1ACBB50024838A /* XCRemoteSwiftPackageReference "SoftphoneSwiftPackage-saas" */,
-				C23B3D5F2C2598E200E79C7E /* XCRemoteSwiftPackageReference "SwiftPackage-sipisprovider" */,
+				C2332D212CEB0A72005B462D /* XCRemoteSwiftPackageReference "SoftphoneSwiftPackage-saas" */,
+				C218F46F2D0C64C6000FCA01 /* XCRemoteSwiftPackageReference "SwiftPackage-sipisprovider" */,
 			);
 			productRefGroup = 5757E6992508D57F00DD3ED0 /* Products */;
 			projectDirPath = "";
@@ -744,7 +744,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		C23B3D5F2C2598E200E79C7E /* XCRemoteSwiftPackageReference "SwiftPackage-sipisprovider" */ = {
+		C218F46F2D0C64C6000FCA01 /* XCRemoteSwiftPackageReference "SwiftPackage-sipisprovider" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/acrobits/SwiftPackage-sipisprovider";
 			requirement = {
@@ -752,7 +752,7 @@
 				minimumVersion = 1.0.0;
 			};
 		};
-		C2C3BEC62C1ACBB50024838A /* XCRemoteSwiftPackageReference "SoftphoneSwiftPackage-saas" */ = {
+		C2332D212CEB0A72005B462D /* XCRemoteSwiftPackageReference "SoftphoneSwiftPackage-saas" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/acrobits/SoftphoneSwiftPackage-saas.git";
 			requirement = {
@@ -763,14 +763,14 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		C23B3D602C2598E200E79C7E /* SwiftPackage-sipisprovider */ = {
+		C218F4702D0C64C6000FCA01 /* SwiftPackage-sipisprovider */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = C23B3D5F2C2598E200E79C7E /* XCRemoteSwiftPackageReference "SwiftPackage-sipisprovider" */;
+			package = C218F46F2D0C64C6000FCA01 /* XCRemoteSwiftPackageReference "SwiftPackage-sipisprovider" */;
 			productName = "SwiftPackage-sipisprovider";
 		};
-		C2C3BEC72C1ACBB50024838A /* SoftphoneSwiftPackage-saas */ = {
+		C2332D222CEB0A72005B462D /* SoftphoneSwiftPackage-saas */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = C2C3BEC62C1ACBB50024838A /* XCRemoteSwiftPackageReference "SoftphoneSwiftPackage-saas" */;
+			package = C2332D212CEB0A72005B462D /* XCRemoteSwiftPackageReference "SoftphoneSwiftPackage-saas" */;
 			productName = "SoftphoneSwiftPackage-saas";
 		};
 /* End XCSwiftPackageProductDependency section */
