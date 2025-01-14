@@ -962,7 +962,7 @@ extension AppDelegate: SoftphoneBadgeCountChangeDelegate
     func onBadgeCountChanged()
     //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
     {
-        let badgeAddress = SoftphoneBadgeAddress(channel: SoftphoneBadgeAddress.calls)
+        let badgeAddress = PredefinedChannel.address(from: PredefinedChannelCalls)
         let missedCallCount = SoftphoneBadgeManager.instance().getBadgeCount(address: badgeAddress)
         print("Missed call count = \(missedCallCount)");
     }

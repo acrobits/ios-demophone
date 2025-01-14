@@ -61,8 +61,6 @@
 		C222BB9D2A84C423002CE5F3 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C222BB9C2A84C423002CE5F3 /* Launch Screen.storyboard */; };
 		C2551FC62A8E4E030032E967 /* TargetPickerViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = C2551FC52A8E4E030032E967 /* TargetPickerViewController.mm */; };
 		C2551FC92A8E636B0032E967 /* UIViewController+Alert.mm in Sources */ = {isa = PBXBuildFile; fileRef = C2551FC82A8E636B0032E967 /* UIViewController+Alert.mm */; };
-		C2BE37312BFE08E1000A27D7 /* LibsoftphoneIntents.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2BE372F2BFE08E0000A27D7 /* LibsoftphoneIntents.xcframework */; };
-		C2BE37322BFE08E1000A27D7 /* LibsoftphoneIntents.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C2BE372F2BFE08E0000A27D7 /* LibsoftphoneIntents.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		C2BE37332BFE08E1000A27D7 /* Softphone.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2BE37302BFE08E1000A27D7 /* Softphone.xcframework */; };
 		C2BE37342BFE08E1000A27D7 /* Softphone.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C2BE37302BFE08E1000A27D7 /* Softphone.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		C2EB572F2A150C8D000DDC13 /* provisioning.xml in Resources */ = {isa = PBXBuildFile; fileRef = C2EB572E2A150C8D000DDC13 /* provisioning.xml */; };
@@ -86,7 +84,6 @@
 			dstSubfolderSpec = 10;
 			files = (
 				C2BE37342BFE08E1000A27D7 /* Softphone.xcframework in Embed Frameworks */,
-				C2BE37322BFE08E1000A27D7 /* LibsoftphoneIntents.xcframework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -153,7 +150,6 @@
 		C2551FC72A8E636B0032E967 /* UIViewController+Alert.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIViewController+Alert.h"; sourceTree = "<group>"; };
 		C2551FC82A8E636B0032E967 /* UIViewController+Alert.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = "UIViewController+Alert.mm"; sourceTree = "<group>"; };
 		C2B05B152A8BAA9F008D2EDF /* CallRedirectionDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CallRedirectionDelegate.h; sourceTree = "<group>"; };
-		C2BE372F2BFE08E0000A27D7 /* LibsoftphoneIntents.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = LibsoftphoneIntents.xcframework; sourceTree = "<group>"; };
 		C2BE37302BFE08E1000A27D7 /* Softphone.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = Softphone.xcframework; sourceTree = "<group>"; };
 		C2EB572E2A150C8D000DDC13 /* provisioning.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = provisioning.xml; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -176,7 +172,6 @@
 				92F671721A8A51C8009E3732 /* SystemConfiguration.framework in Frameworks */,
 				92F6716E1A8A51A9009E3732 /* Security.framework in Frameworks */,
 				48D5EDE618CE7A3E000ABCAC /* Accelerate.framework in Frameworks */,
-				C2BE37312BFE08E1000A27D7 /* LibsoftphoneIntents.xcframework in Frameworks */,
 				480DA2BA154857B800CAF882 /* AVFoundation.framework in Frameworks */,
 				1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */,
 				1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */,
@@ -271,7 +266,6 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				C2BE372F2BFE08E0000A27D7 /* LibsoftphoneIntents.xcframework */,
 				C2BE37302BFE08E1000A27D7 /* Softphone.xcframework */,
 				2CBCD84C2773A0A3001D4630 /* UserNotifications.framework */,
 				929EAAA31E0888230004F9E0 /* CallKit.framework */,
@@ -465,7 +459,7 @@
 				DEVELOPMENT_TEAM = NH3365YY44;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = ../Frameworks;
-				GCC_ENABLE_CPP_RTTI = NO;
+				GCC_ENABLE_CPP_RTTI = YES;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
 				GCC_OBJC_CALL_CXX_CDTORS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -499,7 +493,7 @@
 				DEVELOPMENT_TEAM = "";
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = ../Frameworks;
-				GCC_ENABLE_CPP_RTTI = NO;
+				GCC_ENABLE_CPP_RTTI = YES;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
 				GCC_OBJC_CALL_CXX_CDTORS = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;

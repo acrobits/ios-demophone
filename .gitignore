@@ -41,3 +41,5 @@ jni_bindings.db
 # CLion build
 */cmake-build-debug/
 cmake-build-debug/
+
+Frameworks/
