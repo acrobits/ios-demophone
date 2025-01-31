@@ -59,6 +59,7 @@
 		92F6718C1A8ABBCC009E3732 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 92F671801A8A8907009E3732 /* CoreVideo.framework */; };
 		92F671C31A8E0615009E3732 /* VideoToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 92F671C21A8E0615009E3732 /* VideoToolbox.framework */; };
 		C222BB9D2A84C423002CE5F3 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C222BB9C2A84C423002CE5F3 /* Launch Screen.storyboard */; };
+		C24C92AE2D4281BC00DBD598 /* eliseb.wav in Resources */ = {isa = PBXBuildFile; fileRef = C24C92AD2D4281BC00DBD598 /* eliseb.wav */; };
 		C2551FC62A8E4E030032E967 /* TargetPickerViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = C2551FC52A8E4E030032E967 /* TargetPickerViewController.mm */; };
 		C2551FC92A8E636B0032E967 /* UIViewController+Alert.mm in Sources */ = {isa = PBXBuildFile; fileRef = C2551FC82A8E636B0032E967 /* UIViewController+Alert.mm */; };
 		C2BE37332BFE08E1000A27D7 /* Softphone.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2BE37302BFE08E1000A27D7 /* Softphone.xcframework */; };
@@ -145,6 +146,7 @@
 		92F671841A8A8943009E3732 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		92F671C21A8E0615009E3732 /* VideoToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VideoToolbox.framework; path = System/Library/Frameworks/VideoToolbox.framework; sourceTree = SDKROOT; };
 		C222BB9C2A84C423002CE5F3 /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
+		C24C92AD2D4281BC00DBD598 /* eliseb.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = eliseb.wav; sourceTree = "<group>"; };
 		C2551FC42A8E4E030032E967 /* TargetPickerViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TargetPickerViewController.h; sourceTree = "<group>"; };
 		C2551FC52A8E4E030032E967 /* TargetPickerViewController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = TargetPickerViewController.mm; sourceTree = "<group>"; };
 		C2551FC72A8E636B0032E967 /* UIViewController+Alert.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIViewController+Alert.h"; sourceTree = "<group>"; };
@@ -297,6 +299,7 @@
 		48138F7B116A9AA900D474F0 /* snd */ = {
 			isa = PBXGroup;
 			children = (
+				C24C92AD2D4281BC00DBD598 /* eliseb.wav */,
 				481391E1116AA2F000D474F0 /* rp.wav */,
 				48138F7D116A9AC300D474F0 /* dm.wav */,
 				48138F7E116A9AC300D474F0 /* dd.wav */,
@@ -385,6 +388,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				48138F7F116A9AC300D474F0 /* dm.wav in Resources */,
+				C24C92AE2D4281BC00DBD598 /* eliseb.wav in Resources */,
 				48138F80116A9AC300D474F0 /* dd.wav in Resources */,
 				C222BB9D2A84C423002CE5F3 /* Launch Screen.storyboard in Resources */,
 				C2EB572F2A150C8D000DDC13 /* provisioning.xml in Resources */,

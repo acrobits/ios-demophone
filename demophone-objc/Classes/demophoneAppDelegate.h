@@ -112,7 +112,10 @@
 - (void) hangupGroup:(ali::string const&) groupId;
 
 /// plays a wav file in place of a microphone
-- (void) playSimulatedMic;
+-(void)startSimulatedMicrophone;
+
+/// stops playing a wav file in place of a microphone
+-(void)stopSimulatedMicrophone;
 
 /// Mutes/unmutes the microphone.
 - (void) toggleMute;

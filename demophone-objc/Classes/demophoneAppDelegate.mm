@@ -360,16 +360,20 @@ ali::string_literal sip_account{"<account id=\"sip\">"
 }
 
 //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
--(void) playSimulatedMic
+-(void)startSimulatedMicrophone
 //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 {
-    _softphone->calls()->setSimulatedMicrophone(nullptr, true);
-
     NSBundle *bundle = [NSBundle mainBundle];
     NSString *resourcePath = [bundle resourcePath];
  
-    _softphone->calls()->setSimulatedMicrophone(ali::filesystem2::path(
-                                ali::mac::str::from_nsstring(resourcePath)) / "dd.wav"_s, false);
+    _softphone->calls()->startSimulatedMicrophone(ali::filesystem2::path(ali::mac::str::from_nsstring(resourcePath)) / "eliseb.wav"_s, false);
+}
+
+//-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+-(void)stopSimulatedMicrophone
+//-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+{
+    _softphone->calls()->stopSimulatedMicrophone();
 }
 
 //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*

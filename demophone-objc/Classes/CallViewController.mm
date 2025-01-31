@@ -220,7 +220,6 @@
 -(IBAction) onMute
 // ******************************************************************
 {
-//    [[demophoneAppDelegate theApp] playSimulatedMic];
 	[[demophoneAppDelegate theApp] toggleMute];
 }
 
@@ -487,6 +486,20 @@
     {
         [[demophoneAppDelegate theApp] rejectIncomingCall:e.call];
     }
+}
+
+// ******************************************************************
+-(IBAction)onStartSimulatedMic
+// ******************************************************************
+{
+    [[demophoneAppDelegate theApp] startSimulatedMicrophone];
+}
+
+// ******************************************************************
+-(IBAction)onStopSimulatedMic
+// ******************************************************************
+{
+    [[demophoneAppDelegate theApp] stopSimulatedMicrophone];
 }
 
 // ******************************************************************

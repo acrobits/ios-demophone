@@ -387,6 +387,21 @@ extension CallViewController
             }
         }
     }
+    
+    //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+    @IBAction func onStartSimulatedMic(_ sender: Any)
+    //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+    {
+        AppDelegate.theApp().startSimulatedMicrophone()
+    }
+    
+    //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+    @IBAction func onStopSimulatedMic(_ sender: Any)
+    //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+    {
+        AppDelegate.theApp().stopSimulatedMicrophone()
+    }
+    
 }
 
 // MARK: - TargetPickerDelegate

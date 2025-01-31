@@ -163,10 +163,20 @@ class AppDelegate: UIResponder
     }
 
     //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
-    func playSimulatedMic()
+    /// Start simulated microphone with the given sound file.
+    func startSimulatedMicrophone()
     //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
     {
-        
+        let soundFilePath = Bundle.main.path(forResource: "eliseb", ofType: "wav")
+        SoftphoneBridge.instance()?.calls().startSimulatedMicrophone(soundToPlay: soundFilePath, playOnce: true)
+    }
+    
+    //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+    /// Stop simulated microphone.
+    func stopSimulatedMicrophone()
+    //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+    {
+        SoftphoneBridge.instance()?.calls().stopSimulatedMicrophone()
     }
     
     //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
@@ -962,7 +972,7 @@ extension AppDelegate: SoftphoneBadgeCountChangeDelegate
     func onBadgeCountChanged()
     //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
     {
-        let badgeAddress = PredefinedChannel.address(from: PredefinedChannelCalls)
+        let badgeAddress = SoftphoneBadgeAddress(channel: SoftphoneBadgeAddress.calls)
         let missedCallCount = SoftphoneBadgeManager.instance().getBadgeCount(address: badgeAddress)
         print("Missed call count = \(missedCallCount)");
     }
@@ -1155,6 +1165,13 @@ extension AppDelegate: SoftphoneDelegateBridge
     //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
     {
         updateLocalPushSettingsIfNeeded()
+    }
+    
+    //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+    func onSimulatedMicrophoneStopped()
+    //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+    {
+        print("Simulated microphone stopped")
     }
 }
 
