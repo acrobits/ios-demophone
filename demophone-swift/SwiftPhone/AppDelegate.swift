@@ -692,8 +692,8 @@ class AppDelegate: UIResponder
     {
         startSoftphoneSdk()
         
-        let xml = Dictionary<AnyHashable, Any>.xmlFromDictionary(userInfo)
-        print("XML: \(xml.toString(true) ?? "")" )
+        let xml = XmlTree.from(dictionary: userInfo)
+        print("XML: \(xml?.toString(true) ?? "")" )
         
         SoftphoneBridge.instance()?.notifications()?.push()?.handle(xml, usage: PushTokenUsage_IncomingCall, completion: nil)
     }
@@ -862,8 +862,8 @@ extension AppDelegate: UIApplicationDelegate
 //        
 //        let dict = ["account" : a1]
 //        
-//        let x = Dictionary<AnyHashable, Any>.xmlFromDictionary(dict)
-//        debugPrint(x.toString(true)!)
+//        let x = XmlTree.from(dictionary: dict)
+//        print("XML: \(x?.toString(true) ?? "")" )
 
         return true
     }
@@ -937,8 +937,8 @@ extension AppDelegate: UIApplicationDelegate
         
         let identifier = UUID().uuidString
         
-        let xml = Dictionary<AnyHashable, Any>.xmlFromDictionary(userInfo)
-        debugPrint("XML: \(String(describing: xml.toString(true)))")
+        let xml = XmlTree.from(dictionary: userInfo)
+        print("XML: \(xml?.toString(true) ?? "")" )
         
         let handle = SoftphoneBridge.instance()?.notifications()?.push()?.handle(xml, usage: PushTokenUsage_Other, completion: { (info) in
             
