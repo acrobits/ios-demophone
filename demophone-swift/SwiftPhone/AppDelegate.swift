@@ -34,8 +34,6 @@ class AppDelegate: UIResponder
     
     var window: UIWindow?
     var sipAccount: XmlTree!
-    var regViewController: RegViewController!
-    var callViewController: CallViewController!
     
     var pushKitRegistry: PKPushRegistry!
     var pushHandles = [String: AnyObject]()
@@ -47,6 +45,9 @@ class AppDelegate: UIResponder
     var sdkState: SdkState = .stopped
     var terminatingTimer: Timer?
     var terminatingCallbacks: [TerminatingCallback] = []
+    
+    var registrationService = RegistrationService()
+    var callService = CallService()
     
     private var subscriptions: Set<AnyCancellable> = []
     
@@ -155,6 +156,7 @@ class AppDelegate: UIResponder
         debugPrint(result as Any)
         
         if result == PostResult_Success {
+            refreshCallViews()
             return true
         }
         
@@ -207,9 +209,11 @@ class AppDelegate: UIResponder
     //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
     {
         sipAccount.setNodeValue(value: "off", name: "icm")
-        
+
         SoftphoneBridge.instance().registration()?.saveAccount(sipAccount)
         SoftphoneBridge.instance().registration()?.updateAll()
+        
+        registrationService.account.send(sipAccount)
     }
     
     //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
@@ -221,13 +225,15 @@ class AppDelegate: UIResponder
         
         SoftphoneBridge.instance().registration()?.saveAccount(sipAccount)
         SoftphoneBridge.instance().registration()?.updateAll()
+        
+        registrationService.account.send(sipAccount)
     }
     
     //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
     func refreshCallViews()
     //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
     {
-        self.callViewController.refresh()
+        self.callService.refresh()
     }
     
     //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
@@ -432,12 +438,20 @@ class AppDelegate: UIResponder
     func transferCall(call: SoftphoneCallEvent)
     //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
     {
-        if self.regViewController.number.text?.count == 0
+        
+    }
+    
+    //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+    /// Transfers the call to a number which is currently filled in in @ref RegViewController
+    func transferCall(call: SoftphoneCallEvent, number: String)
+    //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+    {
+        if number.count == 0
         {
             return
         }
         
-        let newCall = SoftphoneCallEvent.create(withAccountId: "sip", uri: self.regViewController.number.text)
+        let newCall = SoftphoneCallEvent.create(withAccountId: "sip", uri: number)
         let stream = SoftphoneEventStream.load(SoftphoneStreamQuery.legacyCallHistoryStreamKey())
         
         newCall?.setStream(stream)
@@ -830,13 +844,6 @@ extension AppDelegate: UIApplicationDelegate
         
         startSoftphoneSdk()
         
-        let tabController = self.window?.rootViewController as! UITabBarController
-        regViewController = tabController.viewControllers![0] as? RegViewController
-        callViewController = tabController.viewControllers![1] as? CallViewController
-        
-        _ = regViewController.view
-        _ = callViewController.view
-        
         refreshCallViews()
         
         let center = UNUserNotificationCenter.current()
@@ -849,13 +856,12 @@ extension AppDelegate: UIApplicationDelegate
             }
         }
 
-        
-        regViewController.username.text = sipAccount.getValueForNode("username")
+        registrationService.account.send(sipAccount)
         
         registerForPushNotifications()
         
         SoftphoneBadgeManager.instance().registerBadgeCountDelegate(self)
-                
+//                
 //        let a1 = ["username" : "1080",
 //                  "password" : "misscom",
 //                  "host" : "pbx.acrobits.cz"]
@@ -865,6 +871,7 @@ extension AppDelegate: UIApplicationDelegate
 //        let x = XmlTree.from(dictionary: dict)
 //        print("XML: \(x?.toString(true) ?? "")" )
 
+        callService.register()
         return true
     }
     
@@ -972,6 +979,8 @@ extension AppDelegate: SoftphoneBadgeCountChangeDelegate
     func onBadgeCountChanged()
     //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
     {
+        //let badgeAddress = PredefinedChannel.address(from: PredefinedChannelCalls)
+        //let missedCallCount = SoftphoneBadgeManager.instance().getBadgeCount(address: SoftphoneBadgeAddress(channel: SoftphoneBadgeAddress.calls)!)
         let badgeAddress = SoftphoneBadgeAddress(channel: SoftphoneBadgeAddress.calls)
         let missedCallCount = SoftphoneBadgeManager.instance().getBadgeCount(address: badgeAddress)
         print("Missed call count = \(missedCallCount)");
@@ -1080,7 +1089,7 @@ extension AppDelegate: SoftphoneDelegateBridge
     func onRegistrationStateChanged(state: RegistratorStateType, accountId: String!)
     //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
     {
-        regViewController.regState.text = RegistratorState.toString(state)
+        registrationService.state.send(state)
     }
     
     //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
@@ -1120,8 +1129,8 @@ extension AppDelegate: SoftphoneDelegateBridge
     func onCallStateChanged(state: CallStateType, call: SoftphoneCallEvent!)
     //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
     {
-        refreshCallViews()
         closeTerminalCalls()
+        refreshCallViews()
     }
     
     //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*

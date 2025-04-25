@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="23504" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="nJ0-kb-lGH">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="23504" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="bMR-kh-ZXk">
     <device id="retina5_9" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
@@ -252,6 +252,22 @@
             </objects>
             <point key="canvasLocation" x="-463.19999999999999" y="397.53694581280791"/>
         </scene>
+        <!--SwiftUI-->
+        <scene sceneID="rsd-hh-gHp">
+            <objects>
+                <viewController id="3Ki-os-FdS" customClass="SwiftUIGateViewController" customModule="SwiftPhone" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="wZc-fY-fWU">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <viewLayoutGuide key="safeArea" id="QpC-dq-wZr"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    </view>
+                    <tabBarItem key="tabBarItem" title="SwiftUI" image="eraser.fill" catalog="system" id="w3m-Zs-bud"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="XNd-Z4-1l6" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-1998" y="893"/>
+        </scene>
         <!--Target Picker View Controller-->
         <scene sceneID="E07-RH-nEc">
             <objects>
@@ -330,7 +346,22 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="WWW-er-Lnw" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="280.80000000000001" y="397.53694581280791"/>
+            <point key="canvasLocation" x="390" y="398"/>
+        </scene>
+        <!--SwiftU iPhone View Controller-->
+        <scene sceneID="U7y-kP-0pK">
+            <objects>
+                <viewController id="bMR-kh-ZXk" customClass="SwiftUIPhoneViewController" customModule="SwiftPhone" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="ZBy-WB-aUX">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <viewLayoutGuide key="safeArea" id="8j3-Dg-KDb"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="DN2-Dh-47w" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-2258" y="-410"/>
         </scene>
         <!--Main-->
         <scene sceneID="9Sc-p7-mSN">
@@ -558,6 +589,7 @@
                     <connections>
                         <segue destination="UsN-4l-NkI" kind="relationship" relationship="viewControllers" id="9jO-AQ-ULM"/>
                         <segue destination="9To-Em-WlM" kind="relationship" relationship="viewControllers" id="Jde-mG-l5X"/>
+                        <segue destination="3Ki-os-FdS" kind="relationship" relationship="viewControllers" id="oDB-gD-QQ3"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="7np-rX-VqP" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -566,6 +598,7 @@
         </scene>
     </scenes>
     <resources>
+        <image name="eraser.fill" catalog="system" width="128" height="119"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

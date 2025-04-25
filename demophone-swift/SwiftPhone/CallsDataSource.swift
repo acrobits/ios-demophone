@@ -33,6 +33,37 @@ class Entry: NSObject
     {
         return self.groupId != nil
     }
+    
+    func getCall() -> SoftphoneCallEvent? {
+        if let call = call {
+            return call
+        } else if let groupId = groupId {
+            let calls = SoftphoneBridge.instance()?.calls()?.conferences()?.getCalls(conference: groupId)
+            return calls?.first
+        }
+        return nil
+    }
+    
+    func getCallSize() -> Int {
+        if let groupId = groupId {
+            return Int(SoftphoneBridge.instance()?.calls()?.conferences()?.getSize(groupId) ?? 0)
+        } else if let _ = call {
+            return 1
+        }
+        return 0
+    }
+    
+    override func isEqual(_ object: Any?) -> Bool {
+        guard let object = object as? Entry else {
+            return false
+        }
+        
+        if self.isGroup() {
+            return self.groupId == object.groupId
+        } else {
+            return self.call?.eventId == object.call?.eventId
+        }
+    }
 }
 
 //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*

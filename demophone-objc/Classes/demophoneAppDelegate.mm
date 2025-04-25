@@ -230,6 +230,11 @@ ali::string_literal sip_account{"<account id=\"sip\">"
         NSString *errorMsg = ali::mac::str::to_nsstring(e.what());
         NSDictionary *userInfo = @{ NSLocalizedDescriptionKey: errorMsg };
         *error = [NSError errorWithDomain:LicensingManagementErrorDomain code: LicensingManagementErrorCode::LicenseMissing userInfo:userInfo];
+    } catch (ali::service_not_found_exception& e)
+    {
+        NSString *errorMsg = ali::mac::str::to_nsstring(e.what());
+        NSDictionary *userInfo = @{ NSLocalizedDescriptionKey: errorMsg };
+        *error = [NSError errorWithDomain:LicensingManagementErrorDomain code: LicensingManagementErrorCode::LicenseMissing userInfo:userInfo];
     }
     return NO;
 }
@@ -363,6 +368,7 @@ ali::string_literal sip_account{"<account id=\"sip\">"
 -(void)startSimulatedMicrophone
 //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 {
+    _softphone->calls()->startSimulatedMicrophone(nullptr, true);
     NSBundle *bundle = [NSBundle mainBundle];
     NSString *resourcePath = [bundle resourcePath];
  
@@ -1031,7 +1037,7 @@ ali::string_literal sip_account{"<account id=\"sip\">"
 
     NSLog(@"display name is %@",ali::mac::str::to_nsstring(incomingEvent->getRemoteUser(0).getDisplayName()));
 
-    switch (incomingEvent->eventType)
+    switch (incomingEvent->eventType.value)
     {
         case Softphone::EventHistory::EventType::Call:
         {

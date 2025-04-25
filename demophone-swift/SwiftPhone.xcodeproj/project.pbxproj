@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 54;
+	objectVersion = 70;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -13,7 +13,6 @@
 		C218F4712D0C64C6000FCA01 /* SwiftPackage-sipisprovider in Frameworks */ = {isa = PBXBuildFile; productRef = C218F4702D0C64C6000FCA01 /* SwiftPackage-sipisprovider */; };
 		C2313D362C246B090053F635 /* DemoAppPushProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2313D352C246B090053F635 /* DemoAppPushProvider.swift */; };
 		C2313D3B2C246D820053F635 /* BundleExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2313D3A2C246D820053F635 /* BundleExtensions.swift */; };
-		C2332D232CEB0A72005B462D /* SoftphoneSwiftPackage-saas in Frameworks */ = {isa = PBXBuildFile; productRef = C2332D222CEB0A72005B462D /* SoftphoneSwiftPackage-saas */; };
 		C234E3262535956600EFA519 /* RegViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C234E3252535956600EFA519 /* RegViewController.swift */; };
 		C234E3282535957E00EFA519 /* CallViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C234E3272535957E00EFA519 /* CallViewController.swift */; };
 		C23B19F3251E213F00984B08 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C23B19F2251E213F00984B08 /* Main.storyboard */; };
@@ -54,6 +53,29 @@
 		C2FE6A42254497BD009FB20D /* libicucore.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = C2FE6A41254497BD009FB20D /* libicucore.tbd */; };
 		C2FE6A60254499D3009FB20D /* Contacts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2FE6A5F254499D3009FB20D /* Contacts.framework */; };
 		C2FE6A62254499D8009FB20D /* ContactsUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2FE6A61254499D8009FB20D /* ContactsUI.framework */; };
+		F116F9DA2D318675003E3B15 /* UserRegistrationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F116F9D92D318675003E3B15 /* UserRegistrationView.swift */; };
+		F116F9DD2D318CED003E3B15 /* LabelFormItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = F116F9DC2D318CED003E3B15 /* LabelFormItem.swift */; };
+		F116F9E02D318DC7003E3B15 /* SwitchFormItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = F116F9DF2D318DC7003E3B15 /* SwitchFormItem.swift */; };
+		F116F9E22D31909F003E3B15 /* CallDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F116F9E12D31909F003E3B15 /* CallDetailView.swift */; };
+		F116F9E42D347BA2003E3B15 /* CallListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F116F9E32D347BA2003E3B15 /* CallListView.swift */; };
+		F116F9E82D3481B3003E3B15 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F116F9E72D3481B3003E3B15 /* HomeView.swift */; };
+		F116F9EA2D3484E6003E3B15 /* ToggleButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = F116F9E92D3484E6003E3B15 /* ToggleButton.swift */; };
+		F116F9ED2D3513CB003E3B15 /* CircleButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = F116F9EC2D3513CB003E3B15 /* CircleButton.swift */; };
+		F116F9EF2D352340003E3B15 /* SwiftUIPhoneViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F116F9EE2D352340003E3B15 /* SwiftUIPhoneViewController.swift */; };
+		F116F9F92D3528F8003E3B15 /* SwiftUIGateViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F116F9F82D3528F8003E3B15 /* SwiftUIGateViewController.swift */; };
+		F116F9FC2D3537DE003E3B15 /* UserRegistrationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F116F9FB2D3537DE003E3B15 /* UserRegistrationViewModel.swift */; };
+		F116FA072D354F66003E3B15 /* RegistrationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F116FA062D354F66003E3B15 /* RegistrationService.swift */; };
+		F116FA092D3559A0003E3B15 /* CallService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F116FA082D3559A0003E3B15 /* CallService.swift */; };
+		F116FA0C2D355A39003E3B15 /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F116FA0B2D355A39003E3B15 /* HomeViewModel.swift */; };
+		F116FA0F2D3563C7003E3B15 /* CallListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F116FA0E2D3563C7003E3B15 /* CallListViewModel.swift */; };
+		F116FA2C2D36B4F4003E3B15 /* CallDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F116FA2A2D36B4F4003E3B15 /* CallDetailViewModel.swift */; };
+		F116FA2E2D36D4CF003E3B15 /* CallActionButtons.swift in Sources */ = {isa = PBXBuildFile; fileRef = F116FA2D2D36D4CF003E3B15 /* CallActionButtons.swift */; };
+		F116FA452D38071D003E3B15 /* CallSingleSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F116FA442D38071D003E3B15 /* CallSingleSelectionView.swift */; };
+		F116FA502D395036003E3B15 /* CallTransferInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F116FA4F2D395036003E3B15 /* CallTransferInputView.swift */; };
+		F116FA512D395036003E3B15 /* CallTransferInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F116FA4F2D395036003E3B15 /* CallTransferInputView.swift */; };
+		F12B11E82D7EE8AF004DA860 /* SoftphoneSwiftPackage-saas in Frameworks */ = {isa = PBXBuildFile; productRef = F12B11E72D7EE8AF004DA860 /* SoftphoneSwiftPackage-saas */; };
+		F16BA4102D7EDF45009A9823 /* ActiveCallHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = F16BA40F2D7EDF45009A9823 /* ActiveCallHeader.swift */; };
+		F16BA4112D7EDF58009A9823 /* ActiveCallHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = F16BA40F2D7EDF45009A9823 /* ActiveCallHeader.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -67,16 +89,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		C2B05B112A8BA202008D2EDF /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		C2C3BEEC2C1ACDBD0024838A /* Embed Foundation Extensions */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -86,6 +98,16 @@
 				C2C3BEE82C1ACDBD0024838A /* NetworkExtensionSwiftPhone.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F1285F032D660CB100B8BBEC /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
@@ -144,7 +166,32 @@
 		C2FE6A41254497BD009FB20D /* libicucore.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libicucore.tbd; path = usr/lib/libicucore.tbd; sourceTree = SDKROOT; };
 		C2FE6A5F254499D3009FB20D /* Contacts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Contacts.framework; path = System/Library/Frameworks/Contacts.framework; sourceTree = SDKROOT; };
 		C2FE6A61254499D8009FB20D /* ContactsUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ContactsUI.framework; path = System/Library/Frameworks/ContactsUI.framework; sourceTree = SDKROOT; };
+		F116F9D92D318675003E3B15 /* UserRegistrationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserRegistrationView.swift; sourceTree = "<group>"; };
+		F116F9DC2D318CED003E3B15 /* LabelFormItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabelFormItem.swift; sourceTree = "<group>"; };
+		F116F9DF2D318DC7003E3B15 /* SwitchFormItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchFormItem.swift; sourceTree = "<group>"; };
+		F116F9E12D31909F003E3B15 /* CallDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallDetailView.swift; sourceTree = "<group>"; };
+		F116F9E32D347BA2003E3B15 /* CallListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallListView.swift; sourceTree = "<group>"; };
+		F116F9E72D3481B3003E3B15 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		F116F9E92D3484E6003E3B15 /* ToggleButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToggleButton.swift; sourceTree = "<group>"; };
+		F116F9EC2D3513CB003E3B15 /* CircleButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircleButton.swift; sourceTree = "<group>"; };
+		F116F9EE2D352340003E3B15 /* SwiftUIPhoneViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUIPhoneViewController.swift; sourceTree = "<group>"; };
+		F116F9F82D3528F8003E3B15 /* SwiftUIGateViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUIGateViewController.swift; sourceTree = "<group>"; };
+		F116F9FB2D3537DE003E3B15 /* UserRegistrationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserRegistrationViewModel.swift; sourceTree = "<group>"; };
+		F116FA062D354F66003E3B15 /* RegistrationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegistrationService.swift; sourceTree = "<group>"; };
+		F116FA082D3559A0003E3B15 /* CallService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallService.swift; sourceTree = "<group>"; };
+		F116FA0B2D355A39003E3B15 /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
+		F116FA0E2D3563C7003E3B15 /* CallListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallListViewModel.swift; sourceTree = "<group>"; };
+		F116FA182D367DE1003E3B15 /* SwiftPhoneUIPlayground.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SwiftPhoneUIPlayground.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		F116FA2A2D36B4F4003E3B15 /* CallDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallDetailViewModel.swift; sourceTree = "<group>"; };
+		F116FA2D2D36D4CF003E3B15 /* CallActionButtons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallActionButtons.swift; sourceTree = "<group>"; };
+		F116FA442D38071D003E3B15 /* CallSingleSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallSingleSelectionView.swift; sourceTree = "<group>"; };
+		F116FA4F2D395036003E3B15 /* CallTransferInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallTransferInputView.swift; sourceTree = "<group>"; };
+		F16BA40F2D7EDF45009A9823 /* ActiveCallHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActiveCallHeader.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		F116FA192D367DE1003E3B15 /* SwiftPhoneUIPlayground */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = SwiftPhoneUIPlayground; sourceTree = "<group>"; };
+/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		5757E6952508D57F00DD3ED0 /* Frameworks */ = {
@@ -168,13 +215,13 @@
 				C2FE6A26254496CD009FB20D /* SystemConfiguration.framework in Frameworks */,
 				C2FE6A24254496C8009FB20D /* QuartzCore.framework in Frameworks */,
 				C2FE6A22254496BF009FB20D /* CoreMedia.framework in Frameworks */,
+				F12B11E82D7EE8AF004DA860 /* SoftphoneSwiftPackage-saas in Frameworks */,
 				C2FE6A20254496B9009FB20D /* CoreVideo.framework in Frameworks */,
 				C2FE6A1E254496B1009FB20D /* CoreText.framework in Frameworks */,
 				C2FE6A1C254496AC009FB20D /* VideoToolbox.framework in Frameworks */,
 				C2FE6A1A2544969C009FB20D /* CoreTelephony.framework in Frameworks */,
 				C2FE6A1825449697009FB20D /* CallKit.framework in Frameworks */,
 				C2A2B2D22542C79E0056B21C /* PushKit.framework in Frameworks */,
-				C2332D232CEB0A72005B462D /* SoftphoneSwiftPackage-saas in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -187,6 +234,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		F116FA152D367DE1003E3B15 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -195,6 +249,7 @@
 			children = (
 				5757E69A2508D57F00DD3ED0 /* SwiftPhone */,
 				C2C3BEE12C1ACDBD0024838A /* NetworkExtensionSwiftPhone */,
+				F116FA192D367DE1003E3B15 /* SwiftPhoneUIPlayground */,
 				5757E6992508D57F00DD3ED0 /* Products */,
 				5757E6BB2508D62400DD3ED0 /* Frameworks */,
 			);
@@ -205,6 +260,7 @@
 			children = (
 				5757E6982508D57F00DD3ED0 /* SwiftPhone.app */,
 				C2C3BEDE2C1ACDBD0024838A /* NetworkExtensionSwiftPhone.appex */,
+				F116FA182D367DE1003E3B15 /* SwiftPhoneUIPlayground.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -212,6 +268,7 @@
 		5757E69A2508D57F00DD3ED0 /* SwiftPhone */ = {
 			isa = PBXGroup;
 			children = (
+				F116F9D62D3185F6003E3B15 /* UI */,
 				C2F000062C61F96B002E643C /* AudioRoutePickerProxy.swift */,
 				C2C3BEED2C1AEDCF0024838A /* LocalPush */,
 				C2EB572C2A14E797000DDC13 /* provisioning.xml */,
@@ -305,6 +362,121 @@
 			path = snd;
 			sourceTree = "<group>";
 		};
+		F116F9D62D3185F6003E3B15 /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				F116FA052D354F54003E3B15 /* Services */,
+				F116F9F72D3528EC003E3B15 /* ViewControllers */,
+				F116F9D82D31865A003E3B15 /* Screens */,
+				F116F9D72D318650003E3B15 /* Components */,
+			);
+			path = UI;
+			sourceTree = "<group>";
+		};
+		F116F9D72D318650003E3B15 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				F116F9EB2D3513C0003E3B15 /* Buttons */,
+				F116F9DC2D318CED003E3B15 /* LabelFormItem.swift */,
+				F116F9DF2D318DC7003E3B15 /* SwitchFormItem.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		F116F9D82D31865A003E3B15 /* Screens */ = {
+			isa = PBXGroup;
+			children = (
+				F116FA0D2D355F20003E3B15 /* Calls */,
+				F116FA0A2D3559ED003E3B15 /* Home */,
+				F116F9FA2D3537CC003E3B15 /* Registration */,
+				F116F9EE2D352340003E3B15 /* SwiftUIPhoneViewController.swift */,
+			);
+			path = Screens;
+			sourceTree = "<group>";
+		};
+		F116F9EB2D3513C0003E3B15 /* Buttons */ = {
+			isa = PBXGroup;
+			children = (
+				F116F9E92D3484E6003E3B15 /* ToggleButton.swift */,
+				F116F9EC2D3513CB003E3B15 /* CircleButton.swift */,
+				F116FA2D2D36D4CF003E3B15 /* CallActionButtons.swift */,
+				F16BA40F2D7EDF45009A9823 /* ActiveCallHeader.swift */,
+			);
+			path = Buttons;
+			sourceTree = "<group>";
+		};
+		F116F9F72D3528EC003E3B15 /* ViewControllers */ = {
+			isa = PBXGroup;
+			children = (
+				F116F9F82D3528F8003E3B15 /* SwiftUIGateViewController.swift */,
+			);
+			path = ViewControllers;
+			sourceTree = "<group>";
+		};
+		F116F9FA2D3537CC003E3B15 /* Registration */ = {
+			isa = PBXGroup;
+			children = (
+				F116F9D92D318675003E3B15 /* UserRegistrationView.swift */,
+				F116F9FB2D3537DE003E3B15 /* UserRegistrationViewModel.swift */,
+			);
+			path = Registration;
+			sourceTree = "<group>";
+		};
+		F116FA052D354F54003E3B15 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				F116FA062D354F66003E3B15 /* RegistrationService.swift */,
+				F116FA082D3559A0003E3B15 /* CallService.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		F116FA0A2D3559ED003E3B15 /* Home */ = {
+			isa = PBXGroup;
+			children = (
+				F116F9E72D3481B3003E3B15 /* HomeView.swift */,
+				F116FA0B2D355A39003E3B15 /* HomeViewModel.swift */,
+			);
+			path = Home;
+			sourceTree = "<group>";
+		};
+		F116FA0D2D355F20003E3B15 /* Calls */ = {
+			isa = PBXGroup;
+			children = (
+				F116FA422D38070B003E3B15 /* Selection */,
+				F116FA412D3806F7003E3B15 /* Detail */,
+				F116FA402D3806EE003E3B15 /* List */,
+			);
+			path = Calls;
+			sourceTree = "<group>";
+		};
+		F116FA402D3806EE003E3B15 /* List */ = {
+			isa = PBXGroup;
+			children = (
+				F116FA0E2D3563C7003E3B15 /* CallListViewModel.swift */,
+				F116F9E32D347BA2003E3B15 /* CallListView.swift */,
+			);
+			path = List;
+			sourceTree = "<group>";
+		};
+		F116FA412D3806F7003E3B15 /* Detail */ = {
+			isa = PBXGroup;
+			children = (
+				F116F9E12D31909F003E3B15 /* CallDetailView.swift */,
+				F116FA2A2D36B4F4003E3B15 /* CallDetailViewModel.swift */,
+			);
+			path = Detail;
+			sourceTree = "<group>";
+		};
+		F116FA422D38070B003E3B15 /* Selection */ = {
+			isa = PBXGroup;
+			children = (
+				F116FA442D38071D003E3B15 /* CallSingleSelectionView.swift */,
+				F116FA4F2D395036003E3B15 /* CallTransferInputView.swift */,
+			);
+			path = Selection;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -315,8 +487,8 @@
 				5757E6942508D57F00DD3ED0 /* Sources */,
 				5757E6952508D57F00DD3ED0 /* Frameworks */,
 				5757E6962508D57F00DD3ED0 /* Resources */,
-				C2B05B112A8BA202008D2EDF /* Embed Frameworks */,
 				C2C3BEEC2C1ACDBD0024838A /* Embed Foundation Extensions */,
+				F1285F032D660CB100B8BBEC /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -325,7 +497,7 @@
 			);
 			name = SwiftPhone;
 			packageProductDependencies = (
-				C2332D222CEB0A72005B462D /* SoftphoneSwiftPackage-saas */,
+				F12B11E72D7EE8AF004DA860 /* SoftphoneSwiftPackage-saas */,
 			);
 			productName = SwiftPhone;
 			productReference = 5757E6982508D57F00DD3ED0 /* SwiftPhone.app */;
@@ -351,13 +523,35 @@
 			productReference = C2C3BEDE2C1ACDBD0024838A /* NetworkExtensionSwiftPhone.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
+		F116FA172D367DE1003E3B15 /* SwiftPhoneUIPlayground */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F116FA232D367DE3003E3B15 /* Build configuration list for PBXNativeTarget "SwiftPhoneUIPlayground" */;
+			buildPhases = (
+				F116FA142D367DE1003E3B15 /* Sources */,
+				F116FA152D367DE1003E3B15 /* Frameworks */,
+				F116FA162D367DE1003E3B15 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				F116FA192D367DE1003E3B15 /* SwiftPhoneUIPlayground */,
+			);
+			name = SwiftPhoneUIPlayground;
+			packageProductDependencies = (
+			);
+			productName = SwiftPhoneUIPlayground;
+			productReference = F116FA182D367DE1003E3B15 /* SwiftPhoneUIPlayground.app */;
+			productType = "com.apple.product-type.application";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
 		5757E6902508D57F00DD3ED0 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 1540;
+				LastSwiftUpdateCheck = 1610;
 				LastUpgradeCheck = 1200;
 				ORGANIZATIONNAME = Acrobits;
 				TargetAttributes = {
@@ -366,6 +560,9 @@
 					};
 					C2C3BEDD2C1ACDBD0024838A = {
 						CreatedOnToolsVersion = 15.4;
+					};
+					F116FA172D367DE1003E3B15 = {
+						CreatedOnToolsVersion = 16.1;
 					};
 				};
 			};
@@ -379,8 +576,8 @@
 			);
 			mainGroup = 5757E68F2508D57F00DD3ED0;
 			packageReferences = (
-				C2332D212CEB0A72005B462D /* XCRemoteSwiftPackageReference "SoftphoneSwiftPackage-saas" */,
 				C218F46F2D0C64C6000FCA01 /* XCRemoteSwiftPackageReference "SwiftPackage-sipisprovider" */,
+				F12B11E62D7EE8AF004DA860 /* XCRemoteSwiftPackageReference "SoftphoneSwiftPackage-saas" */,
 			);
 			productRefGroup = 5757E6992508D57F00DD3ED0 /* Products */;
 			projectDirPath = "";
@@ -388,6 +585,7 @@
 			targets = (
 				5757E6972508D57F00DD3ED0 /* SwiftPhone */,
 				C2C3BEDD2C1ACDBD0024838A /* NetworkExtensionSwiftPhone */,
+				F116FA172D367DE1003E3B15 /* SwiftPhoneUIPlayground */,
 			);
 		};
 /* End PBXProject section */
@@ -415,6 +613,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		F116FA162D367DE1003E3B15 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -422,15 +627,35 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F116F9FC2D3537DE003E3B15 /* UserRegistrationViewModel.swift in Sources */,
+				F116F9E22D31909F003E3B15 /* CallDetailView.swift in Sources */,
+				F116F9E02D318DC7003E3B15 /* SwitchFormItem.swift in Sources */,
+				F116F9ED2D3513CB003E3B15 /* CircleButton.swift in Sources */,
 				C2F000072C61F96C002E643C /* AudioRoutePickerProxy.swift in Sources */,
+				F116FA0C2D355A39003E3B15 /* HomeViewModel.swift in Sources */,
+				F116FA2C2D36B4F4003E3B15 /* CallDetailViewModel.swift in Sources */,
+				F116FA0F2D3563C7003E3B15 /* CallListViewModel.swift in Sources */,
+				F116FA452D38071D003E3B15 /* CallSingleSelectionView.swift in Sources */,
+				F116F9EA2D3484E6003E3B15 /* ToggleButton.swift in Sources */,
+				F116FA502D395036003E3B15 /* CallTransferInputView.swift in Sources */,
+				F16BA4102D7EDF45009A9823 /* ActiveCallHeader.swift in Sources */,
+				F116F9E82D3481B3003E3B15 /* HomeView.swift in Sources */,
 				C234E3262535956600EFA519 /* RegViewController.swift in Sources */,
+				F116F9DD2D318CED003E3B15 /* LabelFormItem.swift in Sources */,
+				F116F9EF2D352340003E3B15 /* SwiftUIPhoneViewController.swift in Sources */,
 				C234E3282535957E00EFA519 /* CallViewController.swift in Sources */,
 				C24BF2672538485300692D0C /* CallsDataSource.swift in Sources */,
+				F116F9DA2D318675003E3B15 /* UserRegistrationView.swift in Sources */,
 				5757E69C2508D57F00DD3ED0 /* AppDelegate.swift in Sources */,
 				C28857162A8E787F00E048F2 /* TargetPickerViewController.swift in Sources */,
 				C2C3BEF12C1AEE190024838A /* NEAppPushManagerConfig.swift in Sources */,
+				F116F9E42D347BA2003E3B15 /* CallListView.swift in Sources */,
+				F116FA072D354F66003E3B15 /* RegistrationService.swift in Sources */,
 				C24BF269253853F700692D0C /* Extensions.swift in Sources */,
 				C2C3BEEF2C1AEE050024838A /* NEAppPushManagerHandler.swift in Sources */,
+				F116FA2E2D36D4CF003E3B15 /* CallActionButtons.swift in Sources */,
+				F116F9F92D3528F8003E3B15 /* SwiftUIGateViewController.swift in Sources */,
+				F116FA092D3559A0003E3B15 /* CallService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -441,6 +666,15 @@
 				C2C3BEE32C1ACDBD0024838A /* AppProxyProvider.swift in Sources */,
 				C2313D362C246B090053F635 /* DemoAppPushProvider.swift in Sources */,
 				C2313D3B2C246D820053F635 /* BundleExtensions.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F116FA142D367DE1003E3B15 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F116FA512D395036003E3B15 /* CallTransferInputView.swift in Sources */,
+				F16BA4112D7EDF58009A9823 /* ActiveCallHeader.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -598,7 +832,7 @@
 				);
 				GCC_ENABLE_CPP_RTTI = NO;
 				INFOPLIST_FILE = SwiftPhone/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -628,7 +862,7 @@
 				);
 				GCC_ENABLE_CPP_RTTI = NO;
 				INFOPLIST_FILE = SwiftPhone/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -715,6 +949,75 @@
 			};
 			name = Release;
 		};
+		F116FA242D367DE3003E3B15 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"SwiftPhoneUIPlayground/Preview Content\"";
+				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.1;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = cz.acrobits.softphone.SwiftPhoneUIPlayground;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		F116FA252D367DE3003E3B15 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"SwiftPhoneUIPlayground/Preview Content\"";
+				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.1;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = cz.acrobits.softphone.SwiftPhoneUIPlayground;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -745,6 +1048,15 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
+		F116FA232D367DE3003E3B15 /* Build configuration list for PBXNativeTarget "SwiftPhoneUIPlayground" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F116FA242D367DE3003E3B15 /* Debug */,
+				F116FA252D367DE3003E3B15 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
@@ -756,12 +1068,12 @@
 				minimumVersion = 1.0.0;
 			};
 		};
-		C2332D212CEB0A72005B462D /* XCRemoteSwiftPackageReference "SoftphoneSwiftPackage-saas" */ = {
+		F12B11E62D7EE8AF004DA860 /* XCRemoteSwiftPackageReference "SoftphoneSwiftPackage-saas" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/acrobits/SoftphoneSwiftPackage-saas.git";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 1.1.0;
+				minimumVersion = 1.1.62;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
@@ -772,9 +1084,9 @@
 			package = C218F46F2D0C64C6000FCA01 /* XCRemoteSwiftPackageReference "SwiftPackage-sipisprovider" */;
 			productName = "SwiftPackage-sipisprovider";
 		};
-		C2332D222CEB0A72005B462D /* SoftphoneSwiftPackage-saas */ = {
+		F12B11E72D7EE8AF004DA860 /* SoftphoneSwiftPackage-saas */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = C2332D212CEB0A72005B462D /* XCRemoteSwiftPackageReference "SoftphoneSwiftPackage-saas" */;
+			package = F12B11E62D7EE8AF004DA860 /* XCRemoteSwiftPackageReference "SoftphoneSwiftPackage-saas" */;
 			productName = "SoftphoneSwiftPackage-saas";
 		};
 /* End XCSwiftPackageProductDependency section */

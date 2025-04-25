@@ -62,9 +62,9 @@
 		C24C92AE2D4281BC00DBD598 /* eliseb.wav in Resources */ = {isa = PBXBuildFile; fileRef = C24C92AD2D4281BC00DBD598 /* eliseb.wav */; };
 		C2551FC62A8E4E030032E967 /* TargetPickerViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = C2551FC52A8E4E030032E967 /* TargetPickerViewController.mm */; };
 		C2551FC92A8E636B0032E967 /* UIViewController+Alert.mm in Sources */ = {isa = PBXBuildFile; fileRef = C2551FC82A8E636B0032E967 /* UIViewController+Alert.mm */; };
-		C2BE37332BFE08E1000A27D7 /* Softphone.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2BE37302BFE08E1000A27D7 /* Softphone.xcframework */; };
-		C2BE37342BFE08E1000A27D7 /* Softphone.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C2BE37302BFE08E1000A27D7 /* Softphone.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		C2EB572F2A150C8D000DDC13 /* provisioning.xml in Resources */ = {isa = PBXBuildFile; fileRef = C2EB572E2A150C8D000DDC13 /* provisioning.xml */; };
+		F12B12032D7EEC6F004DA860 /* Softphone.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = F12B12022D7EEC6F004DA860 /* Softphone.xcframework */; };
+		F12B12042D7EEC6F004DA860 /* Softphone.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = F12B12022D7EEC6F004DA860 /* Softphone.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -78,13 +78,13 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		C2BE37352BFE08E1000A27D7 /* Embed Frameworks */ = {
+		F12B12052D7EEC6F004DA860 /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				C2BE37342BFE08E1000A27D7 /* Softphone.xcframework in Embed Frameworks */,
+				F12B12042D7EEC6F004DA860 /* Softphone.xcframework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -152,8 +152,8 @@
 		C2551FC72A8E636B0032E967 /* UIViewController+Alert.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIViewController+Alert.h"; sourceTree = "<group>"; };
 		C2551FC82A8E636B0032E967 /* UIViewController+Alert.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = "UIViewController+Alert.mm"; sourceTree = "<group>"; };
 		C2B05B152A8BAA9F008D2EDF /* CallRedirectionDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CallRedirectionDelegate.h; sourceTree = "<group>"; };
-		C2BE37302BFE08E1000A27D7 /* Softphone.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = Softphone.xcframework; sourceTree = "<group>"; };
 		C2EB572E2A150C8D000DDC13 /* provisioning.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = provisioning.xml; sourceTree = "<group>"; };
+		F12B12022D7EEC6F004DA860 /* Softphone.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = Softphone.xcframework; path = Debug/Softphone.xcframework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -163,6 +163,7 @@
 			files = (
 				2CBCD84D2773A0A3001D4630 /* UserNotifications.framework in Frameworks */,
 				929EAAA41E0888230004F9E0 /* CallKit.framework in Frameworks */,
+				F12B12032D7EEC6F004DA860 /* Softphone.xcframework in Frameworks */,
 				9290E8101D64985800195D12 /* CoreTelephony.framework in Frameworks */,
 				921B4E511BBC2100001F0A37 /* PushKit.framework in Frameworks */,
 				92F671C31A8E0615009E3732 /* VideoToolbox.framework in Frameworks */,
@@ -170,7 +171,6 @@
 				92F6718C1A8ABBCC009E3732 /* CoreVideo.framework in Frameworks */,
 				92F6718B1A8ABBC4009E3732 /* CoreMedia.framework in Frameworks */,
 				92F671851A8A8943009E3732 /* QuartzCore.framework in Frameworks */,
-				C2BE37332BFE08E1000A27D7 /* Softphone.xcframework in Frameworks */,
 				92F671721A8A51C8009E3732 /* SystemConfiguration.framework in Frameworks */,
 				92F6716E1A8A51A9009E3732 /* Security.framework in Frameworks */,
 				48D5EDE618CE7A3E000ABCAC /* Accelerate.framework in Frameworks */,
@@ -268,7 +268,7 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				C2BE37302BFE08E1000A27D7 /* Softphone.xcframework */,
+				F12B12022D7EEC6F004DA860 /* Softphone.xcframework */,
 				2CBCD84C2773A0A3001D4630 /* UserNotifications.framework */,
 				929EAAA31E0888230004F9E0 /* CallKit.framework */,
 				924C0F801C051FA500F656B2 /* libz.tbd */,
@@ -325,7 +325,7 @@
 				1D60588D0D05DD3D006BFB54 /* Resources */,
 				1D60588E0D05DD3D006BFB54 /* Sources */,
 				1D60588F0D05DD3D006BFB54 /* Frameworks */,
-				C2BE37352BFE08E1000A27D7 /* Embed Frameworks */,
+				F12B12052D7EEC6F004DA860 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);

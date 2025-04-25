@@ -297,13 +297,17 @@ extension CallViewController
         
         if let capabilities = CallRedirectionManager.instance().getRedirectCapabilities(call) {
             if capabilities.attendedTransferCapability.isDirect() {
+                // This is for transferring the active call to a call selected from the list in CallViewController.
                 CallRedirectionManager.instance().performAttendedTransferBetween(source: call, target: capabilities.attendedTransferTargets.first as? SoftphoneCallEvent)
+               // CallRedirectionManager.instance().setAttendedTransferTarget(capabilities.attendedTransferTargets.first)
             }
             else if capabilities.attendedTransferCapability.isNewCall() {
+                // This is for transferring the active call to a new mumber from the text input in the 1st screen.
                 CallRedirectionManager.instance().setAttendedTransferSource(call)
                 tabBarController?.selectedIndex = 0
             }
             else if capabilities.attendedTransferCapability.isPickAnotherCall() {
+                // This is for transferring the active call to a call selected from the list, but the calls are from capabilities.attendedTransferTargets
                 CallRedirectionManager.instance().setAttendedTransferSource(call)
                 attendedTransferTargets = capabilities.attendedTransferTargets as! [SoftphoneCallEvent]
                 
