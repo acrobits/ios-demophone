@@ -1,13 +1,13 @@
 {
-  "originHash" : "fb8f7afa9a3f556f7f1d1cae201682f5993acd9f457e38a3d7268454efa87da8",
+  "originHash" : "3cc5b376a76f21f23a7aba2094983e8c7bcf80fd6b829875a5012f44533ed65e",
   "pins" : [
     {
       "identity" : "softphoneswiftpackage-saas",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/acrobits/SoftphoneSwiftPackage-saas.git",
       "state" : {
-        "revision" : "0e3418a2c5685559879a3ef2a152dcee4f73329e",
-        "version" : "1.1.62"
+        "revision" : "e200e564b30025dbe822640a3c8031f9262debe2",
+        "version" : "1.2.1"
       }
     },
     {
