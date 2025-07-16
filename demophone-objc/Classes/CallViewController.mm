@@ -525,10 +525,10 @@
 
 #pragma mark - CallRedirectionTargetChangeDelegate
 // ******************************************************************
--(void)redirectTargetChanged:(Softphone::EventHistory::CallEvent::Pointer)callEvent type:(Call::Redirection::RedirectType)type
+-(void)redirectTargetChanged:(Call::Redirection::Callbacks::TargetChangeData const&) data
 // ******************************************************************
 {
-    if (!callEvent.is_null() && type == Call::Redirection::RedirectType::AttendedTransfer()) {
+    if (!data.newTarget.is_null() && data.type == Call::Redirection::RedirectType::AttendedTransfer()) {
         [self showCompleteAttTransferAlert];
     }
 }

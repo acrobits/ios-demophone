@@ -5,7 +5,7 @@
 @protocol CallRedirectionStateChangeDelegate <NSObject>
 //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 
--(void)redirectStateChanged:(Call::Redirection::RedirectState)state type:(Call::Redirection::RedirectType)type;
+-(void)redirectStateChanged:(Call::Redirection::Callbacks::StateChangeData const&) data;
 
 @end
 
@@ -13,7 +13,7 @@
 @protocol CallRedirectionSourceChangeDelegate <NSObject>
 //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 
--(void)redirectSourceChanged:(Softphone::EventHistory::CallEvent::Pointer)callEvent type:(Call::Redirection::RedirectType)type;
+-(void)redirectSourceChanged:(Call::Redirection::Callbacks::SourceChangeData const&) data;
 
 @end
 
@@ -21,7 +21,7 @@
 @protocol CallRedirectionTargetChangeDelegate <NSObject>
 //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 
--(void)redirectTargetChanged:(Softphone::EventHistory::CallEvent::Pointer)callEvent type:(Call::Redirection::RedirectType)type;
+-(void)redirectTargetChanged:(Call::Redirection::Callbacks::TargetChangeData const&) data;
 
 @end
 

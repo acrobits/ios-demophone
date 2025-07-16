@@ -363,10 +363,13 @@ class CallService: NSObject {
 }
 
 extension CallService: CallRedirectionTargetChangeDelegate {
-    func redirectTargetChanged(call callEvent: SoftphoneCallEvent!, type: CallRedirectType!) {
-        guard let _ = callEvent else { return }
+    //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+    func redirectTargetChanged(data: TargetChangeData!)
+    //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+    {
+        guard let _ = data.newTarget else { return }
         
-        if type.isAttendedTransfer() && showConfirmTransferAlert {
+        if data.type.isAttendedTransfer() && showConfirmTransferAlert {
             onConfirmAttendedTransfer.send(())
         }
     }
@@ -374,25 +377,24 @@ extension CallService: CallRedirectionTargetChangeDelegate {
 
 extension CallService: CallRedirectionStateChangeDelegate {
     
-    func redirectStateChanged(state: CallRedirectState!, type: CallRedirectType!) {
-        let isTransferType = type.isTransferType()
+    //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+    func redirectStateChanged(data: StateChangeData!)
+    //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+    {
+        let isTransferType = data.type.isTransferType()
         var message: String = ""
         
-        if state.isSucceeded() {
+        if data.newState.isSucceeded() {
             message = isTransferType ? "Transfer Complete" : "Forward Complete"
-//            showAlert(title: "Success", message: message)
         }
-        else if state.isFailed() {
+        else if data.newState.isFailed() {
             message = isTransferType ? "Transfer Failed" : "Forward Failed"
-//            showAlert(title: "Error", message: message)
         }
-        else if state.isCancelled() {
+        else if data.newState.isCancelled() {
             message = isTransferType ? "Transfer Cancelled" : "Forward Cancelled"
-//            showAlert(title: "Error", message: message)
         }
-        else if state.isInProgress() {
+        else if data.newState.isInProgress() {
             message = isTransferType ? "Transfer in Progress" : "Forward in Progress"
         }
     }
-    
 }

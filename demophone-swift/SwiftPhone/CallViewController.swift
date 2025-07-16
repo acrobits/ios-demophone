@@ -435,12 +435,12 @@ extension CallViewController: CallRedirectionTargetChangeDelegate
 //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 {
     //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
-    func redirectTargetChanged(call callEvent: SoftphoneCallEvent!, type: CallRedirectType!)
+    func redirectTargetChanged(data: TargetChangeData!)
     //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
     {
-        guard let _ = callEvent else { return }
+        guard let _ = data.newTarget else { return }
         
-        if type.isAttendedTransfer() {
+        if data.type.isAttendedTransfer() {
             showCompleteAttTransferAlert()
         }
     }

@@ -18,9 +18,10 @@ enum ImagePurpose
 public enum SdkState
 //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 {
-    case stopped
+    case unknown
     case running
     case terminating
+    case stopped
 }
 
 typealias TerminatingCallback = () -> Void
@@ -42,7 +43,7 @@ class AppDelegate: UIResponder
     
     var softphoneObserverProxy: SoftphoneObserverProxyBridge!
     
-    var sdkState: SdkState = .stopped
+    var sdkState: SdkState = .unknown
     var terminatingTimer: Timer?
     var terminatingCallbacks: [TerminatingCallback] = []
     
@@ -749,8 +750,17 @@ extension AppDelegate: UIApplicationDelegate
         """
         
         do {
-            try SoftphoneBridge.initialize(xmlString)
+            if sdkState == .unknown {
+                try SoftphoneBridge.initialize(xmlString)
+            }
+            
             let softphoneInstance = SoftphoneBridge.instance()
+            
+            if sdkState == .stopped {
+                softphoneInstance?.state()?.respawn()
+                sdkState = .running
+                return
+            }
             
             softphoneInstance?.log()?.setCustomSink(serializer)
             softphoneInstance?.settings()?.getPreferences()?.trafficLogging = true
@@ -779,15 +789,21 @@ extension AppDelegate: UIApplicationDelegate
             sdkState = .running
         }
         catch let error as NSError {
-            if error.domain == LicensingManagementErrorDomain {
-                if let errorCode = LicensingManagementErrorCode(rawValue: error.code) {
+            if error.domain == SoftphoneInitErrorDomain {
+                if let errorCode = SoftphoneInitErrorCode(rawValue: error.code) {
                     switch errorCode {
-                    case .LicenseInvalid:
+                    case .invalidLicense:
                         debugPrint("Invalid license")
-                    case .LicenseMissing:
+                    case .licenseMissing:
                         debugPrint("Missing license")
+                    case .runtime:
+                        debugPrint("Runtime Error = \(error.localizedDescription)")
+                    case .general:
+                        debugPrint("General Error = \(error.localizedDescription)")
+                    case .unknown:
+                        debugPrint("Unknown Error = \(error.localizedDescription)")
                     @unknown default:
-                        debugPrint(error);
+                        fatalError()
                     }
                 }
             }
@@ -821,9 +837,6 @@ extension AppDelegate: UIApplicationDelegate
             sdkState = .stopped
             terminatingTimer?.invalidate()
             terminatingTimer = nil
-            
-            softphoneObserverProxy.delegate = nil
-            SoftphoneBridge.deinit()
             
             terminatingCallbacks.forEach { callback in
                 callback()

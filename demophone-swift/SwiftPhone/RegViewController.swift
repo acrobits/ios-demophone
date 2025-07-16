@@ -117,27 +117,27 @@ extension RegViewController: CallRedirectionStateChangeDelegate
 //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 {
     //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
-    func redirectStateChanged(state: CallRedirectState!, type: CallRedirectType!)
+    func redirectStateChanged(data: StateChangeData!)
     //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
     {
-        callButton.isSelected = state.isSourceAssigned() && type.isBlindTransfer()
+        callButton.isSelected = data.newState.isSourceAssigned() && data.type.isBlindTransfer()
         
-        let isTransferType = type.isTransferType()
+        let isTransferType = data.type.isTransferType()
         var message: String = ""
         
-        if state.isSucceeded() {
+        if data.newState.isSucceeded() {
             message = isTransferType ? "Transfer Complete" : "Forward Complete"
             showAlert(title: "Success", message: message)
         }
-        else if state.isFailed() {
+        else if data.newState.isFailed() {
             message = isTransferType ? "Transfer Failed" : "Forward Failed"
             showAlert(title: "Error", message: message)
         }
-        else if state.isCancelled() {
+        else if data.newState.isCancelled() {
             message = isTransferType ? "Transfer Cancelled" : "Forward Cancelled"
             showAlert(title: "Error", message: message)
         }
-        else if state.isInProgress() {
+        else if data.newState.isInProgress() {
             message = isTransferType ? "Transfer in Progress" : "Forward in Progress"
         }
         

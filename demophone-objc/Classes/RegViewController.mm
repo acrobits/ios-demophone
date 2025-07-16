@@ -51,30 +51,30 @@
 
 #pragma mark - CallRedirectionStateChangeDelegate
 // ******************************************************************
-- (void) redirectStateChanged:(Call::Redirection::RedirectState)state type:(Call::Redirection::RedirectType)type
+-(void)redirectStateChanged:(Call::Redirection::Callbacks::StateChangeData const&) data
 // ******************************************************************
 {
-    _callButton.selected = type == Call::Redirection::RedirectType::BlindTransfer() && state == Call::Redirection::RedirectState::SourceAssigned();
+    _callButton.selected = data.type == Call::Redirection::RedirectType::BlindTransfer() && data.newState == Call::Redirection::RedirectState::SourceAssigned();
     
-    bool isTransferType = type.isTransferType();
+    bool isTransferType = data.type.isTransferType();
     NSString *message = @"";
     
-    if (state == Call::Redirection::RedirectState::Succeeded())
+    if (data.newState == Call::Redirection::RedirectState::Succeeded())
     {
         message = isTransferType ? @"Transfer Complete" : @"Forward Complete";
         [self showAlertWithTitle:@"Success" andMessage:message];
     }
-    else if (state == Call::Redirection::RedirectState::Failed())
+    else if (data.newState == Call::Redirection::RedirectState::Failed())
     {
         message = isTransferType ? @"Transfer Failed" : @"Forward Failed";
         [self showAlertWithTitle:@"Error" andMessage:message];
     }
-    else if (state == Call::Redirection::RedirectState::Cancelled())
+    else if (data.newState == Call::Redirection::RedirectState::Cancelled())
     {
         message = isTransferType ? @"Transfer Cancelled" : @"Forward Cancelled";
         [self showAlertWithTitle:@"Error" andMessage:message];
     }
-    else if(state == Call::Redirection::RedirectState::InProgress())
+    else if(data.newState == Call::Redirection::RedirectState::InProgress())
     {
         message = isTransferType ? @"Transfer in Progress" : @"Forward in Progress";
     }

@@ -60,7 +60,7 @@ enum ImagePurpose
 //************************************************************
 @interface demophoneAppDelegate ()
 {
-    ali::handle2 badgeCountChangeHandle;
+    ali::handle2_disposer _disposer;
 }
 
 @property (nonatomic, strong) NSHashTable<id<CallRedirectionStateChangeDelegate>> *stateChangeDelegates;
@@ -1089,10 +1089,10 @@ ali::string_literal sip_account{"<account id=\"sip\">"
     auto weakSelf = ali::mac::make_weak(self);
     
     auto badgeManager = Softphone::service<Softphone::BadgeManager>().lock();
-    badgeCountChangeHandle =  badgeManager->registerBadgeCountChangeCallback([weakSelf]() {
+    _disposer.add(badgeManager->registerBadgeCountChangeCallback([weakSelf]() {
         auto self = weakSelf.strong();
         [self updateBadge];
-    });
+    }));
 }
 
 #pragma mark - Call Redirection Manager
@@ -1104,20 +1104,20 @@ ali::string_literal sip_account{"<account id=\"sip\">"
     auto weakSelf = ali::mac::make_weak(self);
     
     auto callRedirectionManager = Softphone::SdkServiceHolder::get<Call::Redirection::Manager>().lock();
-    callRedirectionManager->notifyStateChange((__bridge void*)self, [weakSelf](Call::Redirection::RedirectType type, Call::Redirection::RedirectState state) {
+    _disposer.add(callRedirectionManager->notifyStateChange([weakSelf](Call::Redirection::Callbacks::StateChangeData const& data) {
         auto self = weakSelf.strong();
-        [self onRedirectStateChanged:state type:type];
-    });
+        [self onRedirectStateChanged:data];
+    }));
     
-    callRedirectionManager->notifySourceChange((__bridge void*)self, [weakSelf](Call::Redirection::RedirectType type, Softphone::EventHistory::CallEvent::Pointer callEvent) {
+    _disposer.add(callRedirectionManager->notifySourceChange([weakSelf](Call::Redirection::Callbacks::SourceChangeData const& data) {
         auto self = weakSelf.strong();
-        [self onRedirectSourceChanged:type call:callEvent];
-    });
+        [self onRedirectSourceChanged:data];
+    }));
     
-    callRedirectionManager->notifyTargetChange((__bridge void*)self, [weakSelf](Call::Redirection::RedirectType type, Softphone::EventHistory::CallEvent::Pointer callEvent) {
+    _disposer.add(callRedirectionManager->notifyTargetChange([weakSelf](Call::Redirection::Callbacks::TargetChangeData const& data) {
         auto self = weakSelf.strong();
-        [self onRedirectTargetChanged:type call:callEvent];
-    });
+        [self onRedirectTargetChanged:data];
+    }));
 }
 
 //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
@@ -1163,40 +1163,40 @@ ali::string_literal sip_account{"<account id=\"sip\">"
 }
 
 //*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
-- (void)onRedirectStateChanged:(Call::Redirection::RedirectState)state type:(Call::Redirection::RedirectType)type
+- (void)onRedirectStateChanged:(Call::Redirection::Callbacks::StateChangeData const&)data
 //*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
 {
     for (id<CallRedirectionStateChangeDelegate> delegate in _stateChangeDelegates.allObjects)
     {
-        if ([delegate respondsToSelector:@selector(redirectStateChanged:type:)])
+        if ([delegate respondsToSelector:@selector(redirectStateChanged:)])
         {
-            [delegate redirectStateChanged:state type:type];
+            [delegate redirectStateChanged:data];
         }
     }
 }
 
 //*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
-- (void)onRedirectSourceChanged:(Call::Redirection::RedirectType)type call:(Softphone::EventHistory::CallEvent::Pointer)callEvent
+- (void)onRedirectSourceChanged:(Call::Redirection::Callbacks::SourceChangeData const&) data
 //*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
 {
     for (id<CallRedirectionSourceChangeDelegate> delegate in _sourceChangeDelegates.allObjects)
     {
-        if ([delegate respondsToSelector:@selector(redirectSourceChanged:type:)])
+        if ([delegate respondsToSelector:@selector(redirectSourceChanged:)])
         {
-            [delegate redirectSourceChanged:callEvent type:type];
+            [delegate redirectSourceChanged:data];
         }
     }
 }
 
 //*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
-- (void)onRedirectTargetChanged:(Call::Redirection::RedirectType)type call:(Softphone::EventHistory::CallEvent::Pointer)callEvent
+- (void)onRedirectTargetChanged:(Call::Redirection::Callbacks::TargetChangeData const&) data
 //*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
 {
     for (id<CallRedirectionTargetChangeDelegate> delegate in _targetChangeDelegates.allObjects)
     {
-        if ([delegate respondsToSelector:@selector(redirectTargetChanged:type:)])
+        if ([delegate respondsToSelector:@selector(redirectTargetChanged:)])
         {
-            [delegate redirectTargetChanged:callEvent type:type];
+            [delegate redirectTargetChanged:data];
         }
     }
 }
