@@ -12,6 +12,7 @@
 #import "demophoneAppDelegate.h"
 #import <Softphone/Call/CallRedirectionManager.h>
 #import <Softphone/SdkServiceHolder.h>
+#import <Softphone/SdkServiceLocator.h>
 #import "UIViewController+Alert.h"
 
 @interface RegViewController() <CallRedirectionStateChangeDelegate>
@@ -86,7 +87,7 @@
 - (IBAction) onCall
 // ******************************************************************
 {
-    auto callRedirectionManager = Softphone::service<Call::Redirection::Manager>().lock();
+    auto callRedirectionManager = Softphone::SdkServiceLocator::getCallRedirectionManager();
     if (callRedirectionManager->getCurrentRedirectFlow() == Call::Redirection::RedirectType::BlindTransfer()) {
         if (self.number.text.length == 0)
             return;

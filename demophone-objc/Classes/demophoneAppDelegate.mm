@@ -16,7 +16,9 @@
 #include <Softphone/LicenseManagement/LicensingException.h>
 #include <Softphone/Call/CallRedirectionManager.h>
 #include <Softphone/Badges/BadgeManager.h>
-#include <Softphone/SdkServiceHolder.h>
+#include <Softphone/Assets/AssetRequestResolverService.h>
+#import <Softphone/SdkServiceHolder.h>
+#import <Softphone/SdkServiceLocator.h>
 
 #import "RegViewController.h"
 #import "CallViewController.h"
@@ -200,7 +202,7 @@ ali::string_literal sip_account{"<account id=\"sip\">"
 -(void)updateBadge
 //*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
 {
-    auto badgeManager = Softphone::service<Softphone::BadgeManager>().lock();
+    auto badgeManager = Softphone::SdkServiceLocator::getBadgeManager();
     auto count = badgeManager->countForChannelSafe(Softphone::BadgeAddress::Calls);
     unsigned int missedCallCount = count.is_null() ? 0 : *count;
     NSLog(@"Missed Call Count = %d", missedCallCount);
@@ -429,7 +431,9 @@ ali::string_literal sip_account{"<account id=\"sip\">"
 - (void) toggleActiveGroup:(ali::string const&) groupId
 //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 {
-    bool const wasActive = (_softphone->calls()->conferences()->getActive() == groupId);
+    auto activeGroup = _softphone->calls()->conferences()->getActive();
+    
+    bool const wasActive = (!activeGroup.is_null() && *activeGroup == groupId);
     
     if(wasActive)
         _softphone->calls()->conferences()->setActive(ali::opt_string(nullptr));
@@ -635,7 +639,7 @@ ali::string_literal sip_account{"<account id=\"sip\">"
     Softphone::EventHistory::EventStream::Pointer stream = Softphone::EventHistory::EventStream::load(Softphone::EventHistory::StreamQuery::legacyCallHistoryStreamKey);
     newCall->setStream(stream);
 
-    auto callRedirectionManager = Softphone::SdkServiceHolder::get<Call::Redirection::Manager>().lock();
+    auto callRedirectionManager = Softphone::SdkServiceLocator::getCallRedirectionManager();
     callRedirectionManager->performBlindTransferToTarget(newCall);
 }
 
@@ -1088,7 +1092,7 @@ ali::string_literal sip_account{"<account id=\"sip\">"
 {
     auto weakSelf = ali::mac::make_weak(self);
     
-    auto badgeManager = Softphone::service<Softphone::BadgeManager>().lock();
+    auto badgeManager = Softphone::SdkServiceLocator::getBadgeManager();
     _disposer.add(badgeManager->registerBadgeCountChangeCallback([weakSelf]() {
         auto self = weakSelf.strong();
         [self updateBadge];
@@ -1103,7 +1107,7 @@ ali::string_literal sip_account{"<account id=\"sip\">"
 {
     auto weakSelf = ali::mac::make_weak(self);
     
-    auto callRedirectionManager = Softphone::SdkServiceHolder::get<Call::Redirection::Manager>().lock();
+    auto callRedirectionManager = Softphone::SdkServiceLocator::getCallRedirectionManager();
     _disposer.add(callRedirectionManager->notifyStateChange([weakSelf](Call::Redirection::Callbacks::StateChangeData const& data) {
         auto self = weakSelf.strong();
         [self onRedirectStateChanged:data];

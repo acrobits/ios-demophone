@@ -28,6 +28,8 @@
 	<true/>
 	<key>NSCameraUsageDescription</key>
 	<string>&gt;$(PRODUCT_NAME) uses the Camera for call video</string>
+	<key>NSContactsUsageDescription</key>
+	<string></string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>$(PRODUCT_NAME) uses the Microphone for call audio</string>
 	<key>NSUserActivityTypes</key>

@@ -116,7 +116,8 @@
     if(entry.isGroup)
     {
         const ali::string groupId = ali::mac::str::from_nsstring(entry.group);
-        bool const active = (inst->calls()->conferences()->getActive() == groupId);
+        auto activeGroup = inst->calls()->conferences()->getActive();
+        bool const active = (!activeGroup.is_null() && *activeGroup == groupId);
         
         cell.textLabel.text = [NSString stringWithFormat:@"Group (%d calls)",inst->calls()->conferences()->getSize(groupId)];
         cell.detailTextLabel.text = [NSString stringWithFormat:@"%s",active?"active":""];
