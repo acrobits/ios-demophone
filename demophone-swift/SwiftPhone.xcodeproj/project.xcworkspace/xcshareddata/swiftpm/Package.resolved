@@ -1,13 +1,13 @@
 {
-  "originHash" : "3cc5b376a76f21f23a7aba2094983e8c7bcf80fd6b829875a5012f44533ed65e",
+  "originHash" : "0830bb4133673bf7b72a5d97a66f8ac66926a6f1b6ea53634f7c7a16a6e0dc41",
   "pins" : [
     {
-      "identity" : "softphoneswiftpackage-saas",
+      "identity" : "softphoneswiftpackage-saas-video",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/acrobits/SoftphoneSwiftPackage-saas.git",
+      "location" : "https://github.com/acrobits/SoftphoneSwiftPackage-saas-video",
       "state" : {
-        "revision" : "91aa08292b60aec2d67820183bf031db36af73f4",
-        "version" : "1.2.2"
+        "revision" : "9701eb22f50a85b0652fc64696e954392f2241ff",
+        "version" : "25.3.2"
       }
     },
     {

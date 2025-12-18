@@ -50,6 +50,10 @@ class AppDelegate: UIResponder
     var registrationService = RegistrationService()
     var callService = CallService()
     
+#if VIDEO_FEATURE
+    var videoService = VideoService()
+#endif
+    
     private var subscriptions: Set<AnyCancellable> = []
     
     //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
@@ -104,7 +108,7 @@ class AppDelegate: UIResponder
     func currentDesiredMedia() -> CallDesiredMedia
     //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
     {
-        return CallDesiredMedia.voiceOnly()
+        return CallDesiredMedia.videoBothWays()
     }
     
     //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
@@ -235,6 +239,10 @@ class AppDelegate: UIResponder
     //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
     {
         self.callService.refresh()
+        
+#if VIDEO_FEATURE
+        self.videoService.refresh()
+#endif
     }
     
     //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
@@ -746,6 +754,10 @@ extension AppDelegate: UIApplicationDelegate
                         <transport>udp</transport>
                         <codecOrder>0,8,9,3,102</codecOrder>
                         <codecOrder3G>102,3,9,0,8</codecOrder3G>
+                        <videoCodecOrder>108,99</videoCodecOrder>
+                        <videoCodecOrder3G>108,99</videoCodecOrder3G>
+                        <videoDimsWifi>vga</videoDimsWifi>
+                        <allowVideo>1</allowVideo>
                     </account>
         """
         
@@ -1087,7 +1099,7 @@ extension AppDelegate: SoftphoneDelegateBridge
     //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
     func onMediaStatusChanged(media: CallMediaStatus!, call: SoftphoneCallEvent!)
     //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
-    {
+    {   
         refreshCallViews()
     }
     

@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import Softphone_Swift
 
 struct HomeView: View {
     
@@ -34,6 +35,14 @@ struct HomeView: View {
                         Label("Calls", systemImage: "phone.fill")
                     }
                     .tag(2)
+                
+#if VIDEO_FEATURE
+                VideoScreenView()
+                    .tabItem {
+                        Label("Video", systemImage: "video.fill")
+                    }
+                    .tag(3)
+#endif
             }
         }
         .alert(viewModel.alertMessage, isPresented: $viewModel.showAlert) {
