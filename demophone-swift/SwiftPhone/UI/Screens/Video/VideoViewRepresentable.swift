@@ -3,60 +3,67 @@ import SwiftUI
 import Softphone_Swift
 
 #if VIDEO_FEATURE
-struct VideoViewRepresentable: UIViewRepresentable {
+struct AdaptiveVideoView: View {
     let callEvent: SoftphoneCallEvent
-    @Binding var videoAspectRatio: CGFloat?
-
-    func makeCoordinator() -> Coordinator {
-        Coordinator { ratio in
-            DispatchQueue.main.async {
-                self.videoAspectRatio = ratio
-            }
+    
+    // Default to a vertical aspect ratio (3:4) until the delegate fires.
+    @State private var videoRatio: CGFloat = 0.75
+    
+    var body: some View {
+        VideoViewRepresentable(callEvent: callEvent) { newRatio in
+            self.videoRatio = newRatio
         }
-    }
-
-    func makeUIView(context: Context) -> AspectFitVideoHostView {
-        guard let vv = VideoView(call: callEvent) else {
-            // Fallback empty view if VideoView can’t be created
-            return AspectFitVideoHostView(videoView: VideoView())
-        }
-
-        vv.delegate = context.coordinator
-        let host = AspectFitVideoHostView(videoView: vv)
-
-        let initial = vv.videoRatio
-        if initial.isFinite, initial > 0 {
-            host.videoAspectRatio = initial
-        }
-
-        return host
-    }
-
-    func updateUIView(_ uiView: AspectFitVideoHostView, context: Context) {
-        if let r = videoAspectRatio, r.isFinite, r > 0 {
-            uiView.videoAspectRatio = r
-        }
-    }
-
-    final class Coordinator: NSObject, VideoViewDelegate {
-        private let onRatioChange: (CGFloat) -> Void
-        private var lastRatio: CGFloat = 0
-
-        init(onRatioChange: @escaping (CGFloat) -> Void) {
-            self.onRatioChange = onRatioChange
-        }
-
-        func videoViewDidChangeFrameSize(_ view: VideoView) {
-            let r = view.videoRatio
-            guard r.isFinite, r > 0 else { return }
-
-            // Debounce tiny jitters
-            guard abs(r - lastRatio) > 0.01 else { return }
-            lastRatio = r
-
-            onRatioChange(r)
-        }
+        // This ensures the view takes exactly the space required by the video
+        .aspectRatio(videoRatio, contentMode: .fit)
     }
 }
 
+struct VideoViewRepresentable: UIViewRepresentable {
+    let callEvent: SoftphoneCallEvent
+    
+    /// Closure to report back when the video frame/ratio changes
+    var onRatioChange: ((CGFloat) -> Void)?
+    
+    func makeCoordinator() -> VideoViewCoordinator {
+        VideoViewCoordinator(self)
+    }
+    
+    func makeUIView(context: Context) -> VideoView {
+        // Assuming VideoView(call:) exists based on your code
+        let view = VideoView(call: callEvent)
+        view?.delegate = context.coordinator
+        view?.contentMode = .scaleAspectFit
+        view?.backgroundColor = .black
+        return view ?? VideoView()
+    }
+    
+    func updateUIView(_ uiView: VideoView, context: Context) {
+        // Update parent reference so closure capture is fresh
+        context.coordinator.parent = self
+    }
+}
+
+final class VideoViewCoordinator: NSObject, VideoViewDelegate {
+    var parent: VideoViewRepresentable
+    
+    init(_ parent: VideoViewRepresentable) {
+        self.parent = parent
+    }
+    
+    func videoViewDidChangeFrameSize(_ view: VideoView) {
+        guard view.videoFrameSize.height > 0 else { return }
+        
+        // Calculate new aspect ratio
+        let ratio = view.videoFrameSize.width / view.videoFrameSize.height
+        
+        print("[Video] Frame changed: \(view.videoFrameSize), New Ratio: \(ratio)")
+        
+        // Push to main thread to update SwiftUI State
+        DispatchQueue.main.async { [weak self] in
+            withAnimation(.easeInOut(duration: 0.3)) {
+                self?.parent.onRatioChange?(ratio)
+            }
+        }
+    }
+}
 #endif

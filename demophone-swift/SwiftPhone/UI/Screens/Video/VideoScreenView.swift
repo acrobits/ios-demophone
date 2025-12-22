@@ -61,21 +61,18 @@ struct EndCallButton: View {
 @MainActor
 final class InterfaceRotationObserver: ObservableObject {
     @Published var angle: Angle = .degrees(0)
-    @Published var isQuarterTurn: Bool = false   // true for +/- 90 degrees
+    @Published var isQuarterTurn: Bool = false
 
     private var token: NSObjectProtocol?
 
     init() {
         UIDevice.current.beginGeneratingDeviceOrientationNotifications()
         update()
-
         token = NotificationCenter.default.addObserver(
             forName: UIDevice.orientationDidChangeNotification,
             object: nil,
             queue: .main
-        ) { [weak self] _ in
-            self?.update()
-        }
+        ) { [weak self] _ in self?.update() }
     }
 
     deinit {
@@ -84,24 +81,16 @@ final class InterfaceRotationObserver: ObservableObject {
     }
 
     private func update() {
-//        guard let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene else { return }
-        let orientation = UIDevice.current.orientation
-
-        switch orientation {
+        switch UIDevice.current.orientation {
         case .portrait:
-            angle = .degrees(0)
-            isQuarterTurn = false
+            angle = .degrees(0); isQuarterTurn = false
         case .portraitUpsideDown:
-            angle = .degrees(180)
-            isQuarterTurn = false
+            angle = .degrees(180); isQuarterTurn = false
         case .landscapeLeft:
-            angle = .degrees(90)
-            isQuarterTurn = true
+            angle = .degrees(90); isQuarterTurn = true
         case .landscapeRight:
-            angle = .degrees(-90)
-            isQuarterTurn = true
-        default:
-            break // keep current
+            angle = .degrees(-90); isQuarterTurn = true
+        default: break
         }
     }
 }
@@ -109,38 +98,56 @@ final class InterfaceRotationObserver: ObservableObject {
 struct RotatingFitContainer<Content: View>: View {
     let angle: Angle
     let isQuarterTurn: Bool
+    let bottomOverlap: CGFloat // Height of your button area
     let content: Content
 
-    init(angle: Angle, isQuarterTurn: Bool, @ViewBuilder content: () -> Content) {
+    init(
+        angle: Angle,
+        isQuarterTurn: Bool,
+        bottomOverlap: CGFloat = 0,
+        @ViewBuilder content: () -> Content
+    ) {
         self.angle = angle
         self.isQuarterTurn = isQuarterTurn
+        self.bottomOverlap = bottomOverlap
         self.content = content()
     }
 
     var body: some View {
         GeometryReader { proxy in
             let outer = proxy.size
+            
+            // 1. Calculate Shift
+            // In portrait, shift Up by half the overlap to center the video in the "visible" area.
+            // In landscape (quarter turn), do not shift.
+            let yOffset = isQuarterTurn ? 0 : -(bottomOverlap / 2)
 
-            // If we rotate 90°/270°, the rotated bounding box swaps width/height.
-            // Scale down so it *fits* (letterbox) instead of cropping.
+            // 2. Calculate Scale
+            // When rotated 90deg, width becomes height. We scale down to fit letterbox style.
             let scale: CGFloat = {
                 guard isQuarterTurn else { return 1 }
                 let w = max(outer.width, 1)
                 let h = max(outer.height, 1)
-                return min(w / h, h / w) // always <= 1
+                return min(w / h, h / w)
             }()
 
-            content
-                .frame(width: outer.width, height: outer.height)
-                .rotationEffect(angle)
-                .scaleEffect(scale, anchor: .center)
-                .frame(width: outer.width, height: outer.height)
-                .clipped()
+            ZStack {
+                content
+            }
+            // First, force the content to fill the screen bounds (before rotation)
+            .frame(width: outer.width, height: outer.height)
+            // Apply rotation
+            .rotationEffect(angle)
+            // Scale to fit screen logic
+            .scaleEffect(scale, anchor: .center)
+            // Apply vertical shift for buttons
+            .offset(y: yOffset)
+            // Ensure the frame stays strictly within bounds
+            .frame(width: outer.width, height: outer.height)
+            .clipped()
         }
     }
 }
-
-import SwiftUI
 
 struct VideoScreenView: View {
 
@@ -148,57 +155,64 @@ struct VideoScreenView: View {
     @StateObject private var rotation = InterfaceRotationObserver()
 
     @State private var frame: CGRect = .zero
-
-    // eventId -> (width/height)
-    @State private var aspectRatios: [AnyHashable: CGFloat] = [:]
-
     private let previewSize = CGSize(width: 120, height: 180)
     private let vGridSpacing = 5.0
+    
+    // Height of your bottom control stack (Buttons + Spacing + Padding)
+    private let bottomControlsHeight: CGFloat = 160
 
     var body: some View {
         ZStack(alignment: .bottom) {
             let calls = viewModel.callsWithVideos
 
+            // -------- VIDEO LAYER --------
             if calls.isEmpty {
                 VStack {
                     Spacer()
-                    Text("No calls with video")
-                        .foregroundColor(.secondary)
-                        .font(.headline)
+                    Text("No calls with video").foregroundColor(.secondary)
                     Spacer()
                 }
             } else if calls.count == 1 {
-                Color.black.ignoresSafeArea()
-                
-                let call = calls[0]
-
-                RotatingFitContainer(angle: rotation.angle, isQuarterTurn: rotation.isQuarterTurn) {
-                    incomingVideo(for: call)
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                // SINGLE CALL MODE
+                RotatingFitContainer(
+                    angle: rotation.angle,
+                    isQuarterTurn: rotation.isQuarterTurn,
+                    bottomOverlap: bottomControlsHeight
+                ) {
+                    // Use Adaptive wrapper here
+                    AdaptiveVideoView(callEvent: calls[0])
                 }
+                .background(Color.black)
                 .ignoresSafeArea()
                 .animation(.easeInOut(duration: 0.25), value: rotation.angle)
 
             } else {
-                Color.black.ignoresSafeArea()
+                // GRID MODE
                 ScrollView {
-                    LazyVGrid(columns: dynamicColumns(for: calls.count), spacing: vGridSpacing) {
-                        ForEach(calls, id: \.eventId) { call in
-                            RotatingFitContainer(angle: rotation.angle, isQuarterTurn: rotation.isQuarterTurn) {
-                                incomingVideo(for: call)
+                    LazyVGrid(
+                        columns: dynamicColumns(for: calls.count),
+                        spacing: vGridSpacing
+                    ) {
+                        ForEach(calls, id: \.eventId) { callEvent in
+                            RotatingFitContainer(
+                                angle: rotation.angle,
+                                isQuarterTurn: rotation.isQuarterTurn
+                            ) {
+                                AdaptiveVideoView(callEvent: callEvent)
+                                    .background(Color.black)
                             }
-                            .aspectRatio(1, contentMode: .fit)
+                            .aspectRatio(1, contentMode: .fit) // Square cells
                             .mask(RoundedRectangle(cornerRadius: 10, style: .continuous))
-                            .animation(.easeInOut(duration: 0.25), value: rotation.angle)
                         }
                     }
                     .padding()
                 }
             }
 
-            // -------- BOTTOM OVERLAYS (LEFT + RIGHT) --------
+            // -------- UI CONTROLS LAYER --------
             HStack(alignment: .bottom) {
-
+                
+                // PREVIEW (Left)
                 if viewModel.isOutgoingVideoEnabled {
                     ZStack(alignment: .topTrailing) {
                         VideoPreviewRepresentable(
@@ -225,6 +239,7 @@ struct VideoScreenView: View {
 
                 Spacer()
 
+                // CONTROLS (Right)
                 VStack(spacing: 12) {
                     CircularVideoButton(
                         isSelected: viewModel.isOutgoingVideoEnabled,
@@ -237,29 +252,8 @@ struct VideoScreenView: View {
                 }
             }
             .padding()
-        }
-    }
-
-    // MARK: - Incoming video
-
-    private func incomingVideo(for call: SoftphoneCallEvent) -> some View {
-        let key = AnyHashable(call.eventId)
-
-        return ZStack {
-            Color.black // letterbox bars
-
-            VideoViewRepresentable(
-                callEvent: call,
-                videoAspectRatio: Binding<CGFloat?>(
-                    get: { aspectRatios[key] },
-                    set: { newValue in
-                        guard let r = newValue, r.isFinite, r > 0 else { return }
-                        aspectRatios[key] = r
-                    }
-                )
-            )
-            // Host view handles aspect-fit; just fill available space
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            // Ensure controls stay above the video layer
+            .zIndex(1)
         }
     }
 
@@ -268,5 +262,4 @@ struct VideoScreenView: View {
         return Array(repeating: GridItem(.flexible(), spacing: vGridSpacing), count: columns)
     }
 }
-
 #endif

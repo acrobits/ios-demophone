@@ -22,7 +22,6 @@
 		C24BF2672538485300692D0C /* CallsDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24BF2662538485300692D0C /* CallsDataSource.swift */; };
 		C24BF269253853F700692D0C /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24BF268253853F700692D0C /* Extensions.swift */; };
 		C24C92AC2D427E6E00DBD598 /* eliseb.wav in Resources */ = {isa = PBXBuildFile; fileRef = C24C92AB2D427E6E00DBD598 /* eliseb.wav */; };
-		C26A425F2EF311BB005E27DA /* AspectFitVideoHostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26A425E2EF311BB005E27DA /* AspectFitVideoHostView.swift */; };
 		C28857162A8E787F00E048F2 /* TargetPickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C28857152A8E787F00E048F2 /* TargetPickerViewController.swift */; };
 		C2A2B2D22542C79E0056B21C /* PushKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2A2B2D12542C79E0056B21C /* PushKit.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		C2AE94432EE9BB53009613CB /* VideoService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2AE94422EE9BB53009613CB /* VideoService.swift */; };
@@ -136,7 +135,6 @@
 		C24BF2662538485300692D0C /* CallsDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallsDataSource.swift; sourceTree = "<group>"; };
 		C24BF268253853F700692D0C /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		C24C92AB2D427E6E00DBD598 /* eliseb.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = eliseb.wav; sourceTree = "<group>"; };
-		C26A425E2EF311BB005E27DA /* AspectFitVideoHostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AspectFitVideoHostView.swift; sourceTree = "<group>"; };
 		C28857152A8E787F00E048F2 /* TargetPickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TargetPickerViewController.swift; sourceTree = "<group>"; };
 		C2A2B2D02542C6C50056B21C /* SwiftPhone.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SwiftPhone.entitlements; sourceTree = "<group>"; };
 		C2A2B2D12542C79E0056B21C /* PushKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PushKit.framework; path = System/Library/Frameworks/PushKit.framework; sourceTree = SDKROOT; };
@@ -349,7 +347,6 @@
 				C214B4F72EE1E68E006B6B47 /* VideoViewModel.swift */,
 				C22DA98C2EEABB5E00B68896 /* VideoViewRepresentable.swift */,
 				C2E9E5492EF078800023D7FE /* VideoPreviewRepresentable.swift */,
-				C26A425E2EF311BB005E27DA /* AspectFitVideoHostView.swift */,
 			);
 			path = Video;
 			sourceTree = "<group>";
@@ -663,7 +660,6 @@
 				F116FA2C2D36B4F4003E3B15 /* CallDetailViewModel.swift in Sources */,
 				F116FA0F2D3563C7003E3B15 /* CallListViewModel.swift in Sources */,
 				C214B4F82EE1E68E006B6B47 /* VideoViewModel.swift in Sources */,
-				C26A425F2EF311BB005E27DA /* AspectFitVideoHostView.swift in Sources */,
 				F116FA452D38071D003E3B15 /* CallSingleSelectionView.swift in Sources */,
 				F116F9EA2D3484E6003E3B15 /* ToggleButton.swift in Sources */,
 				F116FA502D395036003E3B15 /* CallTransferInputView.swift in Sources */,
