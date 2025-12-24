@@ -205,7 +205,7 @@ class CallDetailViewModel: ObservableObject {
     
     func transferCall() {
         selectCallPicker = nil
-        callService.startCall(number: transferNumber)
+        callService.startCall(number: transferNumber, dialAction: "")
     }
     
     /**

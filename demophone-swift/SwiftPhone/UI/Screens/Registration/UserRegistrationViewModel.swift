@@ -72,9 +72,9 @@ class UserRegistrationViewModel: ObservableObject {
         registrationService.unregisterAccount()
     }
     
-    func startCall() {
+    func startCall(dialAction: String) {
         if !numberForCall.isEmpty {
-            callService.startCall(number: self.numberForCall)
+            callService.startCall(number: self.numberForCall, dialAction: dialAction)
         }
     }
     

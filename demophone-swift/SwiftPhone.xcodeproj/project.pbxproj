@@ -16,8 +16,6 @@
 		C22DA98D2EEABB5E00B68896 /* VideoViewRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = C22DA98C2EEABB5E00B68896 /* VideoViewRepresentable.swift */; };
 		C2313D362C246B090053F635 /* DemoAppPushProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2313D352C246B090053F635 /* DemoAppPushProvider.swift */; };
 		C2313D3B2C246D820053F635 /* BundleExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2313D3A2C246D820053F635 /* BundleExtensions.swift */; };
-		C234E3262535956600EFA519 /* RegViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C234E3252535956600EFA519 /* RegViewController.swift */; };
-		C234E3282535957E00EFA519 /* CallViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C234E3272535957E00EFA519 /* CallViewController.swift */; };
 		C23B19F3251E213F00984B08 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C23B19F2251E213F00984B08 /* Main.storyboard */; };
 		C24BF2672538485300692D0C /* CallsDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24BF2662538485300692D0C /* CallsDataSource.swift */; };
 		C24BF269253853F700692D0C /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24BF268253853F700692D0C /* Extensions.swift */; };
@@ -666,10 +664,8 @@
 				C2E9E54A2EF078800023D7FE /* VideoPreviewRepresentable.swift in Sources */,
 				F16BA4102D7EDF45009A9823 /* ActiveCallHeader.swift in Sources */,
 				F116F9E82D3481B3003E3B15 /* HomeView.swift in Sources */,
-				C234E3262535956600EFA519 /* RegViewController.swift in Sources */,
 				F116F9DD2D318CED003E3B15 /* LabelFormItem.swift in Sources */,
 				F116F9EF2D352340003E3B15 /* SwiftUIPhoneViewController.swift in Sources */,
-				C234E3282535957E00EFA519 /* CallViewController.swift in Sources */,
 				C24BF2672538485300692D0C /* CallsDataSource.swift in Sources */,
 				F116F9DA2D318675003E3B15 /* UserRegistrationView.swift in Sources */,
 				C2AE94432EE9BB53009613CB /* VideoService.swift in Sources */,

@@ -37,7 +37,7 @@ struct UserRegistrationView: View {
                             .focused($focusedField, equals: .number)
                         
                         Button {
-                            viewModel.startCall()
+                            viewModel.startCall(dialAction: "voiceCall")
                             focusedField = nil
                         } label: {
                             Text("Make a Call")
@@ -45,6 +45,18 @@ struct UserRegistrationView: View {
                         }
                         .tint(viewModel.numberForCall.isEmpty ? Color.gray : Color.green)
                         .disabled(viewModel.numberForCall.isEmpty)
+                        
+#if VIDEO_FEATURE
+                        Button {
+                            viewModel.startCall(dialAction: "videoCall")
+                            focusedField = nil
+                        } label: {
+                            Text("Make a Video Call")
+                                .fontWeight(.bold)
+                        }
+                        .tint(viewModel.numberForCall.isEmpty ? Color.gray : Color.green)
+                        .disabled(viewModel.numberForCall.isEmpty)
+#endif
                         
                         Button {
                             viewModel.sendSms()

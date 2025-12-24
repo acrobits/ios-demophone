@@ -144,7 +144,7 @@ class AppDelegate: UIResponder
     //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
     /// @brief Starts a new call to the given number, with desiredMedia from @ref currentDesiredMedia and through the current
     /// default account
-    func call(number: String) -> Bool
+    func call(number: String, dialAction: String) -> Bool
     //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
     {
         if number.isEmpty {
@@ -155,7 +155,11 @@ class AppDelegate: UIResponder
         let stream = SoftphoneEventStream.load(SoftphoneStreamQuery.legacyCallHistoryStreamKey())
         
         call?.setStream(stream)
-        call?.transients.set("voiceCall", forKey: "dialAction")
+        
+        if let callTransients = call?.transients {
+            callTransients.set(dialAction, forKey: "dialAction")
+            call?.transients = callTransients
+        }
         
         let result = SoftphoneBridge.instance()?.events()?.post(call)
         debugPrint(result as Any)

@@ -85,7 +85,7 @@ class CallService: NSObject {
         onActiveCallChanged.send(activeEntry)
     }
     
-    func startCall(number: String) {
+    func startCall(number: String, dialAction: String) {
         if CallRedirectionManager.instance().currentRedirectFlow.isBlindTransfer() {
             if number.count == 0 {
                 return
@@ -98,7 +98,7 @@ class CallService: NSObject {
             }
         }
         
-        if AppDelegate.theApp().call(number: number) {
+        if AppDelegate.theApp().call(number: number, dialAction: dialAction) {
             onCallStarted.send(())
         } else {
             onError.send("Could not start the call")
