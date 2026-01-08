@@ -16,7 +16,7 @@ class VideoService : NSObject {
             if let calls = SoftphoneBridge.instance().calls().conferences().getCalls(conference: activeGroup) {
                 for call in calls {
                     if let streamAvailability = SoftphoneBridge.instance().calls().isVideoAvailable(call) {
-                        if streamAvailability.incoming {
+                        if streamAvailability.incoming || streamAvailability.outgoing {
                             callsWithVideo.append(call)
                         }
                     }

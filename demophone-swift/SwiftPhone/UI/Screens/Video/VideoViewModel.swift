@@ -10,12 +10,6 @@ class VideoViewModel: ObservableObject {
     @Published var cameras: [VideoCameraInfo] = []
     @Published var callsWithVideos: [SoftphoneCallEvent] = []
     
-    var isVideoEnabled = false {
-        didSet {
-            updateVideoState(isVideoEnabled)
-        }
-    }
-    
     @Published var isIncomingVideoEnabled = false
     @Published var isOutgoingVideoEnabled = false
     
@@ -51,15 +45,6 @@ class VideoViewModel: ObservableObject {
         
         isIncomingVideoEnabled = incomingEnabled
         isOutgoingVideoEnabled = outgoingEnabled
-        isVideoEnabled = isIncomingVideoEnabled || isOutgoingVideoEnabled
-    }
-    
-    private func updateVideoState(_ enabled: Bool) {
-        if enabled {
-            self.videoService.updateDesiredMedia(desiredMedia: CallDesiredMedia.videoBothWays())
-        } else {
-            self.videoService.updateDesiredMedia(desiredMedia: CallDesiredMedia.voiceOnly())
-        }
     }
     
     private func loadCameras() {
@@ -77,7 +62,15 @@ class VideoViewModel: ObservableObject {
     }
     
     func toggleVideo() {
-        isVideoEnabled.toggle()
+        if isOutgoingVideoEnabled {
+            if let callDesiredMedia = CallDesiredMedia(incomingVideoEnabled: isIncomingVideoEnabled, andOutgoingVideoEnabled: false) {
+                self.videoService.updateDesiredMedia(desiredMedia: callDesiredMedia)
+            }
+        } else {
+            if let callDesiredMedia = CallDesiredMedia(incomingVideoEnabled: isIncomingVideoEnabled, andOutgoingVideoEnabled: true) {
+                self.videoService.updateDesiredMedia(desiredMedia: callDesiredMedia)
+            }
+        }
     }
     
     func switchCamera() {
