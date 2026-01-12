@@ -103,6 +103,10 @@
 
 /// @brief Starts a new call to the given number, with desiredMedia from @ref currentDesiredMedia and through the current
 /// default account
+- (BOOL) callNumber:(NSString *)number dialAction:(NSString *)dialAction;
+
+/// @brief Starts a new call to the given number, with desiredMedia from @ref currentDesiredMedia and through the current
+/// default account
 - (BOOL) callNumber:(NSString *) number;
 
 /// Hangs up the call with specified callEvent.

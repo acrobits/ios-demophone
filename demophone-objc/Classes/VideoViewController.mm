@@ -15,14 +15,23 @@
 
 @interface VideoViewController()
 
-@property(nonatomic,weak) IBOutlet UIView *       videoContainer;
-@property(nonatomic,weak) IBOutlet UIView *       videoPreviewContainer;
-@property(nonatomic,weak) IBOutlet SoftphoneVideoPreview *       videoPreviewView;
-@property(nonatomic,weak) IBOutlet UITableView *  cameraTable;
+#ifdef SOFTPHONE_VIDEO
+
+@property(nonatomic,weak) IBOutlet UIView *videoContainer;
+@property(nonatomic,weak) IBOutlet UIView *videoPreviewContainer;
+@property(nonatomic,weak) IBOutlet SoftphoneVideoPreview *videoPreviewView;
+@property(nonatomic,weak) IBOutlet UILabel *infoLabel;
+@property(nonatomic,weak) IBOutlet UIButton *videoButton;
+@property(nonatomic,weak) IBOutlet UIButton *endCallButton;
+@property(nonatomic,weak) IBOutlet UIButton *switchCameraButton;
+
+#endif
 
 @end
 
 @implementation VideoViewController
+
+#ifdef SOFTPHONE_VIDEO
 
 {
     ali::array_set<Softphone::Instance::Video::CameraInfo> _cameras;
@@ -30,6 +39,8 @@
     NSMutableDictionary *           _videoViews;
     ali::string                     _prevActiveGroup;
     BOOL                            _showing;
+    BOOL _incomingVideoEnabled;
+    BOOL _outgoingVideoEnabled;
 }
 
 // ******************************************************************
@@ -64,6 +75,18 @@ NSNumber * keyFromEvent(Softphone::EventHistory::Event::Pointer  event)
     self.videoPreviewContainer.backgroundColor = [UIColor blackColor];
     
     self.videoPreviewView.previewArea = self.videoPreviewContainer.frame;
+    
+    
+    self.switchCameraButton.layer.cornerRadius = self.switchCameraButton.frame.size.width/2;
+    self.switchCameraButton.clipsToBounds = YES;
+    
+    self.videoButton.layer.cornerRadius = self.videoButton.frame.size.width/2;
+    self.videoButton.clipsToBounds = YES;
+    
+    self.endCallButton.layer.cornerRadius = self.endCallButton.frame.size.width/2;
+    self.endCallButton.clipsToBounds = YES;
+    
+    [self prepareCameraInfosMenu];
 }
 
 // ******************************************************************
@@ -158,9 +181,18 @@ NSNumber * keyFromEvent(Softphone::EventHistory::Event::Pointer  event)
     if(_videoViews == nil)
         _videoViews = [[NSMutableDictionary alloc] init];
 
+    _incomingVideoEnabled = NO;
+    _outgoingVideoEnabled = NO;
+    
+    self.videoContainer.hidden = YES;
+    self.videoPreviewContainer.hidden = YES;
+    self.infoLabel.hidden = NO;
+    self.videoButton.selected = NO;
+    self.switchCameraButton.hidden = YES;
+    
     ali::opt_string const activeGroup = [demophoneAppDelegate theApp].softphone->calls()->conferences()->getActive();
     
-    if(activeGroup != _prevActiveGroup)
+    if(activeGroup.is_null() || *activeGroup != _prevActiveGroup)
     {
         [_videoViews removeAllObjects];
 
@@ -168,8 +200,6 @@ NSNumber * keyFromEvent(Softphone::EventHistory::Event::Pointer  event)
         {
             [v removeFromSuperview];
         }
-
-        self.videoPreviewContainer.hidden = YES;
     }
     
     if(activeGroup.is_null())
@@ -181,6 +211,8 @@ NSNumber * keyFromEvent(Softphone::EventHistory::Event::Pointer  event)
     {
         const Softphone::StreamAvailability sa = [demophoneAppDelegate theApp].softphone->calls()->isVideoAvailable(callEvent);
         
+        _outgoingVideoEnabled |= sa.outgoing;
+        
         UIView * existingView = [_videoViews objectForKey:keyFromEvent(callEvent)];
         
         if(sa.incoming && !existingView)
@@ -191,8 +223,8 @@ NSNumber * keyFromEvent(Softphone::EventHistory::Event::Pointer  event)
             
             [self.videoContainer addSubview:newView];
             [_videoViews setObject:newView forKey:keyFromEvent(callEvent)];
-        }else
-        if(!sa.incoming && existingView)
+        }
+        else if(!sa.incoming && existingView)
         {
             [_videoViews removeObjectForKey:keyFromEvent(callEvent)];
             [existingView removeFromSuperview];
@@ -214,72 +246,12 @@ NSNumber * keyFromEvent(Softphone::EventHistory::Event::Pointer  event)
     
     [self positionVideoViews];
 
-    self.videoPreviewContainer.hidden = ([_videoViews count] == 0);
-}
-
-// ******************************************************************
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
-// ******************************************************************
-{
-    return 28.0f;
-}
-
-// ******************************************************************
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-// ******************************************************************
-{
-    return _cameras.size();
-}
-
-// ******************************************************************
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-// ******************************************************************
-{
-	static NSString *MyIdentifier = @"CameraCell";
-	
-	UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:MyIdentifier];
-	if (cell == nil)
-    {
-		cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:MyIdentifier];
-	}
-
-    const int idx = static_cast<int>(indexPath.row);
-    
-	cell.textLabel.text = ali::mac::str::to_nsstring(_cameras.at(idx).name);
-    cell.textLabel.font = [UIFont systemFontOfSize:12.0f];
-	return cell;	
-}
-
-// ******************************************************************
-///@brief gets the selected camera from the tableview and sets it as current active camera
--(IBAction) onSetCamera
-// ******************************************************************
-{
-    NSIndexPath * selIndex = [self.cameraTable indexPathForSelectedRow];
-    if(selIndex == nil) return;
-    
-    ali::string const& cameraId = _cameras.at(static_cast<int>(selIndex.row)).id;
-    [demophoneAppDelegate theApp].softphone->video()->switchCamera(cameraId);
-}
-
-// ******************************************************************
-///@brief gets the currently selected desired media (voice-only, voice+video) and sets it to all the calls in
-/// currently active call group
--(IBAction) onUpdateDesiredMedia
-// ******************************************************************
-{
-    ali::opt_string activeGroup = [demophoneAppDelegate theApp].softphone->calls()->conferences()->getActive();
-    if(activeGroup.is_null())
-        return;
-    
-    ali::array_set<Softphone::EventHistory::CallEvent::Pointer> calls
-        = [demophoneAppDelegate theApp].softphone->calls()->conferences()->getCalls(*activeGroup);
-    
-    for(auto call: calls)
-    {
-        [demophoneAppDelegate theApp].softphone->calls()->setDesiredMedia(call,
-                                                                          [demophoneAppDelegate theApp].currentDesiredMedia);
-    }
+    _incomingVideoEnabled = _videoViews.count > 0;
+    self.videoButton.selected = _outgoingVideoEnabled;
+    self.videoContainer.hidden = _videoViews.count == 0;
+    self.infoLabel.hidden = !self.videoContainer.hidden;
+    self.videoPreviewContainer.hidden = !_outgoingVideoEnabled;
+    self.switchCameraButton.hidden = !_outgoingVideoEnabled;
 }
 
 //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
@@ -326,6 +298,80 @@ NSNumber * keyFromEvent(Softphone::EventHistory::Event::Pointer  event)
 {
     // video dimensions have changed - we may need to re-arrange the video views
 }
+
+//-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+- (void)prepareCameraInfosMenu
+//-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+{
+    ali::array_set<Video::Capture::CameraInfo> infos = [demophoneAppDelegate theApp].softphone->video()->enumerateCameras();
+    
+    NSMutableArray *actions = [NSMutableArray array];
+    
+    for (auto info : infos)
+    {
+        ali::string cameraId = info.id;
+        if (cameraId == "__black_camera__"_s || cameraId == "__null_camera__"_s)
+            continue;
+        
+        UIAction *action = [UIAction actionWithTitle:ali::mac::str::to_nsstring(info.name)
+                                                image:nil
+                                           identifier:nil
+                                              handler:^(__kindof UIAction * _Nonnull action) {
+            [demophoneAppDelegate theApp].softphone->video()->switchCamera(cameraId);
+        }];
+        
+        [actions addObject:action];
+    }
+  
+    UIMenu *menu = [UIMenu menuWithTitle:@""
+                                   image:nil
+                              identifier:nil
+                                 options:0
+                                children:actions];
+    
+    _switchCameraButton.menu = menu;
+    _switchCameraButton.showsMenuAsPrimaryAction = YES;
+}
+
+//-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+- (void)updateDesiredMedia:(Call::DesiredMedia const&)desiredMedia
+//-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+{
+    ali::opt_string activeGroup = [demophoneAppDelegate theApp].softphone->calls()->conferences()->getActive();
+    if(activeGroup.is_null())
+        return;
+    
+    ali::array_set<Softphone::EventHistory::CallEvent::Pointer> calls
+        = [demophoneAppDelegate theApp].softphone->calls()->conferences()->getCalls(*activeGroup);
+    
+    for(auto call: calls)
+    {
+        [demophoneAppDelegate theApp].softphone->calls()->setDesiredMedia(call, desiredMedia);
+    }
+}
+
+#pragma mark - IBActions
+
+//-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+- (IBAction)onEndCall
+//-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+{
+    ali::opt_string const activeGroup = [demophoneAppDelegate theApp].softphone->calls()->conferences()->getActive();
+    if(activeGroup.is_null())
+        return;
+    
+    [[demophoneAppDelegate theApp] hangupGroup:*activeGroup];
+}
+
+//-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+- (IBAction)onToggleVideo
+//-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+{
+    auto callDesiredMedia = Call::DesiredMedia(_incomingVideoEnabled, !_videoButton.isSelected);
+    [self updateDesiredMedia:callDesiredMedia];
+}
+
+#endif
 
 @end
 

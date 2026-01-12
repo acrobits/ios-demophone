@@ -90,6 +90,9 @@ ali::string_literal sip_account{"<account id=\"sip\">"
                     "<transport>udp</transport>"
 					"<codecOrder>0,8,9,3,102</codecOrder>"
 					"<codecOrder3G>102,3,9,0,8</codecOrder3G>"
+#ifdef SOFTPHONE_VIDEO
+                    "<allowVideo>1</allowVideo>"
+#endif
 					"</account>"};
 
 //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
@@ -103,6 +106,12 @@ ali::string_literal sip_account{"<account id=\"sip\">"
     self.tabcon = (UITabBarController *)self.window.rootViewController;
     self.regViewController = [self.tabcon.viewControllers objectAtIndex:0];
     self.callViewController = [self.tabcon.viewControllers objectAtIndex:1];
+    
+#ifdef SOFTPHONE_VIDEO
+    self.videoViewController = [self.tabcon.viewControllers objectAtIndex:2];
+#else
+    self.tabcon.viewControllers = @[self.regViewController, self.callViewController];
+#endif
     
     NSString *filePath = [[NSBundle mainBundle] pathForResource:@"provisioning" ofType:@"xml"];
     
@@ -364,6 +373,26 @@ ali::string_literal sip_account{"<account id=\"sip\">"
     [self refreshCallViews];
     
     return NO;
+}
+
+//-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+- (BOOL) callNumber:(NSString *)number dialAction:(NSString *)dialAction
+//-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+{
+    if([number length] == 0)
+        return NO;
+    
+    Softphone::EventHistory::CallEvent::Pointer newCall = Softphone::EventHistory::CallEvent::create("sip"_s,ali::mac::str::from_nsstring(number));
+    
+    Softphone::EventHistory::EventStream::Pointer stream = Softphone::EventHistory::EventStream::load(Softphone::EventHistory::StreamQuery::legacyCallHistoryStreamKey);
+    
+    newCall->setStream(stream);
+    
+    newCall->transients["dialAction"_s] = ali::mac::str::from_nsstring(dialAction);
+    
+    Softphone::Instance::Events::PostResult::Type const result = _softphone->events()->post(newCall);
+
+    return result ==  Softphone::Instance::Events::PostResult::Success;
 }
 
 //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*

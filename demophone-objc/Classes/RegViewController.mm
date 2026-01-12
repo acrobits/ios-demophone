@@ -13,6 +13,7 @@
 #import <Softphone/Call/CallRedirectionManager.h>
 #import <Softphone/SdkServiceHolder.h>
 #import <Softphone/SdkServiceLocator.h>
+#import <ali/ali_mac_str_utils.h>
 #import "UIViewController+Alert.h"
 
 @interface RegViewController() <CallRedirectionStateChangeDelegate>
@@ -20,6 +21,8 @@
 @property(nonatomic,weak) IBOutlet UIButton * callButton;
 @property(nonatomic,weak) IBOutlet UILabel * regState;
 @property(nonatomic,weak) IBOutlet UITextField * number;
+@property(nonatomic,weak) IBOutlet UIButton * videoCallButton;
+@property(nonatomic,weak) IBOutlet UILabel * usernameLabel;
 
 @end
 
@@ -32,6 +35,19 @@
     [super viewDidLoad];
     
     [[demophoneAppDelegate theApp] addStateChangeDelegate:self];
+    
+#ifdef SOFTPHONE_VIDEO
+    self.videoCallButton.hidden = NO;
+#else
+    self.videoCallButton.hidden = YES;
+#endif
+    
+    Softphone::Instance * inst = [demophoneAppDelegate theApp].softphone;
+    auto defaultAccount = inst->registration()->getDefaultAccount();
+    if (defaultAccount != nullptr) {
+        auto username = defaultAccount->getStringProp("username"_s).value | ""_s;
+        self.usernameLabel.text = ali::mac::str::to_nsstring(username);
+    }
 }
 
 // ******************************************************************
@@ -48,6 +64,26 @@
 	[textField resignFirstResponder];
 
 	return YES;
+}
+
+// ******************************************************************
+- (void)startCallWithDialAction:(NSString *)dialAction
+// ******************************************************************
+{
+    auto callRedirectionManager = Softphone::SdkServiceLocator::getCallRedirectionManager();
+    if (callRedirectionManager->getCurrentRedirectFlow() == Call::Redirection::RedirectType::BlindTransfer()) {
+        if (self.number.text.length == 0)
+            return;
+        
+        if (!callRedirectionManager->getRedirectSource().is_null()) {
+            [[demophoneAppDelegate theApp] transferCall:callRedirectionManager->getRedirectSource()];
+            return;
+        }
+    }
+    
+    if ([[demophoneAppDelegate theApp] callNumber:self.number.text dialAction:dialAction]) {
+        self.tabBarController.selectedIndex = 1;
+    }
 }
 
 #pragma mark - CallRedirectionStateChangeDelegate
@@ -84,23 +120,24 @@
 #pragma mark - IBActions
 
 // ******************************************************************
+- (IBAction) onTapGesture
+// ******************************************************************
+{
+    [self.view endEditing:YES];
+}
+
+// ******************************************************************
 - (IBAction) onCall
 // ******************************************************************
 {
-    auto callRedirectionManager = Softphone::SdkServiceLocator::getCallRedirectionManager();
-    if (callRedirectionManager->getCurrentRedirectFlow() == Call::Redirection::RedirectType::BlindTransfer()) {
-        if (self.number.text.length == 0)
-            return;
-        
-        if (!callRedirectionManager->getRedirectSource().is_null()) {
-            [[demophoneAppDelegate theApp] transferCall:callRedirectionManager->getRedirectSource()];
-            return;
-        }
-    }
-    
-    if ([[demophoneAppDelegate theApp] callNumber:self.number.text]) {
-        self.tabBarController.selectedIndex = 1;
-    }
+    [self startCallWithDialAction:@"voiceCall"];
+}
+
+// ******************************************************************
+- (IBAction) onVideoCall
+// ******************************************************************
+{
+    [self startCallWithDialAction:@"videoCall"];
 }
 
 // ******************************************************************

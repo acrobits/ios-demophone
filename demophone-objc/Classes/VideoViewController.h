@@ -7,7 +7,7 @@
  * Copyright (c) 2022 Acrobits, s.r.o. All rights reserved.
  * 
  */
-#ifdef SOFTPHONE_VIDEO
+//#ifdef SOFTPHONE_VIDEO
 
 #import <UIKit/UIKit.h>
 #import <Softphone/Softphone.h>
@@ -28,17 +28,18 @@
 
 // ******************************************************************
 @interface VideoViewController : UIViewController <UITextFieldDelegate
-                                                    ,UITableViewDataSource
-                                                    ,UITableViewDelegate
 #ifdef SOFTPHONE_VIDEO
-                                                    ,VideoViewDelegate
+                                                    ,SoftphoneVideoViewDelegate
 #endif
 >
 // ******************************************************************
 
+#ifdef SOFTPHONE_VIDEO
 
 -(void) refresh;
 
+#endif
+
 @end
 
-#endif
+//#endif

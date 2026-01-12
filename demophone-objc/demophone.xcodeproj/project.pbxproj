@@ -58,6 +58,7 @@
 		92F6718B1A8ABBC4009E3732 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 92F671821A8A891E009E3732 /* CoreMedia.framework */; };
 		92F6718C1A8ABBCC009E3732 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 92F671801A8A8907009E3732 /* CoreVideo.framework */; };
 		92F671C31A8E0615009E3732 /* VideoToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 92F671C21A8E0615009E3732 /* VideoToolbox.framework */; };
+		C214E0AF2F10DD1600453FCC /* VideoViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 480DA2BC15489CB900CAF882 /* VideoViewController.mm */; };
 		C222BB9D2A84C423002CE5F3 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C222BB9C2A84C423002CE5F3 /* Launch Screen.storyboard */; };
 		C24C92AE2D4281BC00DBD598 /* eliseb.wav in Resources */ = {isa = PBXBuildFile; fileRef = C24C92AD2D4281BC00DBD598 /* eliseb.wav */; };
 		C2551FC62A8E4E030032E967 /* TargetPickerViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = C2551FC52A8E4E030032E967 /* TargetPickerViewController.mm */; };
@@ -429,6 +430,7 @@
 				28D7ACF80DDB3853001CB0EB /* RegViewController.mm in Sources */,
 				485117FA11640B870051577E /* SoftphoneObserverProxy.mm in Sources */,
 				48DF6E4F13C7015800113EEF /* CallDataSource.mm in Sources */,
+				C214E0AF2F10DD1600453FCC /* VideoViewController.mm in Sources */,
 				C2551FC62A8E4E030032E967 /* TargetPickerViewController.mm in Sources */,
 				48DF6E5013C7015800113EEF /* NSString+CallState.mm in Sources */,
 				2CC20EAA1F025E9300868D99 /* NSDictionary+XML.mm in Sources */,
@@ -471,6 +473,7 @@
 				GCC_PREFIX_HEADER = demophone_Prefix.pch;
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				INFOPLIST_FILE = "demophone-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -504,6 +507,7 @@
 				GCC_PREFIX_HEADER = demophone_Prefix.pch;
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				INFOPLIST_FILE = "demophone-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
