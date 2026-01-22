@@ -2,6 +2,7 @@ import UIKit
 import PushKit
 import CallKit
 import Combine
+import CommonCrypto
 import Softphone_Swift
 
 //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
@@ -53,6 +54,9 @@ class AppDelegate: UIResponder
 #if VIDEO_FEATURE
     var videoService = VideoService()
 #endif
+    
+    private let queue = DispatchQueue(label: "missed.call.notification.queue")
+    private var pendingWorkItems: [String: DispatchWorkItem] = [:]
     
     private var subscriptions: Set<AnyCancellable> = []
     
@@ -631,21 +635,94 @@ class AppDelegate: UIResponder
     }
     
     //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
-    private func showMissedCallNotification(call: SoftphoneCallEvent)
+    /// The reason behind adding a delay is to fix the glich of missed call notification shown twice.
+    /// First time from the local notification and second time from the remote notification.
+    /// Adding a delay allows the remote notification to be processed first, and if it is not present,
+    /// the local notification is shown.
+    func scheduleMissedCallNotification(call: SoftphoneCallEvent, delay: TimeInterval = 0.5)
     //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
     {
+        let threadId = call.getRemoteUser(index: 0).transportUri.usernameFromUri()
+        
+        /// The reason behind creating a notification request identifier is to match the identifier
+        /// of the remote notification to avoid duplication of notifications in the notification center.
+        let requestId = getSha1PushId(call)
+
         let content = UNMutableNotificationContent()
+        content.threadIdentifier = threadId!
         content.title = call.getRemoteUser(index: 0).displayName
         content.body = "Missed Call"
-        
-        let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
-        
-        UNUserNotificationCenter.current().add(request) { error in
-            if let error = error {
-                debugPrint("Notification request error: \(error.localizedDescription)")
+        content.sound = .default
+
+        let request = UNNotificationRequest(
+            identifier: requestId,
+            content: content,
+            trigger: nil
+        )
+
+        queue.sync {
+            pendingWorkItems[requestId]?.cancel()
+
+            let workItem = DispatchWorkItem { [weak self] in
+                guard let self else { return }
+
+                let notificationCenter = UNUserNotificationCenter.current()
+
+                notificationCenter.getDeliveredNotifications { notifications in
+                    let alreadyDelivered = notifications.contains {
+                        $0.request.identifier == requestId &&
+                        $0.request.content.threadIdentifier == threadId
+                    }
+
+                    guard !alreadyDelivered else { return }
+
+                    notificationCenter.add(request) { error in
+                        if let error = error {
+                            debugPrint("Notification request error: \(error.localizedDescription)")
+                        }
+                    }
+                }
+
+                _ = self.queue.sync {
+                    self.pendingWorkItems.removeValue(forKey: requestId)
+                }
             }
+
+            pendingWorkItems[requestId] = workItem
+            DispatchQueue.main.asyncAfter(deadline: .now() + delay, execute: workItem)
         }
     }
+    
+    //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+    private func getSha1PushId(_ callEvent: SoftphoneCallEvent) -> String
+    //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+    {
+        var pushId = ""
+        if let id = callEvent.getAttribute("pushCallId"), !id.isEmpty {
+            pushId = id
+        }
+        else {
+            pushId = "\(callEvent.eventId)"
+        }
+        
+        pushId = "C:\(pushId)"
+        
+        return sha1(string: pushId).lowercased()
+    }
+    
+    //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+    private func sha1(string: String) -> String
+    //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+    {
+        let data = Data(string.utf8)
+        var digest = [UInt8](repeating: 0, count:Int(CC_SHA1_DIGEST_LENGTH))
+        data.withUnsafeBytes {
+            _ = CC_SHA1($0.baseAddress, CC_LONG(data.count), &digest)
+        }
+        let hexBytes = digest.map { String(format: "%02hhx", $0) }
+        return hexBytes.joined()
+    }
+
     
     //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
     private func loadXMLFileAsString(atPath path: String) -> String?
@@ -751,7 +828,7 @@ extension AppDelegate: UIApplicationDelegate
         let sip_account = """
                     <account id=\"sip\">
                         <title>Sip Account</title>
-                        <username>1125</username>
+                        <username>1212</username>
                         <password>misscom</password>
                         <host>pbx.acrobits.cz</host>
                         <icm>push</icm>
@@ -971,6 +1048,19 @@ extension AppDelegate: UIApplicationDelegate
         debugPrint("Got remote-notification push")
         startSoftphoneSdk()
         
+        do {
+            let jsonData = try JSONSerialization.data(
+                withJSONObject: userInfo,
+                options: [.prettyPrinted]
+            )
+
+            let jsonString = String(data: jsonData, encoding: .utf8)
+            print("[AAAABBBB] Remote notification payload JSON: \(jsonString ?? "")")
+        } catch {
+            print("[AAAABBBB] Failed to create JSON: \(error)")
+        }
+        
+        
         let identifier = UUID().uuidString
         
         let xml = XmlTree.from(dictionary: userInfo)
@@ -1008,8 +1098,6 @@ extension AppDelegate: SoftphoneBadgeCountChangeDelegate
     func onBadgeCountChanged()
     //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
     {
-        //let badgeAddress = PredefinedChannel.address(from: PredefinedChannelCalls)
-        //let missedCallCount = SoftphoneBadgeManager.instance().getBadgeCount(address: SoftphoneBadgeAddress(channel: SoftphoneBadgeAddress.calls)!)
         let badgeAddress = SoftphoneBadgeAddress(channel: SoftphoneBadgeAddress.calls)
         let missedCallCount = SoftphoneBadgeManager.instance().getBadgeCount(address: badgeAddress)
         print("Missed call count = \(missedCallCount)");
@@ -1037,7 +1125,7 @@ extension AppDelegate: SoftphoneDelegateBridge
     //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
     {
         for call in callEvents {
-            showMissedCallNotification(call: call)
+            scheduleMissedCallNotification(call: call)
         }
     }
     

@@ -30,6 +30,9 @@
 #import <CoreTelephony/CTCallCenter.h>
 #import <CoreTelephony/CTCall.h>
 #import <CallKit/CallKit.h>
+#import <CommonCrypto/CommonCrypto.h>
+#import <dispatch/dispatch.h>
+
 
 NSString * const LicensingManagementErrorDomain = @"cz.acrobits.LisensingManagementErrorDomain";
 
@@ -69,6 +72,9 @@ enum ImagePurpose
 @property (nonatomic, strong) NSHashTable<id<CallRedirectionSourceChangeDelegate>> *sourceChangeDelegates;
 @property (nonatomic, strong) NSHashTable<id<CallRedirectionTargetChangeDelegate>> *targetChangeDelegates;
 
+@property (nonatomic, strong) dispatch_queue_t missedCallNotificationQueue;
+@property (nonatomic, strong) NSMutableDictionary<NSString *, dispatch_block_t> *pendingWorkItems;
+
 @end
 
 
@@ -99,6 +105,10 @@ ali::string_literal sip_account{"<account id=\"sip\">"
 - (void)applicationDidFinishLaunching:(UIApplication *)application
 //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 {
+    self.missedCallNotificationQueue = dispatch_queue_create("missed.call.notification.queue", DISPATCH_QUEUE_SERIAL);
+    self.pendingWorkItems = [NSMutableDictionary dictionary];
+    
+    
     _stateChangeDelegates = [NSHashTable weakObjectsHashTable];
     _sourceChangeDelegates = [NSHashTable weakObjectsHashTable];
     _targetChangeDelegates = [NSHashTable weakObjectsHashTable];
@@ -941,23 +951,120 @@ ali::string_literal sip_account{"<account id=\"sip\">"
 }
 
 #pragma mark - Notification
+
 //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
--(void)showMissedCallNotification:(Softphone::EventHistory::CallEvent::Pointer)call
+/// The reason behind adding a delay is to fix the glich of missed call notification shown twice.
+/// First time from the local notification and second time from the remote notification.
+/// Adding a delay allows the remote notification to be processed first, and if it is not present,
+/// the local notification is shown.
+- (void)scheduleMissedCallNotification:(Softphone::EventHistory::CallEvent::Pointer)call delay:(NSTimeInterval)delay
 //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 {
-    UNMutableNotificationContent *content = [[UNMutableNotificationContent alloc] init];
-    content.title = ali::mac::str::to_nsstring(call->getRemoteUser().getDisplayName());
+    Softphone::EventHistory::RemoteUser &remoteUser = call->getRemoteUser();
+    NSString *threadId = ali::mac::str::to_nsstring(remoteUser.getTransportUri().username_from_uri());
+
+    /// The reason behind creating a notification request identifier is to match the identifier
+    /// of the remote notification to avoid duplication of notifications in the notification center.
+    NSString *requestId = [self getSha1PushId:call];
+
+    UNMutableNotificationContent *content =
+        [[UNMutableNotificationContent alloc] init];
+    content.threadIdentifier = threadId;
+    content.title = ali::mac::str::to_nsstring(remoteUser.getDisplayName());
     content.body = @"Missed Call";
-    
-    UNNotificationRequest *request = [UNNotificationRequest requestWithIdentifier:[NSUUID UUID].UUIDString
-                                                                          content:content
-                                                                          trigger:nil];
-    
-    [[UNUserNotificationCenter currentNotificationCenter] addNotificationRequest:request withCompletionHandler:^(NSError * _Nullable error) {
-        if (error) {
-            NSLog(@"Notification request error: %@", error.localizedDescription);
+    content.sound = [UNNotificationSound defaultSound];
+
+    UNNotificationRequest *request =
+        [UNNotificationRequest requestWithIdentifier:requestId
+                                              content:content
+                                              trigger:nil];
+
+    dispatch_sync(self.missedCallNotificationQueue, ^{
+        dispatch_block_t existingWorkItem = self.pendingWorkItems[requestId];
+        if (existingWorkItem) {
+            dispatch_block_cancel(existingWorkItem);
         }
-    }];
+
+        auto weakSelf = ali::mac::make_weak(self);
+        dispatch_block_t workItem = dispatch_block_create(DISPATCH_BLOCK_INHERIT_QOS_CLASS, ^{
+            auto self = weakSelf.strong();
+            if (!self) { return; }
+
+            UNUserNotificationCenter *notificationCenter =
+                [UNUserNotificationCenter currentNotificationCenter];
+
+            [notificationCenter getDeliveredNotificationsWithCompletionHandler:
+             ^(NSArray<UNNotification *> *deliveredNotifications) {
+
+                BOOL alreadyDelivered = NO;
+                for (UNNotification *notification in deliveredNotifications) {
+                    if ([notification.request.identifier isEqualToString:requestId] &&
+                        [notification.request.content.threadIdentifier
+                            isEqualToString:threadId]) {
+                        alreadyDelivered = YES;
+                        break;
+                    }
+                }
+
+                if (alreadyDelivered) { return; }
+
+                [notificationCenter addNotificationRequest:request
+                                     withCompletionHandler:^(NSError * _Nullable error) {
+                    if (error) {
+                        NSLog(@"Notification request error: %@",
+                              error.localizedDescription);
+                    }
+                }];
+            }];
+
+            dispatch_sync(self.missedCallNotificationQueue, ^{
+                [self.pendingWorkItems removeObjectForKey:requestId];
+            });
+        });
+
+        self.pendingWorkItems[requestId] = workItem;
+
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW,
+                                     (int64_t)(delay * NSEC_PER_SEC)),
+                       dispatch_get_main_queue(),
+                       workItem);
+    });
+}
+
+
+//-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+- (NSString *)getSha1PushId:(Softphone::EventHistory::CallEvent::Pointer)callEvent
+//-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+{
+    NSString *pushId = @"";
+
+    NSString *attrId = ali::mac::str::to_nsstring(callEvent->getAttribute(Softphone::EventHistory::CallEvent::Attributes::pushCallId));
+    if (attrId.length > 0) {
+        pushId = attrId;
+    } else {
+        pushId = [NSString stringWithFormat:@"%@", @(callEvent->getEventId())];
+    }
+
+    pushId = [NSString stringWithFormat:@"C:%@", pushId];
+
+    return [[self sha1WithString:pushId] lowercaseString];
+}
+
+//-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+- (NSString *)sha1WithString:(NSString *)string
+//-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+{
+    NSData *data = [string dataUsingEncoding:NSUTF8StringEncoding];
+
+    uint8_t digest[CC_SHA1_DIGEST_LENGTH];
+    CC_SHA1(data.bytes, (CC_LONG)data.length, digest);
+
+    NSMutableString *output = [NSMutableString stringWithCapacity:CC_SHA1_DIGEST_LENGTH * 2];
+    for (int i = 0; i < CC_SHA1_DIGEST_LENGTH; i++) {
+        [output appendFormat:@"%02x", digest[i]];
+    }
+
+    return output;
 }
 
 #pragma mark - SoftphoneDelegate
@@ -1107,9 +1214,9 @@ ali::string_literal sip_account{"<account id=\"sip\">"
 -(void) onMissedCalls:(const ali::array<Softphone::EventHistory::CallEvent::Pointer>) calls
 //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 {
-    // Here you can iterate through the calls and present notification for each call.
+    // Here you can iterate through the calls and schedule notification for each call.
     for (auto call : calls) {
-        [self showMissedCallNotification:call];
+        [self scheduleMissedCallNotification:call delay:0.5];
     }
 }
 
