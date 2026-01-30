@@ -4,6 +4,7 @@ import CallKit
 import Combine
 import CommonCrypto
 import Softphone_Swift
+import WatchConnectivity
 
 //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 enum ImagePurpose
@@ -560,6 +561,49 @@ class AppDelegate: UIResponder
     }
     
     //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+    private func registerForUserNotifications()
+    //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+    {
+        let center = UNUserNotificationCenter.current()
+        center.delegate = self
+        center.requestAuthorization(options: [.badge, .sound, .alert]) { granted, error in
+            if granted {
+                debugPrint("\n\nUser Notification authorization granted\n")
+            } else {
+                debugPrint("\n\nUser Notification authorization denied\n")
+            }
+        }
+    }
+    
+    //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+    private func displayIncomingCallNotificationForWatch(_ call: SoftphoneCallEvent)
+    //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+    {
+        let notify = call.transients.get(key: SoftphoneTransientsNotifications.notifyUser).asBool()
+        let isWatchConnected = WCSession.isSupported() && WCSession.default.isPaired
+        let isInBackround = UIApplication.shared.applicationState == .background
+        
+        if notify && isWatchConnected && isInBackround {
+            let content = UNMutableNotificationContent()
+            content.body = "Incoming Call from " + call.getRemoteUser(index: 0).displayName
+            content.sound = .default
+
+            let request = UNNotificationRequest(
+                identifier: UUID().uuidString,
+                content: content,
+                trigger: nil
+            )
+            
+            let notificationCenter = UNUserNotificationCenter.current()
+            notificationCenter.add(request) { error in
+                if let error = error {
+                    debugPrint("Notification request error: \(error.localizedDescription)")
+                }
+            }
+        }
+    }
+    
+    //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
     private func store(image: UIImage, attachment: SoftphoneEventAttachment, purpose: ImagePurpose)
     //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
     {
@@ -952,15 +996,7 @@ extension AppDelegate: UIApplicationDelegate
         
         refreshCallViews()
         
-        let center = UNUserNotificationCenter.current()
-        center.delegate = self
-        center.requestAuthorization(options: [.badge, .sound, .alert]) { granted, error in
-            if granted {
-                debugPrint("\n\nUser Notification authorization granted\n")
-            } else {
-                debugPrint("\n\nUser Notification authorization denied\n")
-            }
-        }
+        registerForUserNotifications()
 
         registrationService.account.send(sipAccount)
         
@@ -1047,19 +1083,6 @@ extension AppDelegate: UIApplicationDelegate
     {
         debugPrint("Got remote-notification push")
         startSoftphoneSdk()
-        
-        do {
-            let jsonData = try JSONSerialization.data(
-                withJSONObject: userInfo,
-                options: [.prettyPrinted]
-            )
-
-            let jsonString = String(data: jsonData, encoding: .utf8)
-            print("[AAAABBBB] Remote notification payload JSON: \(jsonString ?? "")")
-        } catch {
-            print("[AAAABBBB] Failed to create JSON: \(error)")
-        }
-        
         
         let identifier = UUID().uuidString
         
@@ -1231,6 +1254,8 @@ extension AppDelegate: SoftphoneDelegateBridge
         {
             closeTerminalCalls()
             refreshCallViews()
+            
+            displayIncomingCallNotificationForWatch(event.asCall())
         }
         else
         {
