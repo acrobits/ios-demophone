@@ -39,6 +39,14 @@ struct CallDetailView: View {
                     .font(.body)
                     .fontWeight(.semibold)
                     .foregroundStyle(Color.green)
+                
+                if let durationText = viewModel.durationText {
+                    Text(durationText)
+                        .font(.footnote)
+                        .fontWeight(.medium)
+                        .foregroundStyle(Color.secondary)
+                        .opacity(viewModel.isOnHold ? 0 : 1)
+                }
             }
             .padding(.vertical, 64)
             .frame(maxWidth: .infinity, alignment: .center)

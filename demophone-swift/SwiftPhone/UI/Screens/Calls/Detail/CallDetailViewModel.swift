@@ -107,6 +107,7 @@ class CallDetailViewModel: ObservableObject {
     @Published var transferNumber: String = ""
     @Published var confirmAlert = false
     @Published var speakerSelected = false
+    @Published var durationText: String?
     
     var accountName: String {
         return callItem.account
@@ -156,6 +157,13 @@ class CallDetailViewModel: ObservableObject {
     
     private var cancellable = Set<AnyCancellable>()
     private var callService: CallService
+    private static let durationFormatter: DateComponentsFormatter = {
+        let formatter = DateComponentsFormatter()
+        formatter.allowedUnits = [.hour, .minute, .second]
+        formatter.unitsStyle = .positional
+        formatter.zeroFormattingBehavior = [.pad]
+        return formatter
+    }()
     
     init(callItem: ActiveCallItem) {
         self.callItem = callItem
@@ -175,6 +183,8 @@ class CallDetailViewModel: ObservableObject {
                 self?.confirmAlert = true
             }
             .store(in: &cancellable)
+        
+        startDurationTimer()
     }
     
     func hangupCall() {
@@ -310,5 +320,41 @@ class CallDetailViewModel: ObservableObject {
     
     func cancelAttendedTransfer() {
         callService.cancelAttendedTransfer()
+    }
+    
+    private func startDurationTimer() {
+        Timer.publish(every: 1, on: .main, in: .common)
+            .autoconnect()
+            .sink { [weak self] _ in
+                self?.updateDuration()
+            }
+            .store(in: &cancellable)
+        
+        updateDuration()
+    }
+    
+    private func updateDuration() {
+        guard !callItem.canBeAnswered else {
+            durationText = nil
+            return
+        }
+        
+        guard let call = callEvent else {
+            durationText = nil
+            return
+        }
+        
+        if let established = call.timeEstablishedDate {
+            let seconds = max(0, Date().timeIntervalSince(established))
+            durationText = Self.durationFormatter.string(from: seconds)
+            return
+        }
+        
+        if call.duration > 0 {
+            durationText = Self.durationFormatter.string(from: call.duration)
+            return
+        }
+        
+        durationText = nil
     }
 }
